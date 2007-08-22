@@ -11,34 +11,70 @@ end
 
 require 'optparse'
 
-# NOTE: the option -p/--path= is given as an example, and should probably be replaced in your application.
+VERSION_NOTE = "SmallCage 0.0.1 - Lightweight CMS Package."
+OPTIONS = {}
 
-OPTIONS = {
-  :path     => '~'
-}
-MANDATORY_OPTIONS = %w(  )
+OptionParser.new do |opts|
 
-parser = OptionParser.new do |opts|
-  opts.banner = <<BANNER
-*SmallCage* Lightweight CMS Package.
-
-Usage: #{File.basename($0)} [options]
-
+  opts.banner =<<BANNER
+Usage: #{File.basename($0)} <subcommand> [options]
+#{VERSION_NOTE}
 Options are:
 BANNER
-  opts.separator ""
-  opts.on("-p", "--path=PATH", String,
-          "The root path for selecting files",
-          "Default: ~") { |OPTIONS[:path]| }
-  opts.on("-h", "--help",
-          "Show this help message.") { puts opts; exit }
-  opts.parse!(ARGV)
 
-  if MANDATORY_OPTIONS && MANDATORY_OPTIONS.find { |option| OPTIONS[option.to_sym].nil? }
-    puts opts; exit
+  opts.separator ""
+  opts.on("-h", "--help", "Show this help message.") do
+    puts opts
+    exit
+  end
+  opts.on("-v", "--version", "Show version info.") do
+    puts VERSION_NOTE
+    exit
+  end
+
+  subparsers = Hash.new do |h,k|
+    $stderr.puts "no such subcommand: #{k}"
+    exit 1
+  end
+  
+  subparsers[:update] = OptionParser.new do |subp|
+    subp.banner =<<EOT
+Usage: update [PATH]
+EOT
+  end
+  subparsers[:generate] = OptionParser.new do |subp|
+  end
+  subparsers[:release] = OptionParser.new do |subp|
+  end
+  subparsers[:help] = OptionParser.new do |subp|
+  end
+
+  commands = Hash.new {|h,k| k}
+  commands[:up] = :update
+  commands[:gen] = :generate
+  commands[:rel] = :release
+
+  opts.order!(ARGV)
+  unless ARGV.empty?
+    OPTIONS[:command] = commands[ARGV.shift.to_sym]
+    subparsers[OPTIONS[:command]].parse!(ARGV)
+  end
+  
+  if OPTIONS[:command].nil?
+    puts opts
+    exit
+  elsif OPTIONS[:command] == :help
+    subcmd = ARGV.shift
+    if subcmd.nil?
+      puts opts
+    else
+      puts subparsers[subcmd.to_sym]
+    end
+    exit
+  elsif OPTIONS[:command] == :update
+    OPTIONS[:path] = ARGV.shift 
+    OPTIONS[:path] ||= "."
   end
 end
 
-path = OPTIONS[:path]
-
-# do stuff
+p OPTIONS[:path]
