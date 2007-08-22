@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class TestSmallcage < Test::Unit::TestCase
+class TestSmallCage < Test::Unit::TestCase
 
   def setup
   end

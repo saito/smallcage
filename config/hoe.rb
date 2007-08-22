@@ -31,7 +31,7 @@ end
 REV = nil 
 # UNCOMMENT IF REQUIRED: 
 # REV = `svn info`.each {|line| if line =~ /^Revision:/ then k,v = line.split(': '); break v.chomp; else next; end} rescue nil
-VERS = Smallcage::VERSION::STRING + (REV ? ".#{REV}" : "")
+VERS = SmallCage::VERSION::STRING + (REV ? ".#{REV}" : "")
 RDOC_OPTS = ['--quiet', '--title', 'smallcage documentation',
     "--opname", "index.html",
     "--line-numbers", 

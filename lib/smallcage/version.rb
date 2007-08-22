@@ -1,4 +1,4 @@
-module Smallcage #:nodoc:
+module SmallCage #:nodoc:
   module VERSION #:nodoc:
     MAJOR = 0
     MINOR = 0
