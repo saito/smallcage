@@ -104,15 +104,21 @@ module SmallCage
       return result
     end
     
-    def each_smc_obj
+    def each_smc_file
       Dir.glob(@root.to_s + "/**/*.smc") do |f|
+        yield f
+      end
+    end
+    
+    def each_smc_obj
+      each_smc_file do |f|
         path = Pathname.new(f)
         next if File.directory?(f)
         next if path.basename.to_s == DIR_PROP_FILE
         puts f
         
         obj = load(path)
-        yield(obj)
+        yield obj
       end
     end
 

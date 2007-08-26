@@ -28,6 +28,11 @@ module SmallCage
       SmallCage::Server.start(@opts)
     end
 
+    def auto
+      require 'smallcage/auto_update'
+      SmallCage::AutoUpdate.start(@opts)
+    end
+
     def output_result(obj, str)
       open(obj["path"], "w") do |io|
         io << str
