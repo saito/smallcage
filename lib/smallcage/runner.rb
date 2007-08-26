@@ -23,10 +23,16 @@ module SmallCage
       end
     end
     
+    def server
+      require 'smallcage/server'
+      SmallCage::Server.start(@opts)
+    end
+
     def output_result(obj, str)
       open(obj["path"], "w") do |io|
         io << str
       end
     end
+    private :output_result
   end
 end

@@ -8,6 +8,7 @@ config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
 lib/smallcage/runner.rb
+lib/smallcage/server.rb
 lib/smallcage/version.rb
 log/debug.log
 script/destroy

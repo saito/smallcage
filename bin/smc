@@ -42,6 +42,13 @@ BANNER
 Usage: update [PATH]
 EOT
   end
+  
+  subparsers[:server] = OptionParser.new do |subp|
+    subp.banner =<<EOT
+Usage: server [PATH] [PORT]
+EOT
+  end
+
   subparsers[:generate] = OptionParser.new do |subp|
   end
   subparsers[:release] = OptionParser.new do |subp|
@@ -50,9 +57,13 @@ EOT
   end
 
   commands = Hash.new {|h,k| k}
-  commands[:up] = :update
-  commands[:gen] = :generate
-  commands[:rel] = :release
+  commands.merge!({
+  	:up => :update,
+  	:sv => :server,
+  	:gen => :generate,
+  	:rel => :release,
+  	:st => :status,
+  })
 
   opts.order!(ARGV)
   unless ARGV.empty?
@@ -72,8 +83,14 @@ EOT
     end
     exit
   elsif OPTIONS[:command] == :update
-    OPTIONS[:path] = ARGV.shift 
+    OPTIONS[:path] = ARGV.shift
     OPTIONS[:path] ||= "."
+  elsif OPTIONS[:command] == :server
+    OPTIONS[:path] = ARGV.shift
+    OPTIONS[:port] = ARGV.shift
+    
+    OPTIONS[:path] ||= "."
+    OPTIONS[:port] ||= 80
   end
 end
 
