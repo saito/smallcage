@@ -77,4 +77,5 @@ EOT
   end
 end
 
-p OPTIONS[:path]
+require 'smallcage'
+SmallCage::Runner.run(OPTIONS)
