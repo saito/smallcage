@@ -1,14 +1,20 @@
 $:.unshift File.dirname(__FILE__)
 
+require 'smallcage/version'
+require 'smallcage/runner'
+
 module SmallCage
   class Loader
+    attr_reader :root
   
-    def self.version
-      puts SmallCage.VERSION.STRING
+    def initialize(root)
+      @root = root
+      @templates_dir = root + "/_smc/templates"
+      @helpers_dir = root + "/_smc/helpers"
     end
-
+  
     def load(path)
-      unless path.to_s[0...DOCUMENT_ROOT.length] == DOCUMENT_ROOT    
+      unless path.to_s[0...@root.length] == @root
         raise "Illegal path." 
       end
 
@@ -16,7 +22,7 @@ module SmallCage
       obj = YAML.load_stream(path.read)
       result = {
         "template" => "default",
-        "path" => path_str[DOCUMENT_ROOT.length .. -1],
+        "path" => path_str[@root.length .. -1],
         "file" => path_str,
         "dirs" => load_dirs(path)
       }
@@ -46,16 +52,43 @@ module SmallCage
         f = path.parent + "_dir.cms"
         if f.file?
           obj = YAML.load(f.read)
-          obj["path"] = path.parent.to_s[DOCUMENT_ROOT.length..-1]
+          obj["path"] = path.parent.to_s[@root.length..-1]
           obj["path"] += "/"
           result.unshift obj
         end
-        break if path.to_s == DOCUMENT_ROOT
+        break if path.to_s == @root
         path = path.parent
       end
     
       return result
     end
+
+    def template_path(name)
+      str = "#{@templates_dir}/#{name}.rhtml"  
+      return Pathname.new(str)
+    end
+
+    def erb_base
+      result = Class.new(SmallCage::ErbBase)
+
+      Dir.entries(@helpers_dir).sort.each do |h|
+        next unless h =~ %r{([^/]+_helper)\.rb$}
+        require "#{@helpers_dir}/#{h}"
+        helper_name = camelize($1)
+        result.class_eval("include SmallCage::#{helper_name}")
+      end
+      return result
+    end
+    
+    # From active-support/inflector.rb  
+    def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
+      if first_letter_in_uppercase
+        lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+      else
+        lower_case_and_underscored_word.first + camelize(lower_case_and_underscored_word)[1..-1]
+      end
+    end
+    private :camelize
 
   end
   
@@ -76,45 +109,17 @@ module SmallCage
   end
 
   class Renderer
-
     def initialize(loader)
       @loader = loader
     end
 
     def render(name, o)
-      path = template_path(name)
+      path = @loader.template_path(name)
       return nil unless path.file?
 
-      erb_class = ERB.new(path.read).def_class(helper_class, "erb")
+      erb_class = ERB.new(path.read).def_class(@loader.erb_base, "erb")
       return erb_class.new(@loader, self, o).erb
     end
-    
-    def template_path(name)
-      str = "#{TEMPLATES_DIR}/#{name}.rhtml"  
-      return Pathname.new(str)
-    end
-
-    def helper_class
-      result = Class.new(SmallCage::ErbBase)
-
-      Dir.entries(HELPERS_DIR).sort.each do |h|
-        next unless h =~ %r{([^/]+_helper)\.rb$}
-        require "#{HELPERS_DIR}/#{h}"
-        helper_name = camelize($1)
-        result.class_eval("include SmallCage::#{helper_name}")
-      end
-      return result
-    end
-    
-    # From active-support/inflector.rb  
-    def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
-      if first_letter_in_uppercase
-        lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
-      else
-        lower_case_and_underscored_word.first + camelize(lower_case_and_underscored_word)[1..-1]
-      end
-    end
-    private :camelize
   end
     
 end
