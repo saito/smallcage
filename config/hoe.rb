@@ -1,8 +1,8 @@
 require 'smallcage/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
-DESCRIPTION = "description of gem"
+AUTHOR = ['SAITO Toshihiro', 'KOSEKI Kengo', 'SATO Akihiko']  # can also be an array of Authors
+EMAIL = ["saito@bluemark.jp", "koseki@bluemark.jp", "gom@bluemark.jp"]
+DESCRIPTION = "Lightweigt CMS Package."
 GEM_NAME = 'smallcage' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'smallcage' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"

@@ -19,6 +19,11 @@ OptionParser.new do |opts|
   opts.banner =<<BANNER
 Usage: #{File.basename($0)} <subcommand> [options]
 #{VERSION_NOTE}
+Subcommands are:
+    update [path]                    Build smc contents.
+    server [path] [port]             Start HTTP server.
+    auto   [path]                    Start auto update daemon.
+
 Options are:
 BANNER
 
