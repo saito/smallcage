@@ -9,17 +9,18 @@ module SmallCage
     end
     
     def update
-      docroot = Pathname.new(@opts[:path])
-      unless docroot.directory?
-        raise "path is not dir: " + docroot.to_s
+      target = Pathname.new(@opts[:path])
+      unless target.exist?
+        raise "target directory or file does not exist.: " + target.to_s
       end
       
-      loader = SmallCage::Loader.new(docroot)
+      loader = SmallCage::Loader.new(target)
       renderer = SmallCage::Renderer.new(loader)
       
       loader.each_smc_obj do |obj|
         result = renderer.render(obj["template"], obj)
         output_result(obj, result)
+        puts obj["uri"] if @opts[:quiet].nil?
       end
     end
     

@@ -6,7 +6,7 @@ module SmallCage
     
     def initialize(opts)
       @opts = opts
-      @root = Pathname.new(opts[:path])
+      @target = Pathname.new(opts[:path])
       @sleep = 1
       @mtimes = {}
     end
@@ -26,7 +26,7 @@ module SmallCage
       loop do
         sleep @sleep
                 
-        loader = Loader.new(@root)
+        loader = Loader.new(@target)
 
         do_update = false
         loader.each_smc_file do |f|
@@ -38,7 +38,7 @@ module SmallCage
         end
         
         if do_update
-          runner = Runner.new({ :path => @root })
+          runner = Runner.new({ :path => @target })
           runner.update
           print "\a"
           puts "-" * 60

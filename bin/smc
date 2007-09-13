@@ -9,9 +9,12 @@ rescue LoadError
   # no rubygems to load, so we fail silently
 end
 
+require 'smallcage'
 require 'optparse'
 
-VERSION_NOTE = "SmallCage 0.0.1 - Lightweight CMS Package."
+STDOUT.sync = true
+
+VERSION_NOTE = "SmallCage #{SmallCage::VERSION::STRING} - Lightweight CMS Package."
 OPTIONS = {}
 
 OptionParser.new do |opts|
@@ -108,5 +111,4 @@ EOT
   end
 end
 
-require 'smallcage'
 SmallCage::Runner.run(OPTIONS)

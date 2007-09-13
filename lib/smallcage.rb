@@ -12,17 +12,48 @@ module SmallCage
     DEFAULT_TEMPLATE = "default"
     DIR_PROP_FILE = "_dir.smc"
   
-    attr_reader :root
+    attr_reader :root, :target
   
-    def initialize(root)
-      @root = root
+    def initialize(target)
+      target = Pathname.new(target.to_s.strip.gsub(%r{(.+)/$}, '\1'))
+      unless target.exist?
+        raise "Target not found: " + target.to_s
+      end
+      if target.file? && target.to_s !~ /\.smc$/
+        tmp = Pathname.new(target.to_s + ".smc")
+        if tmp.file?
+          target = tmp
+        else
+          raise "Target is not smc file: " + target.to_s
+        end
+      end
+
+      @target = target
+      @root = find_root(target)
       @templates_dir = root + "_smc/templates"
       @helpers_dir = root + "_smc/helpers"
+    end
+    
+    def find_root(path)
+      p = path
+      if p.file?
+        p = p.parent
+      end
+      
+      loop do
+        if p.join("_smc").directory?
+          return p
+        end
+        break if p.root?
+        p = p.parent
+      end
+      
+      raise "Root not found: " + path
     end
   
     def load(path)
       unless path.to_s[0...@root.to_s.length] == @root.to_s
-        raise "Illegal path: " + path.to_s 
+        raise "Illegal path: " + path.to_s + " / " + @root.to_s
       end
       unless path.exist?
         raise "Not found: " + path.to_s 
@@ -86,13 +117,11 @@ module SmallCage
 
     def load_dirs(path)
       result = []
-      i = 0
-      while true
-        i += 1
-        exit if 10 < i
+      loop do
         path = path.parent
         result.unshift load(path)
-        break if path.to_s == @root.to_s
+        break if path.join("_smc").directory?
+        raise "Root directory not found!" if path.root?
       end
       return result
     end
@@ -105,8 +134,12 @@ module SmallCage
     end
     
     def each_smc_file
-      Dir.glob(@root.to_s + "/**/*.smc") do |f|
-        yield f
+      if @target.directory?
+        Dir.glob(@target.to_s + "/**/*.smc") do |f|
+          yield f
+        end
+      else
+        yield @target.to_s
       end
     end
     
@@ -115,15 +148,11 @@ module SmallCage
         path = Pathname.new(f)
         next if File.directory?(f)
         next if path.basename.to_s == DIR_PROP_FILE
-        puts f
-        
         obj = load(path)
         yield obj
       end
     end
 
-    
-    
 
     def erb_base
       result = Class.new(SmallCage::ErbBase)
