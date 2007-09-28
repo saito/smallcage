@@ -12,7 +12,7 @@ module SmallCage
     DEFAULT_TEMPLATE = "default"
     DIR_PROP_FILE = "_dir.smc"
   
-    attr_reader :root, :target
+    attr_reader :root, :target, :erb_base
   
     def initialize(target)
       target = Pathname.new(target.to_s.strip.gsub(%r{(.+)/$}, '\1'))
@@ -32,6 +32,9 @@ module SmallCage
       @root = find_root(target)
       @templates_dir = root + "_smc/templates"
       @helpers_dir = root + "_smc/helpers"
+      @filters_dir = root + "_smc/filters"
+      @erb_base = load_erb_base
+      @filters = load_filters
     end
     
     def find_root(path)
@@ -152,19 +155,58 @@ module SmallCage
         yield obj
       end
     end
-
-
-    def erb_base
+    
+    def load_erb_base
       result = Class.new(SmallCage::ErbBase)
-
-      Dir.entries(@helpers_dir).sort.each do |h|
-        next unless h =~ %r{([^/]+_helper)\.rb$}
-        require "#{@helpers_dir}/#{h}"
-        helper_name = camelize($1)
-        result.class_eval("include SmallCage::#{helper_name}")
+      class_names = load_classes(@helpers_dir, %r{([^/]+_helper)\.rb$})
+      class_names.each do |class_name|
+        result.class_eval("include SmallCage::#{class_name}")
       end
       return result
     end
+    private :load_erb_base
+    
+    def load_classes(dir, rex)
+      class_names = []
+      Dir.entries(dir).sort.each do |h|
+        next unless h =~ rex
+        require "#{dir}/#{h}"
+        class_names << camelize($1)
+      end
+      return class_names
+    end
+    private :load_classes
+
+    def filters(name)
+      if @filters[name].nil?
+        return []
+      end
+      return @filters[name]
+    end
+    
+    def load_filters
+      result = {}
+      load_classes(@filters_dir, %r{([^/]+_filter)\.rb$})
+      
+      config = load_filters_config
+      config.each do |filter_type,filter_list|
+        result[filter_type] = []
+        filter_list.each do |fc|
+          fc = { "name" => fc } if fc.is_a? String
+          klass = SmallCage.const_get(camelize(fc["name"]))
+          result[filter_type] << klass.new(fc)
+        end
+      end
+      return result
+    end
+    private :load_filters
+
+    def load_filters_config
+      path = @filters_dir.join("filters.yml")
+      return {} unless path.file?
+      return YAML.load(path.read())
+    end
+    private :load_filters_config
     
     def strip_ext(path)
       path.to_s[0..-5]
@@ -216,13 +258,16 @@ module SmallCage
       @loader = loader
     end
 
-    def render(name, o)
+    def render(name, obj)
       path = @loader.template_path(name)
       return nil if path.nil?
 
       erb_class = ERB.new(path.read, nil, '-').def_class(@loader.erb_base, "erb")
-      return erb_class.new(@loader, self, o).erb
+      result = erb_class.new(@loader, self, obj).erb
+
+      return result
     end
-    
+
   end
+  
 end

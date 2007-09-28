@@ -19,6 +19,12 @@ module SmallCage
       
       loader.each_smc_obj do |obj|
         result = renderer.render(obj["template"], obj)
+              
+        filters = loader.filters("after_rendering_filters")
+        filters.each do |f|
+          result = f.after_rendering_filter(obj, result)
+        end
+
         output_result(obj, result)
         puts obj["uri"] if @opts[:quiet].nil?
       end
