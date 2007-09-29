@@ -186,6 +186,8 @@ module SmallCage
     
     def load_filters
       result = {}
+      return {} unless @filters_dir.directory?
+      
       load_classes(@filters_dir, %r{([^/]+_filter)\.rb$})
       
       config = load_filters_config
