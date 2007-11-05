@@ -17,19 +17,24 @@ module SmallCage
   
     def initialize(target)
       target = Pathname.new(target.to_s.strip.gsub(%r{(.+)/$}, '\1'))
-      target = real_target(target)
+      target = real_target(target) 
 
-      @target = target
-      @root = find_root(target, MAX_DEPTH)
+      @target = target # absolute
+      @root = find_root(target, MAX_DEPTH) # absolute
       @templates_dir = root + "_smc/templates"
       @helpers_dir = root + "_smc/helpers"
       @filters_dir = root + "_smc/filters"
       @erb_base = load_erb_base
       @filters = load_filters
     end
-    
+
+
     def find_root(path, depth)
-      d = path
+      unless path.exist?
+        raise "Not found: " + path.to_s 
+      end
+      d = path.realpath
+      
       if d.file?
         d = d.parent
       end
@@ -39,7 +44,7 @@ module SmallCage
         if d.join("_smc").directory?
           return d
         end
-        break if d.realpath.root?
+        break if d.root?
         d = d.parent
 
         i += 1
@@ -50,11 +55,12 @@ module SmallCage
     end
   
     def load(path)
-      unless path.to_s[0...@root.to_s.length] == @root.to_s
-        raise "Illegal path: " + path.to_s + " , " + @root.to_s
-      end
       unless path.exist?
         raise "Not found: " + path.to_s 
+      end
+      path = path.realpath
+      unless path.to_s[0...@root.to_s.length] == @root.to_s
+        raise "Illegal path: " + path.to_s + " , " + @root.to_s
       end
 
       result = {}
@@ -149,11 +155,11 @@ module SmallCage
     end
     
     def real_target(target)
-      return target if target.directory?
-      return target if target.file? and target.to_s =~ /\.smc$/ 
+      return target.realpath if target.directory?
+      return target.realpath if target.file? and target.to_s =~ /\.smc$/ 
 
       tmp = Pathname.new(target.to_s + ".smc")
-      return tmp if tmp.file?
+      return tmp.realpath if tmp.file?
 
       raise "Target not found: " + target.to_s
     end
@@ -220,7 +226,7 @@ module SmallCage
     private :strip_ext
     
     def to_uri(path)
-      path.to_s[@root.to_s.length .. -1]
+      path.realpath.to_s[@root.to_s.length .. -1]
     end
     private :to_uri
 
