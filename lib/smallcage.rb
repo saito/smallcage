@@ -64,36 +64,33 @@ module SmallCage
 
       result = {}
       if path.file?
-        # TODO pathはオブジェクトに。通常ファイル操作で使うため文字列にする理由がない。
-        # 文字列にするとディレクトリ末尾に/をつけるかどうか、などを気にする必要がある。
-        # ディレクトリとファイル名を単純に結合できない。
-        path_str_smc = path.to_s
-        path_str     = strip_ext(path)
-        uri_smc      = to_uri(path)
-        uri          = strip_ext(uri_smc)
-        source_path  = path
+        path_smc = path
+        path_out = Pathname.new(strip_ext(path))
+        uri_smc = to_uri(path)
+        uri_out = strip_ext(uri_smc)
+        source_path = path
 
         result["dirs"]     = load_dirs(path)
         result["template"] = DEFAULT_TEMPLATE
       else
-        path_str_smc = nil
-        path_str     = path.to_s
-        uri_smc      = nil
-        uri          = to_uri(path)
-        uri += "/" unless uri =~ %r{/$}
-
+        path_smc = nil
+        path_out = path
+        uri_smc = nil
+        uri_out = to_uri(path)
+        uri_out += "/" unless uri_out =~ %r{/$}
         source_path = path + DIR_PROP_FILE
+
         if source_path.file?
-          path_str_smc = source_path.to_s
-          uri_smc      = to_uri(source_path)
+          path_smc = source_path
+          uri_smc = to_uri(source_path)
         end
       end
       
-      add_smc_method(path_str, path_str_smc)
-      add_smc_method(uri, uri_smc)
+      add_smc_method(path_out, path_smc)
+      add_smc_method(uri_out, uri_smc)
 
-      result["path"]     = path_str
-      result["uri"]      = uri
+      result["path"]     = path_out
+      result["uri"]      = uri_out
       result["arrays"]   = []
       result["strings"]  = []
 
@@ -220,9 +217,14 @@ module SmallCage
     end
     private :to_uri
 
-    def add_smc_method(str, str_smc)
-      def str.smc
-        str_smc
+    def add_smc_method(obj, value)
+      obj.instance_eval do
+        @__smallcage ||= {}
+        @__smallcage[:smc] = value
+      end
+
+      def obj.smc
+        return @__smallcage.nil? ? nil : @__smallcage[:smc]
       end
     end
     private :add_smc_method
