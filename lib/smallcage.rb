@@ -11,25 +11,16 @@ module SmallCage
   class Loader
     DEFAULT_TEMPLATE = "default"
     DIR_PROP_FILE = "_dir.smc"
+    MAX_DEPTH = 100
   
     attr_reader :root, :target, :erb_base
   
     def initialize(target)
       target = Pathname.new(target.to_s.strip.gsub(%r{(.+)/$}, '\1'))
-      unless target.exist?
-        raise "Target not found: " + target.to_s
-      end
-      if target.file? && target.to_s !~ /\.smc$/
-        tmp = Pathname.new(target.to_s + ".smc")
-        if tmp.file?
-          target = tmp
-        else
-          raise "Target is not smc file: " + target.to_s
-        end
-      end
+      target = real_target(target)
 
       @target = target
-      @root = find_root(target)
+      @root = find_root(target, MAX_DEPTH)
       @templates_dir = root + "_smc/templates"
       @helpers_dir = root + "_smc/helpers"
       @filters_dir = root + "_smc/filters"
@@ -37,18 +28,22 @@ module SmallCage
       @filters = load_filters
     end
     
-    def find_root(path)
-      p = path
-      if p.file?
-        p = p.parent
+    def find_root(path, depth)
+      d = path
+      if d.file?
+        d = d.parent
       end
       
+      i = 0
       loop do
-        if p.join("_smc").directory?
-          return p
+        if d.join("_smc").directory?
+          return d
         end
-        break if p.root?
-        p = p.parent
+        break if d.realpath.root?
+        d = d.parent
+
+        i += 1
+        break if depth <= i
       end
       
       raise "Root not found: " + path
@@ -56,7 +51,7 @@ module SmallCage
   
     def load(path)
       unless path.to_s[0...@root.to_s.length] == @root.to_s
-        raise "Illegal path: " + path.to_s + " / " + @root.to_s
+        raise "Illegal path: " + path.to_s + " , " + @root.to_s
       end
       unless path.exist?
         raise "Not found: " + path.to_s 
@@ -152,6 +147,18 @@ module SmallCage
         yield obj
       end
     end
+    
+    def real_target(target)
+      return target if target.directory?
+      return target if target.file? and target.to_s =~ /\.smc$/ 
+
+      tmp = Pathname.new(target.to_s + ".smc")
+      return tmp if tmp.file?
+
+      raise "Target not found: " + target.to_s
+    end
+    private :real_target
+    
     
     def load_erb_base
       result = Class.new(SmallCage::ErbBase)
