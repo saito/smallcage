@@ -1,8 +1,6 @@
 require 'webrick'
 
-module SmallCage
-
-
+module SmallCage::Commands
   class Server
     def self.execute(opts)
       document_root = opts[:path]
@@ -17,9 +15,7 @@ module SmallCage
       ['INT', 'TERM'].each do |signal|
         Signal.trap(signal){ server.shutdown }
       end
-      
       server.start    
     end
   end
-
 end

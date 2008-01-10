@@ -9,23 +9,23 @@ module SmallCage
     end
     
     def update
-      require 'smallcage/update'
-      SmallCage::Update.execute(@opts)
+      require 'smallcage/commands/update'
+      SmallCage::Commands::Update.execute(@opts)
     end
     
     def server
-      require 'smallcage/server'
-      SmallCage::Server.execute(@opts)
+      require 'smallcage/commands/server'
+      SmallCage::Commands::Server.execute(@opts)
     end
 
     def auto
-      require 'smallcage/auto_update'
-      SmallCage::AutoUpdate.execute(@opts)
+      require 'smallcage/commands/auto_update'
+      SmallCage::Commands::AutoUpdate.execute(@opts)
     end
     
     def import
-      require 'smallcage/import'
-      SmallCage::Import.execute(@opts)
+      require 'smallcage/commands/import'
+      SmallCage::Commands::Import.execute(@opts)
     end
 
   end

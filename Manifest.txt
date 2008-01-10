@@ -7,12 +7,14 @@ bin/smc
 config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
-lib/smallcage/auto_update.rb
+lib/smallcage/commands/auto_update.rb
+lib/smallcage/commands/import.rb
+lib/smallcage/commands/server.rb
+lib/smallcage/commands/update.rb
 lib/smallcage/erb_base.rb
 lib/smallcage/loader.rb
 lib/smallcage/renderer.rb
 lib/smallcage/runner.rb
-lib/smallcage/server.rb
 lib/smallcage/version.rb
 log/debug.log
 project/default/_dir.smc

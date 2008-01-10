@@ -1,4 +1,4 @@
-module SmallCage
+module SmallCage::Commands
   class Import
     
   end

@@ -1,7 +1,15 @@
-module SmallCage
+module SmallCage::Commands
   class Update
     def self.execute(opts)
-      target = Pathname.new(opts[:path])
+      self.new(opts).execute
+    end
+    
+    def initialize(opts)
+      @opts = opts
+    end
+    
+    def execute
+      target = Pathname.new(@opts[:path])
       unless target.exist?
         raise "target directory or file does not exist.: " + target.to_s
       end
@@ -18,8 +26,8 @@ module SmallCage
         end
 
         output_result(obj, result)
-        puts obj["uri"] if opts[:quiet].nil?
-      end      
+        puts obj["uri"] if @opts[:quiet].nil?
+      end
     end
     
     def output_result(obj, str)

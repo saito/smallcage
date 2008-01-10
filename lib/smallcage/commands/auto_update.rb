@@ -1,7 +1,7 @@
-module SmallCage
+module SmallCage::Commands
   class AutoUpdate
     def self.execute(opts)
-      AutoUpdate.new(opts).run
+      self.new(opts).execute
     end
     
     def initialize(opts)
@@ -11,7 +11,7 @@ module SmallCage
       @mtimes = {}
     end
     
-    def run
+    def execute
       puts "SmallCage Auto Update"
       puts "-" * 60
 
@@ -26,7 +26,7 @@ module SmallCage
       loop do
         sleep @sleep
                 
-        loader = Loader.new(@target)
+        loader = SmallCage::Loader.new(@target)
 
         do_update = false
         loader.each_smc_file do |f|
@@ -38,7 +38,7 @@ module SmallCage
         end
         
         if do_update
-          runner = Runner.new({ :path => @target })
+          runner = SmallCage::Runner.new({ :path => @target })
           runner.update
           print "\a"
           puts "-" * 60
