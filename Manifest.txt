@@ -7,7 +7,7 @@ bin/smc
 config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
-lib/smallcage/commands/auto_update.rb
+lib/smallcage/commands/auto.rb
 lib/smallcage/commands/import.rb
 lib/smallcage/commands/server.rb
 lib/smallcage/commands/update.rb
