@@ -1,5 +1,5 @@
 module SmallCage::Commands
-  class AutoUpdate
+  class Auto
     def self.execute(opts)
       self.new(opts).execute
     end

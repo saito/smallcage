@@ -19,8 +19,8 @@ module SmallCage
     end
 
     def auto
-      require 'smallcage/commands/auto_update'
-      SmallCage::Commands::AutoUpdate.execute(@opts)
+      require 'smallcage/commands/auto'
+      SmallCage::Commands::Auto.execute(@opts)
     end
     
     def import
