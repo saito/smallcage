@@ -8,6 +8,9 @@ config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
 lib/smallcage/auto_update.rb
+lib/smallcage/erb_base.rb
+lib/smallcage/loader.rb
+lib/smallcage/renderer.rb
 lib/smallcage/runner.rb
 lib/smallcage/server.rb
 lib/smallcage/version.rb

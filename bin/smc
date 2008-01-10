@@ -16,6 +16,7 @@ STDOUT.sync = true
 
 VERSION_NOTE = "SmallCage #{SmallCage::VERSION::STRING} - Lightweight CMS Package."
 OPTIONS = {}
+OPTIONS[:original_argv] = ARGV.clone
 
 OptionParser.new do |opts|
 
