@@ -1,31 +1,9 @@
 module SmallCage
   class Runner
     def self.run(opts)
-      switch_version(opts)
       Runner.new(opts).send(opts[:command])
     end
 
-    def self.switch_version(opts)
-      return unless opts[:path]
-
-      root = SmallCage::Loader.find_root(Pathname.new(opts[:path]))
-      version_file = root + "_smc/version"
-      return unless version_file.file?
-      version = nil
-      open(version_file) do |io|
-        version = io.gets
-      end
-
-      version = version.to_s
-      version.strip!
-      return unless Gem::Version.correct?(version)
-      return if SmallCage::VERSION::STRING == version
-      
-      puts "Switch version: #{version}"
-      p opts[:original_argv]
-      exec "smc", "_#{version}_", *opts[:original_argv]
-    end
-    
     def initialize(opts)
       @opts = opts
     end
