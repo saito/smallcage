@@ -1,6 +1,6 @@
 module SmallCage
   class AutoUpdate
-    def self.start(opts)
+    def self.execute(opts)
       AutoUpdate.new(opts).run
     end
     

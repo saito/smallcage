@@ -4,7 +4,7 @@ module SmallCage
 
 
   class Server
-    def self.start(opts)
+    def self.execute(opts)
       document_root = opts[:path]
       port = opts[:port]
 

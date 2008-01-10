@@ -9,42 +9,24 @@ module SmallCage
     end
     
     def update
-      target = Pathname.new(@opts[:path])
-      unless target.exist?
-        raise "target directory or file does not exist.: " + target.to_s
-      end
-      
-      loader = SmallCage::Loader.new(target)
-      renderer = SmallCage::Renderer.new(loader)
-      
-      loader.each_smc_obj do |obj|
-        result = renderer.render(obj["template"], obj)
-              
-        filters = loader.filters("after_rendering_filters")
-        filters.each do |f|
-          result = f.after_rendering_filter(obj, result)
-        end
-
-        output_result(obj, result)
-        puts obj["uri"] if @opts[:quiet].nil?
-      end
+      require 'smallcage/update'
+      SmallCage::Update.execute(@opts)
     end
     
     def server
       require 'smallcage/server'
-      SmallCage::Server.start(@opts)
+      SmallCage::Server.execute(@opts)
     end
 
     def auto
       require 'smallcage/auto_update'
-      SmallCage::AutoUpdate.start(@opts)
+      SmallCage::AutoUpdate.execute(@opts)
+    end
+    
+    def import
+      require 'smallcage/import'
+      SmallCage::Import.execute(@opts)
     end
 
-    def output_result(obj, str)
-      open(obj["path"], "w") do |io|
-        io << str
-      end
-    end
-    private :output_result
   end
 end
