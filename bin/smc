@@ -70,6 +70,8 @@ EOT
   end
   subparsers[:help] = OptionParser.new do |subp|
   end
+  subparsers[:import] = OptionParser.new do |subp|
+  end
 
   commands = Hash.new {|h,k| k}
   commands.merge!({
@@ -109,6 +111,12 @@ EOT
   elsif OPTIONS[:command] == :auto
     OPTIONS[:path] = ARGV.shift
     OPTIONS[:path] ||= "."
+  elsif OPTIONS[:command] == :import
+  	OPTIONS[:from] = ARGV.shift
+  	OPTIONS[:from] ||= "default"
+  	
+  	OPTIONS[:to] = ARGV.shift
+  	OPTIONS[:to] ||= "."
   end
 end
 
