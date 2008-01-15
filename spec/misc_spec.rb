@@ -1,8 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
-require 'pathname'
 
-describe "smallcage" do
+describe "misc" do
 
   it "should camelize String" do
     s = "smallcage"
@@ -15,7 +14,7 @@ describe "smallcage" do
     s.camelize.should == ""
   end
   
-  it "camelize with lower case first character" do
+  it "should camelize with first character in lower case" do
     s = "smallcage"
     s.camelize(false).should == "smallcage"
     
