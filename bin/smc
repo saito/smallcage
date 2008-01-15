@@ -25,9 +25,10 @@ Usage: #{File.basename($0)} <subcommand> [options]
 #{VERSION_NOTE}
 Subcommands are:
     update [path]                    Build smc contents.
+    clean  [path]                    Remove files generated from *.smc source.
     server [path] [port]             Start HTTP server.
     auto   [path]                    Start auto update daemon.
-	import [name or uri]             Import project.
+	import [name|uri]                Import project.
     manifest [path]                  Generate Manifest.html file.
 
 Options are:
