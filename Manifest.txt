@@ -1,3 +1,4 @@
+.project
 History.txt
 License.txt
 Manifest.txt
@@ -7,12 +8,16 @@ bin/smc
 config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
+lib/smallcage/commands/Manifest.erb
 lib/smallcage/commands/auto.rb
+lib/smallcage/commands/clean.rb
 lib/smallcage/commands/import.rb
+lib/smallcage/commands/manifest.rb
 lib/smallcage/commands/server.rb
 lib/smallcage/commands/update.rb
 lib/smallcage/erb_base.rb
 lib/smallcage/loader.rb
+lib/smallcage/misc.rb
 lib/smallcage/renderer.rb
 lib/smallcage/runner.rb
 lib/smallcage/version.rb
@@ -33,6 +38,9 @@ script/generate.cmd
 setup.rb
 spec/data/htdocs1/_dir.smc
 spec/data/htdocs1/a/b/c/index.html.smc
+spec/loader_spec.rb
+spec/manifest_spec.rb
+spec/misc_spec.rb
 spec/smallcage_spec.rb
 spec/spec.opts
 spec/spec_helper.rb
