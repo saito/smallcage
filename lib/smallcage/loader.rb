@@ -174,7 +174,7 @@ module SmallCage
       Dir.entries(dir).sort.each do |h|
         next unless h =~ rex
         require "#{dir}/#{h}"
-        class_names << camelize($1)
+        class_names << $1.camelize
       end
       return class_names
     end
@@ -198,7 +198,7 @@ module SmallCage
         result[filter_type] = []
         filter_list.each do |fc|
           fc = { "name" => fc } if fc.is_a? String
-          klass = SmallCage.const_get(camelize(fc["name"]))
+          klass = SmallCage.const_get(fc["name"].camelize)
           result[filter_type] << klass.new(fc)
         end
       end
@@ -235,14 +235,5 @@ module SmallCage
     end
     private :add_smc_method
 
-    # From active-support/inflector.rb  
-    def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)
-      if first_letter_in_uppercase
-        lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
-      else
-        lower_case_and_underscored_word.first + camelize(lower_case_and_underscored_word)[1..-1]
-      end
-    end
-    private :camelize
   end
 end
