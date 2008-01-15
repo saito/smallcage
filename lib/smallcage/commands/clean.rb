@@ -16,7 +16,8 @@ module SmallCage::Commands
       
       loader = SmallCage::Loader.new(target)
       loader.each_smc_obj do |obj|
-        p obj.path
+        obj["path"].delete
+        puts "remove: " + obj["path"].to_s
       end
     end
   end
