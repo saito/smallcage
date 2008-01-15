@@ -13,6 +13,11 @@ module SmallCage
       SmallCage::Commands::Update.execute(@opts)
     end
     
+    def clean
+      require 'smallcage/commands/clean'
+      SmallCage::Commands::Clean.execute(@opts)
+    end
+    
     def server
       require 'smallcage/commands/server'
       SmallCage::Commands::Server.execute(@opts)
