@@ -12,14 +12,15 @@ module SmallCage
 
       @target = target # absolute
       @root = SmallCage::Loader.find_root(target) # absolute
-      @templates_dir = root + "_smc/templates"
-      @helpers_dir = root + "_smc/helpers"
-      @filters_dir = root + "_smc/filters"
+      @templates_dir = @root + "_smc/templates"
+      @helpers_dir = @root + "_smc/helpers"
+      @filters_dir = @root + "_smc/filters"
       @erb_base = load_erb_base
       @filters = load_filters
     end
 
-    def self.find_root(path)
+    # return root dir Pathname object.
+    def self.find_root(path, depth = MAX_DEPTH)
       unless path.exist?
         raise "Not found: " + path.to_s 
       end
@@ -38,7 +39,7 @@ module SmallCage
         d = d.parent
 
         i += 1
-        break if MAX_DEPTH <= i
+        break if depth <= i
       end
       
       raise "Root not found: " + path
@@ -118,31 +119,33 @@ module SmallCage
     end
 
     def template_path(name)
-      str = "#{@templates_dir}/#{name}.rhtml"  
-      result = Pathname.new(str)
+      result = @templates_dir + "#{name}.rhtml"
       return nil unless result.file?
       return result
     end
     
-    def each_smc_file
-      if @target.directory?
-        Dir.glob(@target.to_s + "/**/*.smc") do |f|
-          yield f
-        end
-      else
-        yield @target.to_s
-      end
-    end
-    
     def each_smc_obj
-      each_smc_file do |f|
-        path = Pathname.new(f)
-        next if File.directory?(f)
+      each_smc_file do |path|
+        next if path.directory?
         next if path.basename.to_s == DIR_PROP_FILE
         obj = load(path)
         yield obj
       end
     end
+    
+    def each_smc_file
+      if @target.directory?
+        p = Pathname.new(@target)
+        Dir.chdir(@target) do
+          Dir.glob("**/*.smc") do |f|
+            yield p + f
+          end
+        end
+      else
+        yield @target
+      end
+    end
+    private :each_smc_file
     
     def real_target(target)
       return target.realpath if target.directory?

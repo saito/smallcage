@@ -35,14 +35,13 @@ describe "smallcage" do
   
   it "should find smc root dir" do
     path = docroot + "a/b/c/index.html.smc"
-    ldr = SmallCage::Loader.new(path)
     
     depth = 5
-    root = ldr.find_root(path, depth)
+    root = SmallCage::Loader.find_root(path, depth)
     root.to_s.should =~ %r{^.+/data/htdocs1$}
     
     depth = 3
-    lambda { ldr.find_root(path, depth) }.should raise_error
+    lambda { SmallCage::Loader.find_root(path, depth) }.should raise_error
   end
   
   it "should update not docroot directory" do
