@@ -27,6 +27,11 @@ module SmallCage
       require 'smallcage/commands/import'
       SmallCage::Commands::Import.execute(@opts)
     end
+    
+    def manifest
+      require 'smallcage/commands/manifest'
+      SmallCage::Commands::Manifest.execute(@opts)
+    end
 
   end
 end

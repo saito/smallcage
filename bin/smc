@@ -27,6 +27,8 @@ Subcommands are:
     update [path]                    Build smc contents.
     server [path] [port]             Start HTTP server.
     auto   [path]                    Start auto update daemon.
+	import [name or uri]             Import project.
+    manifest [path]                  Generate Manifest.html file.
 
 Options are:
 BANNER
@@ -71,6 +73,8 @@ EOT
   subparsers[:help] = OptionParser.new do |subp|
   end
   subparsers[:import] = OptionParser.new do |subp|
+  end
+  subparsers[:manifest] = OptionParser.new do |subp|
   end
 
   commands = Hash.new {|h,k| k}
@@ -117,6 +121,9 @@ EOT
   	
   	OPTIONS[:to] = ARGV.shift
   	OPTIONS[:to] ||= "."
+  elsif OPTIONS[:command] == :manifest
+    OPTIONS[:path] = ARGV.shift
+    OPTIONS[:path] ||= "."
   end
 end
 
