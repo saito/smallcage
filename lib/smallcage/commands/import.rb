@@ -65,15 +65,27 @@ module SmallCage::Commands
     
     def import_external
       uri = @opts[:from]
-      if uri !~ %r{/Manifest.html$}
-        uri += "/Manifest.html"
+      if uri !~ %r{/$}
+        uri += "/"
       end
+      mfuri = uri + "Manifest.html"
       
-      source = nil
-      open(uri) do |io|
-        source = io.read
+      source = open(mfuri) {|io| io.read }
+      
+      files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>})
+      files.each do |f|
+        raise "illegal path:#{f[0]},#{f[1]}" if f[0] != f[1]
+        raise "illegal path:#{f[0]}" if f[0] =~ %r{/\.\.}
+        path = f[0]
+        if path =~ %r{/$}
+          qps "mkdir: #{path}"
+          (@dest + path).mkdir
+        else
+          qps "copy: #{path}"
+          s = open(uri + path) {|io| io.read }
+          open(@dest + path, "w") {|io| io << s }
+        end
       end
-      p source
     end
 
     def confirm_entries
