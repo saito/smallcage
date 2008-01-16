@@ -36,6 +36,18 @@ module SmallCage::Commands
       unless @opts[:quiet]
         return unless confirm_entries
       end
+      import_entries
+    end
+    
+    def import_external
+      @entries = external_entries
+      unless @opts[:quiet]
+        return unless confirm_entries
+      end
+      import_entries
+    end
+
+    def import_entries
       @entries.each do |e|
         if e.overwrite?
           qp "*"
@@ -48,7 +60,8 @@ module SmallCage::Commands
         e.import
       end
     end
-    
+    private :import_entries
+
     def local_entries(d)
       result = []
       Dir.chdir(d) do
@@ -62,8 +75,9 @@ module SmallCage::Commands
       end
       return result
     end
+    private :local_entries
     
-    def import_external
+    def external_entries
       uri = @opts[:from]
       if uri !~ %r{/$}
         uri += "/"
@@ -71,23 +85,24 @@ module SmallCage::Commands
       mfuri = uri + "Manifest.html"
       
       source = open(mfuri) {|io| io.read }
+      result = []
       
       files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>})
       files.each do |f|
         raise "illegal path:#{f[0]},#{f[1]}" if f[0] != f[1]
         raise "illegal path:#{f[0]}" if f[0] =~ %r{/\.\.}
         path = f[0]
-        if path =~ %r{/$}
-          qps "mkdir: #{path}"
-          (@dest + path).mkdir
-        else
-          qps "copy: #{path}"
-          s = open(uri + path) {|io| io.read }
-          open(@dest + path, "w") {|io| io << s }
-        end
+        e = ImportEntry.new
+        e.path = path
+        e.from = uri + path
+        e.to = @dest + path
+        result << e
       end
+      
+      return result
     end
-
+    private :external_entries
+    
     def confirm_entries
       overwrite = []
       
@@ -134,7 +149,15 @@ module SmallCage::Commands
       attr_accessor :path, :from, :to
 
       def import
-        copy_local
+        if external?
+          copy_external
+        else
+          copy_local
+        end
+      end
+      
+      def external?
+        from =~ %r{^https?://}
       end
       
       def exist?
@@ -153,6 +176,19 @@ module SmallCage::Commands
           FileUtils.copy(from, to)
         end
       end
+      private :copy_local
+      
+      def copy_external
+        if from =~ %r{/$}
+          FileUtils.makedirs(to)
+        else
+          FileUtils.makedirs(to.parent)
+          s = open(from) {|io| io.read }
+          open(to, "w") {|io| io << s }
+        end
+      end
+      private :copy_external
+      
     end
   end
 end
