@@ -9,6 +9,14 @@ module SmallCage::Commands
       @project_dir = Pathname.new(__FILE__) + "../../../../project"
     end
     
+    def qp(str = "")
+      print str unless @opts[:quiet]
+    end
+    
+    def qps(str = "")
+      puts str unless @opts[:quiet]
+    end
+    
     def execute
       @dest = Pathname.new(@opts[:to])
       return unless @dest.directory?
@@ -25,16 +33,18 @@ module SmallCage::Commands
       d = @project_dir + @opts[:from]
       return unless d.directory?
       @entries = local_entries(d)
-      return unless confirm_entries
+      unless @opts[:quiet]
+        return unless confirm_entries
+      end
       @entries.each do |e|
         if e.overwrite?
-          print "*"
+          qp "*"
         elsif ! e.exist?
-          print "+"
+          qp "+"
         else
-          print " "
+          qp " "
         end
-        puts " " + e.path
+        qps " " + e.path
         e.import
       end
     end
@@ -54,28 +64,37 @@ module SmallCage::Commands
     end
     
     def import_external
+      uri = @opts[:from]
+      if uri !~ %r{/Manifest.html$}
+        uri += "/Manifest.html"
+      end
       
+      source = nil
+      open(uri) do |io|
+        source = io.read
+      end
+      p source
     end
 
     def confirm_entries
       overwrite = []
       
-      puts "Create:"
+      qps "Create:"
       @entries.each do |e|
         if e.overwrite?
           overwrite << e
         elsif ! e.exist?
-          puts "  " + e.path
+          qps "  " + e.path
         end
       end
-      puts
+      qps
       
       unless overwrite.empty?
-        puts "Overwrite:"
+        qps "Overwrite:"
         overwrite.each do |e|
-          puts "  " + e.path
+          qps "  " + e.path
         end
-        puts
+        qps
       end
       
       return y_or_n("Import these files?[yN]: ", false)
