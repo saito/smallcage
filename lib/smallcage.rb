@@ -4,6 +4,7 @@ require 'yaml'
 require 'erb'
 require 'pathname'
 require 'open-uri'
+require 'fileutils'
 
 require 'smallcage/version'
 require 'smallcage/misc'
