@@ -22,17 +22,22 @@ module SmallCage::Commands
       
       Dir.mkdir(@dest) unless @dest.exist?
       return unless @dest.directory?
-    
-      if @opts[:from] =~ %r{^https?://}
-        import_external
-      elsif @opts[:from] =~ %r{^\w+$}
-        import
-      else
+      
+      from = @opts[:from].split(/,/)
+      from.each do |f|
+        qps
+        qps "Import: #{f}"
+        if f =~ %r{^https?://}
+          import_external(f)
+        elsif f =~ %r{^\w+$}
+          import(f)
+        else
+        end
       end
     end
     
-    def import
-      d = @project_dir + @opts[:from]
+    def import(from)
+      d = @project_dir + from
       return unless d.directory?
       @entries = local_entries(d)
       unless @opts[:quiet]
@@ -92,8 +97,7 @@ module SmallCage::Commands
     end
     private :local_entries
     
-    def external_entries
-      uri = @opts[:from]
+    def external_entries(uri)
       if uri !~ %r{/$}
         uri += "/"
       end
