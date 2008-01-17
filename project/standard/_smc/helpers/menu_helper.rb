@@ -14,7 +14,7 @@ module SmallCage
     end
     
     def topic_dirs
-      result = dirs.dup
+      result = @obj["dirs"].dup
       result.reject! {|d| d["topic"].nil? }
       return result
     end
