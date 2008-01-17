@@ -19,6 +19,8 @@ module SmallCage::Commands
     
     def execute
       @dest = Pathname.new(@opts[:to])
+      
+      Dir.mkdir(@dest) unless @dest.exist?
       return unless @dest.directory?
     
       if @opts[:from] =~ %r{^https?://}
