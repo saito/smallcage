@@ -48,6 +48,7 @@ module SmallCage::Commands
     end
 
     def import_entries
+      failed = []
       @entries.each do |e|
         if e.overwrite?
           qp "*"
@@ -57,7 +58,19 @@ module SmallCage::Commands
           qp " "
         end
         qps " " + e.path
-        e.import
+        begin
+          e.import
+        rescue
+          failed << e
+          qps "F " + e.path
+        end
+      end
+      
+      unless failed.empty?
+        qps "FAILED:"
+        failed.each do |e|
+          qps "  " + e.path
+        end
       end
     end
     private :import_entries
@@ -129,7 +142,6 @@ module SmallCage::Commands
     private :confirm_entries
     
     def y_or_n(prompt, default)
-      # TODO check tty?
       loop do
         print prompt
         yn = STDIN.gets.strip
