@@ -28,7 +28,7 @@ Subcommands are:
     clean  [path]                    Remove files generated from *.smc source.
     server [path] [port]             Start HTTP server.
     auto   [path]                    Start auto update daemon.
-	import [name|uri]                Import project.
+    import [name|uri]                Import project.
     manifest [path]                  Generate Manifest.html file.
 
 Options are:
