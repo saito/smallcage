@@ -1,4 +1,6 @@
 <% topic_dirs.each do |d| %>
 <a href="<%= d["uri"]%>"><%= d["topic"] %></a>
-<span>&nbsp;/&nbsp;</span>
+<% if topic_dirs.last != d %>
+<span class="delimiter"> &gt; </span>
+<% end %>
 <% end %>

@@ -15,7 +15,7 @@
 <link rel="stylesheet" type="text/css" href="/common/css/print.css" media="print" />
 <link rel="shortcut icon" href="/common/favicon.ico" />
 
-<title><% unless title.nil? %><%=h title %> | <% end %>SITE NAME</title>
+<title><% if uri !~ %r{/index.html$} %><%=h title %> | <% end %>SITE NAME</title>
 </head>
 <body>
 
@@ -24,7 +24,7 @@
 <div class="header">
 <h2><%=h title %></h2>
 <div class="topicpath">
-<%= topicpath %>
+<%= topic_path %>
 </div>
 </div>
 
