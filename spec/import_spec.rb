@@ -12,7 +12,6 @@ describe "SmallCage::Commands::Import" do
     SmallCage::Runner.run(opts)
     
     (tmpdir + "_smc").directory?.should be_true
-    (tmpdir + "_dir.smc").file?.should be_true
     (tmpdir + "_smc/helpers/base_helper.rb").file?.should be_true
     
     FileUtils.rm_r(tmpdir)
