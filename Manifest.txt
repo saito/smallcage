@@ -25,7 +25,6 @@ project/default/_smc/helpers/base_helper.rb
 project/default/_smc/helpers/site_helper.rb
 project/default/_smc/templates/default.rhtml
 project/default/_smc/templates/footer.rhtml
-project/default/_smc/templates/free.rhtml
 project/default/_smc/templates/header.rhtml
 project/nkf/_smc/filters/filters.yml
 project/nkf/_smc/filters/nkf_filter.rb
@@ -43,6 +42,12 @@ project/standard/about/index.html.smc
 project/standard/common/css/default.css
 project/standard/common/css/print.css
 project/standard/index.html.smc
+project/standard/sample1/_dir.smc
+project/standard/sample1/index.html.smc
+project/standard/sample1/index2.html.smc
+project/standard/sample1/redirect.html.smc
+project/standard/sample2/_dir.smc
+project/standard/sample2/index.html.smc
 script/destroy
 script/destroy.cmd
 script/generate
