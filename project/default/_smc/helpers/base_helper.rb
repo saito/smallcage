@@ -1,5 +1,7 @@
 module SmallCage
   module BaseHelper
+    include ERB::Util
+
     def _glob(relpath, rex)
       base_dir = Pathname.new(@obj["path"]).parent
       base_dir = base_dir.join(relpath)
