@@ -2,13 +2,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja-JP" lang="ja-JP">
 <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rev="made" href="mailto:info@example.com" />
-<link rel="index" href="./index.html" />
-<link rel="stylesheet" type="text/css" href="/common/css/default.css" media="screen"/>
+<meta name="keywords" content="" />
 <%- unless description.nil? -%>
 <meta name="description" content="<%=h description %>" />
 <%- end -%>
+
+<link rev="made" href="mailto:info@example.com" />
+<link rel="index" href="./index.html" />
+<link rel="stylesheet" type="text/css" href="/common/css/site.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="/common/css/print.css" media="print" />
+<link rel="shortcut icon" href="/common/favicon.ico" />
 
 <title><% unless title.nil? %><%=h title %> | <% end %>SITE NAME</title>
 </head>
