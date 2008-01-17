@@ -40,15 +40,14 @@ project/standard/_smc/templates/sidebar.rhtml
 project/standard/_smc/templates/topic_path.rhtml
 project/standard/about/_dir.smc
 project/standard/about/index.html.smc
+project/standard/common/css/default.css
 project/standard/common/css/print.css
-project/standard/common/css/site.css
 project/standard/index.html.smc
 script/destroy
 script/destroy.cmd
 script/generate
 script/generate.cmd
 setup.rb
-spec/data/htdocs1/Manifest.html
 spec/data/htdocs1/_dir.smc
 spec/data/htdocs1/a/b/c/index.html.smc
 spec/import_spec.rb
@@ -64,9 +63,3 @@ tasks/rspec.rake
 tasks/website.rake
 test/test_helper.rb
 test/test_smallcage.rb
-tmp/_smc/helpers/base_helper.rb
-tmp/_smc/helpers/site_helper.rb
-tmp/_smc/templates/default.rhtml
-tmp/_smc/templates/footer.rhtml
-tmp/_smc/templates/free.rhtml
-tmp/_smc/templates/header.rhtml
