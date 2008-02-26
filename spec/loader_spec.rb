@@ -38,4 +38,16 @@ describe "SmallCage::Loader" do
     depth = 3
     lambda { SmallCage::Loader.find_root(path, depth) }.should raise_error
   end
+  
+  it "should load strings" do
+    path = docroot + "a/b/c/index.html.smc"
+    ldr = SmallCage::Loader.new(path)
+
+    root = SmallCage::Loader.find_root(path)
+    objects = []
+    ldr.each_smc_obj do |o|
+      objects << o
+    end
+    objects[0]["strings"][0].should == "abc\ndef\n\nghi"
+  end
 end

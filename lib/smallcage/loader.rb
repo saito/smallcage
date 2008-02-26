@@ -145,7 +145,6 @@ module SmallCage
         yield @target
       end
     end
-    private :each_smc_file
     
     def real_target(target)
       return target.realpath if target.directory?

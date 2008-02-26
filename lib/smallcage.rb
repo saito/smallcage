@@ -12,11 +12,3 @@ require 'smallcage/loader'
 require 'smallcage/erb_base'
 require 'smallcage/renderer'
 require 'smallcage/runner'
-
-require 'smallcage/commands/update'
-require 'smallcage/commands/clean'
-require 'smallcage/commands/server'
-require 'smallcage/commands/auto'
-require 'smallcage/commands/import'
-require 'smallcage/commands/manifest'
-
