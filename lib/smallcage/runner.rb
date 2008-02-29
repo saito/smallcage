@@ -6,6 +6,7 @@ module SmallCage
 
     def initialize(opts)
       @opts = opts
+      require_command "base"
     end
     
     def update
@@ -36,6 +37,11 @@ module SmallCage
     def manifest
       require_command "manifest"
       SmallCage::Commands::Manifest.execute(@opts)
+    end
+    
+    def export
+      require_command "export"
+      SmallCage::Commands::Export.execute(@opts)
     end
 
     def require_command(name)

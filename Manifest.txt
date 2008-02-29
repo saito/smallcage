@@ -9,11 +9,14 @@ config/requirements.rb
 lib/smallcage.rb
 lib/smallcage/commands/Manifest.erb
 lib/smallcage/commands/auto.rb
+lib/smallcage/commands/base.rb
 lib/smallcage/commands/clean.rb
+lib/smallcage/commands/export.rb
 lib/smallcage/commands/import.rb
 lib/smallcage/commands/manifest.rb
 lib/smallcage/commands/server.rb
 lib/smallcage/commands/update.rb
+lib/smallcage/document_path.rb
 lib/smallcage/erb_base.rb
 lib/smallcage/loader.rb
 lib/smallcage/misc.rb
@@ -58,6 +61,12 @@ script/generate.cmd
 setup.rb
 spec/data/htdocs1/_dir.smc
 spec/data/htdocs1/a/b/c/index.html.smc
+spec/data/htdocs2/_smc/templates/dummy.rhtml
+spec/data/htdocs2/a/b/c/test.html
+spec/data/htdocs2/a/b/test.html
+spec/data/htdocs2/a/test.html.smc
+spec/document_path_spec.rb
+spec/export_spec.rb
 spec/import_spec.rb
 spec/loader_spec.rb
 spec/manifest_spec.rb

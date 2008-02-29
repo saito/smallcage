@@ -29,6 +29,7 @@ Subcommands are:
     server [path] [port]             Start HTTP server.
     auto   [path]                    Start auto update daemon.
     import [name|uri]                Import project.
+    export [path] [outputpath]       Export project.
     manifest [path]                  Generate Manifest.html file.
 
 Options are:
@@ -74,6 +75,8 @@ EOT
   subparsers[:help] = OptionParser.new do |subp|
   end
   subparsers[:import] = OptionParser.new do |subp|
+  end
+  subparsers[:export] = OptionParser.new do |subp|
   end
   subparsers[:manifest] = OptionParser.new do |subp|
   end
@@ -124,6 +127,11 @@ EOT
   	
   	OPTIONS[:to] = ARGV.shift
   	OPTIONS[:to] ||= "."
+  elsif OPTIONS[:command] == :export
+  	OPTIONS[:path] = ARGV.shift
+  	OPTIONS[:path] ||= "."
+  	
+  	OPTIONS[:out] = ARGV.shift
   elsif OPTIONS[:command] == :manifest
     OPTIONS[:path] = ARGV.shift
     OPTIONS[:path] ||= "."

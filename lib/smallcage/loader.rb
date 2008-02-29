@@ -11,7 +11,7 @@ module SmallCage
       target = real_target(target) 
 
       @target = target # absolute
-      @root = SmallCage::Loader.find_root(target) # absolute
+      @root = self.class.find_root(target) # absolute
       @templates_dir = @root + "_smc/templates"
       @helpers_dir = @root + "_smc/helpers"
       @filters_dir = @root + "_smc/filters"
@@ -49,32 +49,34 @@ module SmallCage
       unless path.exist?
         raise "Not found: " + path.to_s 
       end
-      path = path.realpath
-      unless path.to_s[0...@root.to_s.length] == @root.to_s
-        raise "Illegal path: " + path.to_s + " , " + @root.to_s
-      end
+
+      docpath = SmallCage::DocumentPath.new(@root, path)
 
       result = {}
       if path.file?
-        path_smc = path
-        path_out = Pathname.new(strip_ext(path))
-        uri_smc = to_uri(path)
-        uri_out = strip_ext(uri_smc)
-        source_path = path
+        unless docpath.smc?
+          raise "Path is not smc file: " + docpath.to_s
+        end
+
+        path_smc = docpath.path
+        path_out = docpath.outfile.path
+        uri_smc  = docpath.uri
+        uri_out  = docpath.outuri
+        source_path = path_smc
 
         result["dirs"]     = load_dirs(path)
         result["template"] = DEFAULT_TEMPLATE
-      else
+      else # directory
         path_smc = nil
         path_out = path
-        uri_smc = nil
-        uri_out = to_uri(path)
+        uri_smc  = nil
+        uri_out  = docpath.uri
         uri_out += "/" unless uri_out =~ %r{/$}
         source_path = path + DIR_PROP_FILE
-
+        
         if source_path.file?
           path_smc = source_path
-          uri_smc = to_uri(source_path)
+          uri_smc = SmallCage::DocumentPath.to_uri(@root, source_path)
         end
       end
       
@@ -86,6 +88,7 @@ module SmallCage
       result["arrays"]   = []
       result["strings"]  = []
 
+      # target is directory and _dir.smc is not exist.
       return result unless source_path.exist?
 
       source = source_path.read
@@ -143,6 +146,25 @@ module SmallCage
         end
       else
         yield @target
+      end
+    end
+    
+    def each_not_smc_file
+      if @target.directory?
+        p = Pathname.new(@target)
+        Dir.chdir(@target) do
+          Dir.glob("**/*") do |f|
+            f = p + f
+            next if f.directory?
+            next if f.to_s =~ %r{/_smc/}
+            next if f.to_s =~ %r{\.smc$}
+            yield SmallCage::DocumentPath.new(@root, p + f)
+          end
+        end
+      else
+        return if @target.to_s =~ %r{/_smc/}
+        return if @target.to_s =~ %r{\.smc$}
+        yield SmallCage::DocumentPath.new(@root, @target)
       end
     end
     
@@ -212,16 +234,6 @@ module SmallCage
     end
     private :load_filters_config
     
-    def strip_ext(path)
-      path.to_s[0..-5]
-    end
-    private :strip_ext
-    
-    def to_uri(path)
-      path.realpath.to_s[@root.to_s.length .. -1]
-    end
-    private :to_uri
-
     def add_smc_method(obj, value)
       obj.instance_eval do
         @__smallcage ||= {}
