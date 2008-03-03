@@ -8,19 +8,41 @@ describe "SmallCage::Commands::Export" do
   
   it "should export not smc files" do
     Dir.mkdir(outdir) unless outdir.exist?
+    begin
+      opts = { :command => "export", 
+               :path => docroot.to_s,
+               :out => outdir.to_s,
+               :quiet => true }
+      SmallCage::Runner.run(opts)
     
-    opts = { :command => "export", 
-             :path => docroot.to_s,
-             :out => outdir.to_s,
-             :quiet => true }
-    SmallCage::Runner.run(opts)
+      (outdir + "./a/test.html.smc").exist?.should_not be_true
+      (outdir + "./a/test.html").exist?.should_not be_true
+      (outdir + "./a/b/test.html").exist?.should be_true
+      (outdir + "./a/b/c/test.html").exist?.should be_true
+    ensure
+      FileUtils.rm_r(outdir)
+    end
+  end
+  
+  it "should export project subdirectory" do
+    Dir.mkdir(outdir) unless outdir.exist?
+    begin
+      path = docroot + "a/b/c"
+      opts = { :command => "export", 
+               :path => path.to_s,
+               :out => outdir.to_s,
+               :quiet => true }
+      SmallCage::Runner.run(opts)
     
-    (outdir + "./a/test.html.smc").exist?.should_not be_true
-    (outdir + "./a/test.html").exist?.should_not be_true
-    (outdir + "./a/b/test.html").exist?.should be_true
-    (outdir + "./a/b/c/test.html").exist?.should be_true
-
-    FileUtils.rm_r(outdir)
+      (outdir + "./a/test.html.smc").exist?.should_not be_true
+      (outdir + "./a/test.html").exist?.should_not be_true
+      (outdir + "./a/b/test.html").exist?.should_not be_true
+      
+      (outdir + "./a/b/c/test.html").exist?.should be_true
+    ensure
+      FileUtils.rm_r(outdir)
+    end
+    
   end
   
 end
