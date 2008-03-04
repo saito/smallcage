@@ -1,8 +1,12 @@
-== 0.0.9 2008-01-31
+== 0.0.9 
 
 * fix smc auto command bug.
 * add RedCloth project template (redcloth).
 * add multi language project template (lang).
+
+* add auto navigation servlet to the HTTP server.
+* add export command.
+* delete output file when smc source file does not exist.
 
 == 0.0.6 2007-11-04
 
