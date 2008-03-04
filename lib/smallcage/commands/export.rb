@@ -10,7 +10,7 @@ module SmallCage::Commands
       root = loader.root
       
       if @opts[:out].nil?
-        out = root + ("./_smc/tmp/" + Time.now.strftime("%Y%m%d%H%M%S"))
+        out = root + ("./_smc/tmp/export/" + Time.now.strftime("%Y%m%d%H%M%S"))
       else
         out = Pathname.new(@opts[:out])
       end
