@@ -7,7 +7,7 @@ bin/smc
 config/hoe.rb
 config/requirements.rb
 lib/smallcage.rb
-lib/smallcage/commands/Manifest.erb
+lib/smallcage/application.rb
 lib/smallcage/commands/auto.rb
 lib/smallcage/commands/base.rb
 lib/smallcage/commands/clean.rb
@@ -18,9 +18,12 @@ lib/smallcage/commands/server.rb
 lib/smallcage/commands/update.rb
 lib/smallcage/document_path.rb
 lib/smallcage/erb_base.rb
+lib/smallcage/http_server.rb
 lib/smallcage/loader.rb
 lib/smallcage/misc.rb
 lib/smallcage/renderer.rb
+lib/smallcage/resources/Manifest.erb
+lib/smallcage/resources/auto.html
 lib/smallcage/runner.rb
 lib/smallcage/version.rb
 project/default/_smc/helpers/base_helper.rb
