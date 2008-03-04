@@ -29,7 +29,7 @@ module SmallCage::Commands
       end
       entries = tmp
       
-      template = File.dirname(__FILE__) + "/Manifest.erb"
+      template = File.dirname(__FILE__) + "/../resources/Manifest.erb"
       source = ERB.new(File.read(template), nil, "-").result(binding)
       open(root + "Manifest.html", "w") do |io|
         io << source

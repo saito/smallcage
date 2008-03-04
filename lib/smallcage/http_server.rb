@@ -51,7 +51,7 @@ module SmallCage
   class AutoServlet < WEBrick::HTTPServlet::AbstractServlet
     def do_GET(req, res)
       res['content-type'] = "text/html"
-      html = File.dirname(__FILE__) + "/auto.html"
+      html = File.dirname(__FILE__) + "/resources/auto.html"
       res.body = File.read(html)
     end
   end
