@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>SmallCage Auto Update</title>
+<script type="text/javascript">
+<!--
+
+function getTransport() {
+	var imprements = [
+		function() {return new XMLHttpRequest()},
+		function() {return new ActiveXObject('Msxml2.XMLHTTP')},
+		function() {return new ActiveXObject('Microsoft.XMLHTTP')}
+	];
+	var returnValue;
+	for (var i = 0; i < imprements.length; i++) {
+		var lambda = imprements[i];
+		try {
+			returnValue = lambda();
+			break;
+		} catch (e) { }
+	}
+	return returnValue;
+}
+
+function getSource(uri, loaded, failed) {
+	var transport = getTransport();
+	transport.open("GET", uri, true);
+	
+	transport.onreadystatechange=function() {
+		if (transport.readyState == 4) {
+			if (transport.status == 200) {
+				loaded(transport.responseText);
+			} else {
+				if (failed) {
+					failed(transport);
+				}
+			}
+		}
+	}
+	transport.send(null);
+}
+
+function initTimer(span) {
+	window.setInterval("checkUpdate()", span);
+}
+
+var loading = false;
+var currentSrc = "";
+var currentUri = "";
+
+function checkUpdate() {
+	if (loading) {
+		return false;
+	}
+	
+	if (scrollWait) {
+		targetWindow.scrollBy(scrollWait.x, scrollWait.y);
+		scrollWait = null;
+	}
+	
+	var success = function(src) {
+		loading = false;
+		if (currentSrc == src) {
+			return;
+		}
+		currentSrc = src;
+
+		lines = src.split("\n")
+		var uri = lines[0];
+		showPage(uri);
+		document.getElementById("main").innerHTML = 
+			"<p>Latest Updated Page: <a href=\"" + uri + "\" target=\"smcauto\">" + uri + "</a></p><p>" + lines[1] + "</p>";
+	};
+	var failed = function(src) {
+		document.getElementById("main").innerHTML = "<p>Load error</p>";
+	};
+	
+	getSource("/_smc/update_uri", success, failed);
+	loading = true;
+}
+
+var targetWindow = null;
+var scrollWait = null;
+function showPage(uri) {
+	if (targetWindow == null) {
+		targetWindow = window.open(uri, "smcauto");
+	} else {
+		var x = targetWindow.scrollX;
+		var y = targetWindow.scrollY;
+		
+		targetWindow.location = uri;
+		if (currentUri == uri) {
+			scrollWait = {"x": x, "y":y};
+		}
+	}
+	currentUri = uri;
+}
+
+// -->
+</script>
+
+</head>
+
+<body onLoad="initTimer(1000)">
+
+<div id="main">
+Latest Updated Page: 
+</div>
+
+</body>
+</html>
