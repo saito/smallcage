@@ -13,42 +13,77 @@ module SmallCage::Commands
     end
 
     def execute
-      puts "SmallCage Auto Update"
-      puts "-" * 60
+      puts_banner
 
       start_http_server unless @port.nil?
 
+      @loader = SmallCage::Loader.new(@target)
+
+      # TODO update all when template or helper changed.
+      
+      modified_files # load @mtimes
+      
+      first_loop = true
       @update_loop = true
       while @update_loop
+        if first_loop
+          first_loop = false
+          update_target
+        else
+          update_modified_files
+        end
         sleep @sleep
-                
-        loader = SmallCage::Loader.new(@target)
-
-        target_files = []
-        loader.each_smc_file do |f|
-          mtime = File.stat(f).mtime
-          if @mtimes[f] != mtime
-            @mtimes[f] = mtime
-            target_files << f
-          end
-        end
-        
-        next if target_files.empty?
-        target_files.each do |tf|
-          runner = SmallCage::Runner.new({ :path => tf })
-          runner.update
-        end
-        
-        # print "\a" # Bell
-        puts "-" * 60
-        update_http_server(target_files)
       end
     end
-        
-    def update_http_server(target_files)        
+
+    def modified_files
+      result = []
+      @loader.each_smc_file do |f|
+        mtime = File.stat(f).mtime
+        if @mtimes[f] != mtime
+          @mtimes[f] = mtime
+          result << f
+        end
+      end
+      return result
+    end
+    private :modified_files
+    
+    def update_target
+      runner = SmallCage::Runner.new({ :path => @target })
+      runner.update
+      puts_line
+    end
+    private :update_target
+
+    def update_modified_files
+      target_files = modified_files
+      return if target_files.empty?
+      target_files.each do |tf|
+        runner = SmallCage::Runner.new({ :path => tf })
+        runner.update
+      end
+      update_http_server(target_files)
+      puts_line
+    end
+    private :update_modified_files
+    
+    def puts_banner
+      puts "SmallCage Auto Update"
+      puts_line
+    end
+    private :puts_banner
+    
+    def puts_line
+      puts "-" * 60
+      print "\a" # Bell
+    end
+    private :puts_line
+    
+    def update_http_server(target_files)
       return unless @http_server
       path = target_files.reverse.find {|p| p.basename.to_s != "_dir.smc" }
-      dpath = SmallCage::DocumentPath.new(loader.root, path)
+      dpath = SmallCage::DocumentPath.new(@loader.root, path)
       @http_server.updated_uri = dpath.outuri
     end
     private :update_http_server
