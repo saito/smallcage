@@ -19,8 +19,6 @@ module SmallCage::Commands
 
       # TODO update all when template or helper changed.
       
-      modified_files # load @mtimes
-      
       first_loop = true
       @update_loop = true
       while @update_loop
@@ -48,8 +46,13 @@ module SmallCage::Commands
     private :modified_files
     
     def update_target
+      # load @mtimes but doesn't use result.
+      target_files = modified_files 
+
       runner = SmallCage::Runner.new({ :path => @target })
       runner.update
+      
+      update_http_server(target_files)
       puts_line
     end
     private :update_target
@@ -82,7 +85,7 @@ module SmallCage::Commands
     
     def update_http_server(target_files)
       return unless @http_server
-      path = target_files.reverse.find {|p| p.basename.to_s != "_dir.smc" }
+      path = target_files.find {|p| p.basename.to_s != "_dir.smc" }
       dpath = SmallCage::DocumentPath.new(@loader.root, path)
       @http_server.updated_uri = dpath.outuri
     end
