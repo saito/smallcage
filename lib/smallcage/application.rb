@@ -21,7 +21,7 @@ class SmallCage::Application
   
   def self.add_signal_handler(signal, handler)
     signal.to_a.each do |s|
-      @@signal_handlers[s] = handler
+      @@signal_handlers[s] << handler
     end
   end
 
