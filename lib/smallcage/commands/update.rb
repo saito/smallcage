@@ -16,9 +16,11 @@ module SmallCage::Commands
       
       @loader = SmallCage::Loader.new(target)
       @renderer = SmallCage::Renderer.new(@loader)
-      
+
       urilist = render_smc_files
-      delete_expired_files(urilist) if list_file.exist?
+      if list_file.exist?
+        urilist = delete_expired_files(urilist)
+      end
       save_list(urilist)
     end
 
@@ -43,9 +45,23 @@ module SmallCage::Commands
 
     def delete_expired_files(urilist)
       old_urilist = load_list
-      deletelist = old_urilist - urilist
-
+      return old_urilist if @loader.target.file?
+      
       root = @loader.root
+      diruri = SmallCage::DocumentPath.new(root, @loader.target).uri
+      
+      target_uris = []
+      ignore_uris = []
+      old_urilist.each do |uri|
+        if uri.index(diruri) == 0
+          target_uris << uri
+        else
+          ignore_uris << uri
+        end
+      end
+      
+      deletelist = target_uris - urilist
+
       deletelist.each do |uri|
         delfile = SmallCage::DocumentPath.new(root, root + ("." + uri)).outfile
         next unless delfile.path.file?
@@ -53,6 +69,8 @@ module SmallCage::Commands
         File.delete(delfile.path)
         puts "D #{delfile.uri}" unless @opts[:quiet]
       end
+      
+      return (ignore_uris + urilist).sort
     end
     private :delete_expired_files
     
