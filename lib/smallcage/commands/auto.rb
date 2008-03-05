@@ -16,6 +16,7 @@ module SmallCage::Commands
       puts_banner
 
       start_http_server unless @port.nil?
+      init_sig_handler
 
       @loader = SmallCage::Loader.new(@target)
 
@@ -90,7 +91,7 @@ module SmallCage::Commands
 
     def init_sig_handler
       shutdown_handler = Proc.new do |signal|
-        @http_server.shutdown
+        @http_server.shutdown unless @http_server.nil?
         @update_loop = false
       end
       SmallCage::Application.add_signal_handler(["INT", "TERM"], shutdown_handler)
@@ -102,7 +103,6 @@ module SmallCage::Commands
       port = @opts[:port]
         
       @http_server = SmallCage::HTTPServer.new(document_root, port)
-      init_sig_handler
        
       Thread.new do
         @http_server.start    
