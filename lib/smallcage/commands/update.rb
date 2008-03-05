@@ -26,8 +26,9 @@ module SmallCage::Commands
       urilist = []
       @loader.each_smc_obj do |obj|
         urilist << obj["uri"].smc
+        mark = obj["path"].exist? ? "U " : "A "
         render_smc_obj(obj)
-        puts obj["uri"] if @opts[:quiet].nil?
+        puts mark + obj["uri"] unless @opts[:quiet]
       end
       return urilist
     end
@@ -50,7 +51,7 @@ module SmallCage::Commands
         next unless delfile.path.file?
         
         File.delete(delfile.path)
-        puts "delete: #{delfile.uri}"
+        puts "D #{delfile.uri}" unless @opts[:quiet]
       end
     end
     private :delete_expired_files
