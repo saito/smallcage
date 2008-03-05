@@ -12,11 +12,11 @@ describe "SmallCage::DocumentPath" do
     @docpath.uri.should == "/a/b/c/index.html.smc"
   end
   
-  it "should tell smc file or not" do
+  it "should return smc file or not" do
     @docpath.smc?.should be_true
   end
   
-  it "should have outfile method" do
+  it "should return output file" do
     out = @docpath.outfile
     out.should be_an_instance_of(SmallCage::DocumentPath)
     out.path.basename.to_s.should == "index.html"
@@ -24,8 +24,19 @@ describe "SmallCage::DocumentPath" do
     @docpath.path.to_s[0..-5].should == out.path.to_s
   end
   
-  it "should have outuri method" do
+  it "should return output file uri" do
     out = @docpath.outuri
     out.should == "/a/b/c/index.html"
   end
+  
+  it "should return root uri" do
+    docpath = SmallCage::DocumentPath.new(root, root)
+    docpath.uri.should == "/"
+  end
+  
+  it "should return directory uri" do
+    docpath = SmallCage::DocumentPath.new(root, root + "a/b")
+    docpath.uri.should == "/a/b"
+  end
+  
 end

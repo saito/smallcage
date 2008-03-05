@@ -16,8 +16,12 @@ module SmallCage
       if @path.to_s[0...@root.to_s.length] != @root.to_s
         raise "Illegal path: #{path.to_s}"
       end
-
-      @uri = @path.to_s[@root.to_s.length .. -1]
+      
+      if @path == @root
+        @uri = "/"
+      else
+        @uri = @path.to_s[@root.to_s.length .. -1]
+      end
     end
     
     def smc?
