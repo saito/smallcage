@@ -26,16 +26,19 @@ module SmallCage::Commands
       urilist = []
       @loader.each_smc_obj do |obj|
         urilist << obj["uri"].smc
-        
-        result = @renderer.render(obj["template"], obj)
-        result = after_rendering_filters(obj, result)
-
-        output_result(obj, result)
+        render_smc_obj(obj)
         puts obj["uri"] if @opts[:quiet].nil?
       end
       return urilist
     end
     private :render_smc_files
+
+    def render_smc_obj(obj)
+      result = @renderer.render(obj["template"], obj)
+      result = after_rendering_filters(obj, result)
+      output_result(obj, result)
+    end
+    private :render_smc_obj
 
     def delete_expired_files(urilist)
       old_urilist = load_list
