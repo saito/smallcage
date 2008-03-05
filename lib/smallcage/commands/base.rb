@@ -10,5 +10,10 @@ module SmallCage::Commands
     
     def execute
     end
+    
+    def quiet?
+      return @opts[:quiet]
+    end
+    
   end
 end

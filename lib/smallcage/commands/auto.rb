@@ -1,11 +1,8 @@
 module SmallCage::Commands
-  class Auto
-    def self.execute(opts)
-      self.new(opts).execute
-    end
+  class Auto < SmallCage::Commands::Base
     
     def initialize(opts)
-      @opts = opts
+      super(opts)
       @target = Pathname.new(opts[:path])
       @port = opts[:port]
       @sleep = 1
@@ -70,12 +67,14 @@ module SmallCage::Commands
     private :update_modified_files
     
     def puts_banner
+      return if quiet?
       puts "SmallCage Auto Update"
-      puts_line
+      puts
     end
     private :puts_banner
     
     def puts_line
+      return if quiet?
       puts "-" * 60
       print "\a" # Bell
     end

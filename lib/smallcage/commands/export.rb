@@ -20,14 +20,22 @@ module SmallCage::Commands
       FileUtils.makedirs(out)
       out = out.realpath
       
-      
       # TODO create empty directories
       loader.each_not_smc_file do |docpath|
         dir = Pathname.new(docpath.uri).parent
         outdir = out + ("." + dir.to_s)
         FileUtils.makedirs(outdir)
         FileUtils.cp(docpath.path, outdir)
+        puts "A " + docpath.uri unless quiet?
       end
+
+      unless quiet?
+        puts "" 
+        puts "All contents exported to:"
+        puts " #{out.to_s}"
+      end
+
     end
+
   end
 end
