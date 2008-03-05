@@ -35,8 +35,9 @@ project/lang/_smc/helpers/lang_helper.rb
 project/lang/_smc/templates/other_lang.rhtml
 project/nkf/_smc/filters/filters.yml
 project/nkf/_smc/filters/nkf_filter.rb
-project/redcloth/_smc/helpers/redcloth_helper.rb
-project/redcloth/_smc/templates/redcloth.rhtml
+project/redcloth/_smc/helpers/red_cloth_helper.rb
+project/redcloth/_smc/templates/markdown.rhtml
+project/redcloth/_smc/templates/textile.rhtml
 project/relpath/_smc/filters/filters.yml
 project/relpath/_smc/filters/relpath_filter.rb
 project/standard/_dir.smc
