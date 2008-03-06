@@ -7,7 +7,7 @@ module SmallCage::Commands
       server = SmallCage::HTTPServer.new(document_root, port)
       
       sighandler = Proc.new {|signal| server.shutdown}
-      SmallCage::Application.add_signal_handlers(["INT", "TERM"], sighandler)
+      SmallCage::Application.add_signal_handler(["INT", "TERM"], sighandler)
 
       server.start    
     end
