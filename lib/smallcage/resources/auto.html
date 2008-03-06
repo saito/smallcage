@@ -82,13 +82,22 @@ var targetWindow = null;
 var scrollWait = null;
 function showPage(uri) {
 	if (targetWindow == null) {
+		if (uri == ":reload") {
+			uri = "/";
+		}
 		targetWindow = window.open(uri, "smcauto");
 	} else {
+		if (uri == ":reload") {
+			var realuri = targetWindow.location.href;
+		} else {
+			var realuri = uri;
+		}
+
 		var x = targetWindow.scrollX;
 		var y = targetWindow.scrollY;
 		
-		targetWindow.location = uri;
-		if (currentUri == uri) {
+		targetWindow.location = realuri;
+		if (currentUri == realuri) {
 			scrollWait = {"x": x, "y":y};
 		}
 	}

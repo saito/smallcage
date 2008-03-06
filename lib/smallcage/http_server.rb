@@ -29,7 +29,10 @@ module SmallCage
     def updated_uri=(uri)
       UpdateUriServlet.uri = uri
     end
-
+    
+    def reload
+      UpdateUriServlet.uri = ":reload"
+    end
   end
 
 
@@ -44,8 +47,13 @@ module SmallCage
     
     def self.uri=(uri)
       @@uri = uri
+      update_time
+    end
+    
+    def self.update_time
       @@update_time = Time.now.to_s
     end
+    
   end
 
   class AutoServlet < WEBrick::HTTPServlet::AbstractServlet
