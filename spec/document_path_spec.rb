@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
 
-describe "SmallCage::DocumentPath" do
+describe SmallCage::DocumentPath do
   root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
   
   before do

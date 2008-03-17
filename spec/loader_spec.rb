@@ -1,13 +1,15 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
 
-describe "SmallCage::Loader" do
+describe SmallCage::Loader do
 
-  docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+  before do
+    @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+  end
 
   it "should load path value which returns Pathname object" do
-    ldr = SmallCage::Loader.new(docroot)
-    obj = ldr.load(docroot + "a/b/c/index.html.smc")
+    ldr = SmallCage::Loader.new(@docroot)
+    obj = ldr.load(@docroot + "a/b/c/index.html.smc")
 
     obj["path"].should be_an_instance_of(Pathname)
     obj["path"].smc.should be_an_instance_of(Pathname)
@@ -17,7 +19,7 @@ describe "SmallCage::Loader" do
   end
   
   it "should be able to omit smc extention" do
-    ldr = SmallCage::Loader.new(docroot + "a/b/c/index.html")
+    ldr = SmallCage::Loader.new(@docroot + "a/b/c/index.html")
     objects = []
     ldr.each_smc_obj do |o|
       objects << o
@@ -29,7 +31,7 @@ describe "SmallCage::Loader" do
   end
   
   it "should find smc root dir" do
-    path = docroot + "a/b/c/index.html.smc"
+    path = @docroot + "a/b/c/index.html.smc"
     
     depth = 5
     root = SmallCage::Loader.find_root(path, depth)
@@ -40,7 +42,7 @@ describe "SmallCage::Loader" do
   end
   
   it "should load strings" do
-    path = docroot + "a/b/c/index.html.smc"
+    path = @docroot + "a/b/c/index.html.smc"
     ldr = SmallCage::Loader.new(path)
 
     root = SmallCage::Loader.find_root(path)

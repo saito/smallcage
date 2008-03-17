@@ -1,17 +1,22 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
 
+
+
 describe "SmallCage::Commands::Manifest" do
-  docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+
+  before do
+    @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    @opts = { :path => @docroot.to_s }
+    @manifest_file = @docroot + "Manifest.html"
+  end
 
   it "should create Manifest.html" do
-    opts = { :command => "manifest", :path => docroot.to_s }
-    SmallCage::Runner.run(opts)
-    
-    manifest = docroot + "Manifest.html"
-    manifest.file?.should be_true
-    
-    source = manifest.read
+
+    SmallCage::Runner.run(@opts.merge(:command => "manifest"))
+    @manifest_file.file?.should be_true
+
+    source = @manifest_file.read
     source.include?(<<'EOT').should be_true
 <ul class="files">
 <li><a href="./a/">./a/</a></li>
@@ -24,9 +29,11 @@ describe "SmallCage::Commands::Manifest" do
 <li><a href="./_smc/templates/">./_smc/templates/</a></li>
 </ul>
 EOT
-
-    manifest.delete
-    manifest.file?.should be_false
+  end
+  
+  after do
+    SmallCage::Runner.run(@opts.merge(:command => "clean"))
+    @manifest_file.delete
   end
 
 end

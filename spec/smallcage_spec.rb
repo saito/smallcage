@@ -13,22 +13,28 @@ describe "smallcage" do
     path = docroot + "a/b/"
 
     opts = { :command => "update", :path => path.to_s, :quiet => true }
-    SmallCage::Runner.run(opts)
     
-    out = docroot + "a/b/c/index.html"
-    out.file?.should be_true
-    out.delete
+    begin
+      SmallCage::Runner.run(opts)
     
-    pwd = Dir.pwd
-    Dir.chdir(path)
+      out = docroot + "a/b/c/index.html"
+      out.file?.should be_true
+      out.delete
     
-    opts[:path] = "."
-    SmallCage::Runner.run(opts)
+      pwd = Dir.pwd
+      Dir.chdir(path)
     
-    Dir.chdir(pwd)
+      opts[:path] = "."
+      SmallCage::Runner.run(opts)
+    
+      Dir.chdir(pwd)
 
-    out.file?.should be_true
-    out.delete
+      out.file?.should be_true
+      out.delete
+    ensure
+      SmallCage::Runner.run({:command => "clean", :path => path.to_s, :quiet => true })
+    end
+      
   end
 
 end

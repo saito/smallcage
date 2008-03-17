@@ -7,7 +7,6 @@ describe "SmallCage::Commands::Export" do
   outdir = Pathname.new(File.dirname(__FILE__) + "/data/out")
   
   it "should export not smc files" do
-    Dir.mkdir(outdir) unless outdir.exist?
     begin
       opts = { :command => "export", 
                :path => docroot.to_s,
@@ -25,7 +24,6 @@ describe "SmallCage::Commands::Export" do
   end
   
   it "should export project subdirectory" do
-    Dir.mkdir(outdir) unless outdir.exist?
     begin
       path = docroot + "a/b/c"
       opts = { :command => "export", 
@@ -42,7 +40,6 @@ describe "SmallCage::Commands::Export" do
     ensure
       FileUtils.rm_r(outdir)
     end
-    
   end
   
 end
