@@ -58,18 +58,20 @@ module SmallCage::Commands
       failed = []
       @entries.each do |e|
         if e.overwrite?
-          qp "*"
+          qps "M /" + e.path
         elsif ! e.exist?
-          qp "+"
+          qps "A /" + e.path
+        elsif e.to.directory?
+          # nothing
         else
-          qp " "
+          qps "? /" + e.path
         end
-        qps " " + e.path
+        
         begin
           e.import
         rescue
           failed << e
-          qps "F " + e.path
+          qps "F /" + e.path
         end
       end
       
@@ -130,7 +132,7 @@ module SmallCage::Commands
         if e.overwrite?
           overwrite << e
         elsif ! e.exist?
-          qps "  " + e.path
+          qps "  /" + e.path
         end
       end
       qps
@@ -138,7 +140,7 @@ module SmallCage::Commands
       unless overwrite.empty?
         qps "Overwrite:"
         overwrite.each do |e|
-          qps "  " + e.path
+          qps "  /" + e.path
         end
         qps
       end
