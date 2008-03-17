@@ -6,6 +6,9 @@ module SmallCage::Commands
     
     def initialize(opts)
       @opts = opts
+      if @opts[:from] == "default"
+        @opts[:from] = "base,standard"
+      end
       @project_dir = Pathname.new(__FILE__) + "../../../../project"
     end
     
