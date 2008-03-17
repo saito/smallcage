@@ -18,14 +18,14 @@ module SmallCage::Commands
       loader.each_smc_obj do |obj|
         if obj["path"].exist?
           obj["path"].delete 
-          puts "remove: " + obj["uri"]
+          puts "D " + obj["uri"] unless @opts[:quiet]
         end
       end
       
       tmpdir = loader.root + "./_smc/tmp"
       if tmpdir.exist?
         FileUtils.rm_r(tmpdir)
-        puts "remove: /_smc/tmp"
+        puts "D /_smc/tmp" unless @opts[:quiet]
       end
     end
   end
