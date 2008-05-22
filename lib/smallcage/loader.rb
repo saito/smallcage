@@ -182,24 +182,47 @@ module SmallCage
     
     def load_erb_base
       result = Class.new(SmallCage::ErbBase)
-      class_names = load_classes(@helpers_dir, %r{([^/]+_helper)\.rb$})
-      class_names.each do |class_name|
-        result.class_eval("include SmallCage::#{class_name}")
+      class << result
+        def include_helpers(anon_module, mod_names)
+          smc_module = anon_module.const_get("SmallCage")
+          mod_names.each do |name|
+            helper_module = smc_module.const_get(name)
+            include helper_module
+          end
+        end
       end
+      
+      helpers = load_anonymous(@helpers_dir, %r{([^/]+_helper)\.rb$})
+      result.include_helpers(helpers[:module], helpers[:names])
+
       return result
     end
     private :load_erb_base
     
-    def load_classes(dir, rex)
-      class_names = []
+    def load_anonymous(dir, rex)
+      module_names = []
+      
+      mod = Module.new
       Dir.entries(dir).sort.each do |h|
         next unless h =~ rex
-        require "#{dir}/#{h}"
-        class_names << $1.camelize
+        
+        # create anonymous module.
+        module_name = $1.camelize
+        
+        src = File.read("#{dir}/#{h}")
+        begin
+          mod.module_eval(src, "#{dir}/#{h}")
+        rescue => ex
+          puts ex.to_s # TODO show error
+          load("#{dir}/#{h}", true) # try to know error line number.
+          throw Exception.new("Can't load #{dir}/#{h} / line# unknown")
+        end
+        module_names << module_name
       end
-      return class_names
+      
+      return { :module => mod, :names => module_names }
     end
-    private :load_classes
+    private :load_anonymous
 
     def filters(name)
       if @filters[name].nil?
@@ -212,15 +235,16 @@ module SmallCage
       result = {}
       return {} unless @filters_dir.directory?
       
-      load_classes(@filters_dir, %r{([^/]+_filter)\.rb$})
+      filters = load_anonymous(@filters_dir, %r{([^/]+_filter)\.rb$})
       
       config = load_filters_config
       config.each do |filter_type,filter_list|
         result[filter_type] = []
+        smc_module = filters[:module].const_get("SmallCage")
         filter_list.each do |fc|
           fc = { "name" => fc } if fc.is_a? String
-          klass = SmallCage.const_get(fc["name"].camelize)
-          result[filter_type] << klass.new(fc)
+          filter_class = smc_module.const_get(fc["name"].camelize)
+          result[filter_type] << filter_class.new(fc)
         end
       end
       return result
