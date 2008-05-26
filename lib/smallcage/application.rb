@@ -5,21 +5,26 @@ OPTIONS[:original_argv] = ARGV.clone
 
 class SmallCage::Application
   require 'optparse'
-
-  @@signal_handlers = {
-    "INT" => [],
-    "TERM" => []
-  }
   
-  @@signal_handlers.keys.each do |signal|
-    Signal.trap(signal) do
-      @@signal_handlers[signal].each do |proc|
-        proc.call(signal)
+  @@signal_handlers = nil
+
+  def self.init_signal_handlers
+    @@signal_handlers = {
+      "INT" => [],
+      "TERM" => []
+    }
+
+    @@signal_handlers.keys.each do |signal|
+      Signal.trap(signal) do
+        @@signal_handlers[signal].each do |proc|
+          proc.call(signal)
+        end
       end
     end
   end
   
   def self.add_signal_handler(signal, handler)
+    init_signal_handlers if @@signal_handlers.nil?
     signal.to_a.each do |s|
       @@signal_handlers[s] << handler
     end
