@@ -1,3 +1,5 @@
 title: Sample2
 --- |
 <p>Sample2 index</p>
+
+<p><a href="redirect.html">Redirect sample</a></p>

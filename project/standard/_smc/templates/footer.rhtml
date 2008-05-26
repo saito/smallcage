@@ -1,12 +1,15 @@
 </div>
+</div>
 
+<% if uri =~ %r{^/sample2} %>
 <%= sidebar %>
+<% end %>
 
+
+<div id="footer">
+  <div class="copyright">&copy;<%= Time.now.year %> Site Owner All rights reserved.</div>
 </div>
 
-<div class="footer">
-  <div class="copyright">&copy; 20XX-<%= Time.now.year %> Site Owner All rights reserved.</div>
 </div>
-
 </body>
 </html>

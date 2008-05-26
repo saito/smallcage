@@ -18,18 +18,20 @@
 <title><% if uri !~ %r{^/index.html$} %><%=h title %> | <% end %>Standard Site Template</title>
 </head>
 <body>
+<div id="container">
 
-<div class="header">
-<h1><a href="/index.html">Standard Site Template</a></h1>
+<div id="header">
+<h1><a href="/index.html">SmallCage</a></h1>
+<h2>Lightweight CMS Package.</h2>
+<%= menu %>
+</div>
 
-<div class="topicpath">
+
+<div id="topicpath">
 <%= topic_path %>
 </div>
-</div>
 
 
-<div class="container">
-
+<div id="main">
 <div class="contents">
-
-<h2><%=h title %></h2>
+<h1><%=h title %></h1>
