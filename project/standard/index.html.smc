@@ -1,18 +1,13 @@
 title: Home
 --- |
-<h2><a href="/sample1/">Sample1</a></h2>
+<h2><a href="/menu1/">Menu1</a></h2>
 <p>Sample text.</p>
 
 
-<h2><a href="/sample2/1/">Sample2</a></h2>
+<h2><a href="/menu2/">Menu2</a></h2>
 <p>Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text.</p>
 
-<h3><a href="/sample2/2/">First page</a></h3>
-<p>Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text.</p>
-
-<h3><a href="/sample2/">Second page</a></h3>
-<p>Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text.</p>
-
-
-<h2><a href="/about/">About</a></h2>
-<p>Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text. Sample text.</p>
+<ul>
+	<li><a href="/menu2/1/">Sample1</a></li>
+	<li><a href="/menu2/2/">Sample2</a></li>
+</ul>

@@ -53,13 +53,21 @@ body{
 
 #menu li{
   display: inline;
-  margin-right: 1.8em;
+  padding-right: 1.8em;
 }
 
-#menu a:hover,
+#menu a{
+  padding: .6em 1.2em .6em 1.2em;
+}
+
+#menu a:hover{
+  color:#fff; background: #36f
+}
+
 #menu .active a,
-#menu .active a:visited{
-  color:#03c; background: #fff
+#menu .active a:active{
+  color:#03c;
+  background: #fff
 }
 
 #topicpath {
@@ -80,8 +88,6 @@ body{
 
 #main {
   width:100%;
-  float:right;
-  margin-left: -288px;
 }
 
 #main .contents {
@@ -90,7 +96,9 @@ body{
 }
 
 #main h1{
-  margin-bottom: .9em;
+  margin-left: .9em;
+  position: absolute;
+  left: 0;
 }
 
 #main h2{
@@ -108,25 +116,10 @@ body{
   margin-bottom: 1.8em;
 }
 
-#sidebar {
-  width: 288px;
-  float: right;
-  line-height: 1.8em;
+#main ul{
+  margin-left: 1.2em;
 }
 
-#sidebar ul{
-  padding: 1.2em 1.8em 1.8em 1.8em;
-}
-
-#sidebar li {
-  list-style: none;
-}
-
-#sidebar .active a{
-  text-decoration: none;
-  color:#fff;
-  background: #03c;
-}
 
 #footer {
   clear: both;
