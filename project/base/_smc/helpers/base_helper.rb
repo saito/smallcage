@@ -2,11 +2,18 @@ module SmallCage
   module BaseHelper
     include ERB::Util
 
-    def _glob(relpath, rex)
-      base_dir = Pathname.new(@obj["path"]).parent
-      base_dir = base_dir.join(relpath)
+    def _glob(path, rex)
+      base_dir = nil
+      if path.to_s[0] == ?/
+        base_dir = @obj["dirs"][0]["path"]
+        base_dir = base_dir.join(path[1..-1])
+      else
+        base_dir = @obj["dirs"].last["path"]
+        base_dir = base_dir.join(path)
+      end
 
       entries = Dir.glob("#{base_dir}/**/*")
+      
       result = []
       entries.each do |path|
         result << path if path.to_s =~ rex
