@@ -53,7 +53,7 @@ body{
 
 #menu li{
   display: inline;
-  padding-right: 1.8em;
+  margin-right: 1.8em;
 }
 
 #menu a{
@@ -91,14 +91,11 @@ body{
 }
 
 #main .contents {
-  margin-left: 288px;
-  padding: 1.2em 1.8em 1.8em 0;
+  padding: 1.2em 1.8em 1.8em 1.8em;
 }
 
 #main h1{
-  margin-left: .9em;
-  position: absolute;
-  left: 0;
+  margin-bottom: .9em;
 }
 
 #main h2{
