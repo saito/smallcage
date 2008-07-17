@@ -1,8 +1,7 @@
-title: Menu2
+title: Sample
 --- |
-<h2>Menu2 index</h2>
+<h2>Sample index</h2>
 <ul>
-	<li><a href="./1/">Sample1</a></li>
-	<li><a href="./2/">Sample2</a></li>
-	<li><a href="redirect.html">Redirect to Sample1</a></li>
+	<li><a href="./1/">Sample-1</a></li>
+	<li><a href="redirect.html">Redirect to Sample-1</a></li>
 </ul>

@@ -10,7 +10,7 @@ a:visited { text-decoration: none; color:#03c; }
 a:hover { text-decoration: none; color:#fff; background: #03c}
 a:active { text-decoration: none; color:#03c; background: #fff}
 
-body{
+body {
   line-height: 1.7em;
  font-family:Helvetica, sans-serif;
 }
@@ -24,7 +24,6 @@ body{
   background: #03c;
   color: #FFF;
   overflow: hidden;
-  position: relative;
   width: 100%;
 }
 
@@ -33,74 +32,75 @@ body{
 #header a:hover { text-decoration: none; color:#fff; background: none}
 #header a:active { text-decoration: none; color: none; background: none}
 
-#header h1{
+#header h1.site_title,
+#header h2.site_title {
  font-weight: normal;
  font-size: 2em;
  margin: 0.9em 0.9em 0.6em 0.9em;
 }
 
-#header h2 {
+#header h2.description,
+#header h3.description {
   font-size: 1em;
   font-weight: normal;
   margin: 0 1.8em 1.8em 1.8em;
 }
 
-#menu{
-  position: absolute;
-  left: 288px;
-  bottom: 1.8em;
-}
-
-#menu li{
+#menu li {
   display: inline;
-  margin-right: 1.8em;
 }
 
 #menu a{
-  padding: .6em 1.2em .6em 1.2em;
+  padding: 0.6em 1.8em 0.6em 1.8em;
+  background: #36f;
 }
 
 #menu a:hover{
-  color:#fff; background: #36f
+  color:#03c;
+  background: #fff;
 }
 
 #menu .active a,
 #menu .active a:active{
   color:#03c;
-  background: #fff
+  background: #eee
 }
 
-#topicpath {
-  background: #eee;
+#topic_path {
   padding: 0.3em 1.8em 0.3em 1.8em;
+  margin-bottom: 1.2em;
+  background: #eee;
 }
 
-#topicpath .delimiter {
+#topic_path .delimiter {
   color: black;
   margin-left: 0.3em;
   margin-right: 0.3em;
-  font-size: .8em;
+  font-size: 0.85em;
 }
 
-#topicpath a {
-  font-size: .8em;
+#topic_path a {
+  font-size: 0.85em;
 }
 
 #main {
-  width:100%;
+  float: left;
+  width: 100%;
+  margin-right : -12em;
 }
 
 #main .contents {
-  padding: 1.2em 1.8em 1.8em 1.8em;
+  padding: 0 1.8em 1.8em 1.8em;
+   margin-right: 12em;
 }
 
 #main h1{
-  margin-bottom: .9em;
+  margin-bottom: 0.9em;
 }
 
 #main h2{
   font-size: 1.2em;
-  margin-bottom: .3em;
+  margin-bottom: 0.3em;
   font-weight: bold;
 }
 
@@ -117,14 +117,29 @@ body{
   margin-left: 1.2em;
 }
 
+#sidebar{
+  float: right;
+  width: 12em;
+}
+
+#sidebar h2{
+  font-size: 1.2em;
+  margin-bottom: .3em;
+  font-weight: bold;
+}
+
+#sidebar  ul{
+    margin-left: 1.2em;
+}
 
 #footer {
   clear: both;
   padding: 1.2em 0 1.2em 0;
-  margin-top: 12em;
+  margin-top: 24em;
+  font-size: 0.85em;
 }
 
 #footer .copyright{
-  margin-left: 288px;
+  margin-left: 1.8em;
   font-size: 85%;
 }
