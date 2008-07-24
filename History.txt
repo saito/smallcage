@@ -2,7 +2,8 @@
 
 * to avoid namespace polution, the helpers and filters loaded into an anonymous module.
 * fix signal handler bug.
-* change base helper _glob method. 
+* change base helper _glob method.
+* refine default project template.
 
 == 0.0.9 2008-04-21
 
