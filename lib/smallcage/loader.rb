@@ -94,8 +94,12 @@ module SmallCage
       source = source_path.read
       return result if source.strip.empty?
 
-      obj = YAML.load_stream(source)
-      return result if obj.nil?
+      begin
+        obj = YAML.load_stream(source)
+        return result if obj.nil?
+      rescue => e
+        raise "Can't load file: #{source_path} / #{e}"
+      end
       
       obj.documents.each do |o|
         if o.is_a? Hash
@@ -215,7 +219,7 @@ module SmallCage
         rescue => ex
           puts ex.to_s # TODO show error
           load("#{dir}/#{h}", true) # try to know error line number.
-          throw Exception.new("Can't load #{dir}/#{h} / line# unknown")
+          raise "Can't load #{dir}/#{h} / line# unknown"
         end
         module_names << module_name
       end
