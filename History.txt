@@ -1,5 +1,6 @@
 == 0.1.1 
 
+* fix permissions.
 * remove render_markdown method from red_cloth_helper.rb. RedCloth can't format markdown.
 * add BlueCloth project template.
 * add news project template.
