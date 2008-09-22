@@ -15,6 +15,7 @@ module SmallCage
     
     def each_archived_news(&block)
       date = @obj["uri"].match(%r{/(\d{4})(\d{2})?(\d{2})?\.html$}).to_a
+      date.shift
       date = date.join("")
       _glob(".", %r{/#{date}\d{#{12-date.length}}\.html\.smc$}).reverse.each do |path|
         _with(_load(path), &block)
@@ -22,7 +23,8 @@ module SmallCage
     end
 
     def news_time
-      date = @obj["uri"].match(%r{/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})\.html}).to_a.map {|d| d.to_i }
+      date = @obj["uri"].match(%r{/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})\.html}).to_a
+      date.shift
       return Time.local(*date)
     end
     
