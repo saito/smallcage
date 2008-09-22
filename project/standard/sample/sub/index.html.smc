@@ -1,7 +1,7 @@
 title: Subcategory
 --- |
-<p>_dir.smcのtopicの値でパンくずリストの表示を設定しています。</p>
+<p>_dir.smcのtopicの値でパンくずリストを設定しています。</p>
 <ul>
-<li><a href="contents.html">コンテンツ</a></li>
+<li><a href="contents.html">contents</a></li>
 </ul>
 
