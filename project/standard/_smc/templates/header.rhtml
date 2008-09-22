@@ -15,18 +15,14 @@
 <link rel="stylesheet" type="text/css" href="/common/css/print.css" media="print" />
 <link rel="shortcut icon" href="/common/favicon.ico" />
 
-<title><% if uri !~ %r{^/index.html$} %><%=h title %> | <% end %>Standard Site Template</title>
+<title><% unless title.to_s.empty? %><%=h title %> | <% end %>Standard Site Template</title>
 </head>
 <body>
 <div id="container">
 
 <div id="header">
-<% if uri !~ %r{^/index.html$} %><h2 class="site_title"><a href="/index.html">SmallCage</a></h2>
-	<h3 class="description">Lightweight CMS Package.</h3>
-<% else %>
 	<h1 class="site_title"><a href="/index.html">SmallCage</a></h1>
 	<h2 class="description">Lightweight CMS Package.</h2>
-<% end %>
 <%= menu %>
 </div>
 
@@ -38,4 +34,4 @@
 
 <div id="main">
 <div class="contents">
-<% if uri !~ %r{^/index.html$} %><h1><%=h title %></h1><% end %>
+<% unless title.to_s.empty? %><h1><%=h title %></h1><% end %>

@@ -1,2 +1,2 @@
 template: redirect
-redirect_uri: ./1/
+redirect_uri: ./sub/index.html

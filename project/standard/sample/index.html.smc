@@ -2,6 +2,6 @@ title: Sample
 --- |
 <h2>Sample index</h2>
 <ul>
-	<li><a href="./1/">Sample-1</a></li>
-	<li><a href="redirect.html">Redirect to Sample-1</a></li>
+	<li><a href="./sub/index.html">Subcategory</a></li>
+	<li><a href="redirect.html">Redirect</a></li>
 </ul>
