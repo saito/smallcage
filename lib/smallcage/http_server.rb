@@ -8,7 +8,7 @@ module SmallCage
       @server = WEBrick::HTTPServer.new({
         :DocumentRoot => document_root,
         :Port => port,
-        :AccessLog => [[File.open("/dev/null", "w+"), ""]]
+        :AccessLog => []
       })
 
       WEBrick::HTTPServlet::FileHandler.remove_handler("cgi")
