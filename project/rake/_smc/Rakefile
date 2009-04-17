@@ -15,9 +15,8 @@ def load_svnignores(loader, path)
   ignores = []
   dirs.reverse.each do |d|
     data = d["svnignore"]
-    next if data.to_s.empty?
-    ignores << data
-    last if d["svnignore_reset"]
+    ignores << data unless data.to_s.empty?
+    break if d["svnignore_reset"]
   end
   data = dirs.last["svnignore_current"]
   unless data.to_s.empty?
