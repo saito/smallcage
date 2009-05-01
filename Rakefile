@@ -19,7 +19,7 @@ RUBYFORGE_PROJECT = "smallcage"
 HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 BIN_FILES         = %w(./bin/smc)
 
-VERS              = SmallCage::VERSION
+VERS              = SmallCage::VERSION::STRING
 REV = File.read(".svn/entries")[/committed-rev="(d+)"/, 1] rescue nil
 CLEAN.include ['**/.*.sw?', '*.gem', '.config']
 RDOC_OPTS = [
@@ -27,7 +27,7 @@ RDOC_OPTS = [
 	"--charset", "utf-8",
 	"--opname", "index.html",
 	"--line-numbers",
-	"--main", "README",
+	"--main", "README.txt",
 	"--inline-source",
 ]
 
@@ -45,7 +45,7 @@ spec = Gem::Specification.new do |s|
 	s.version           = VERS
 	s.platform          = Gem::Platform::RUBY
 	s.has_rdoc          = true
-	s.extra_rdoc_files  = ["README", "ChangeLog"]
+	s.extra_rdoc_files  = ["README.txt", "History.txt"]
 	s.rdoc_options     += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
 	s.summary           = DESCRIPTION
 	s.description       = DESCRIPTION
@@ -62,12 +62,8 @@ spec = Gem::Specification.new do |s|
 	#s.add_dependency('activesupport', '>=1.3.1')
 	#s.required_ruby_version = '>= 1.8.2'
 
-	s.files = %w(README ChangeLog Rakefile) +
-		Dir.glob("{bin,doc,test,lib,templates,generator,extras,website,script}/**/*") + 
-		Dir.glob("ext/**/*.{h,c,rb}") +
-		Dir.glob("examples/**/*.rb") +
-		Dir.glob("tools/*.rb") +
-		Dir.glob("rails/*.rb")
+	s.files = %w(Rakefile README.txt History.txt Licence.txt) +
+		Dir.glob("{bin,doc,lib,test,project,spec}/**/*")
 
 	s.extensions = FileList["ext/**/extconf.rb"].to_a
 end
@@ -96,7 +92,7 @@ Rake::RDocTask.new do |rdoc|
 	if ENV['DOC_FILES']
 		rdoc.rdoc_files.include(ENV['DOC_FILES'].split(/,\s*/))
 	else
-		rdoc.rdoc_files.include('README', 'ChangeLog')
+		rdoc.rdoc_files.include('README.txt', 'History.txt')
 		rdoc.rdoc_files.include('lib/**/*.rb')
 		rdoc.rdoc_files.include('ext/**/*.c')
 	end
