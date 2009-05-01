@@ -17,7 +17,7 @@ EMAIL             = "ml-webdev@bluemark.co.jp"
 DESCRIPTION       = "Lightweight CMS package."
 RUBYFORGE_PROJECT = "smallcage"
 HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
-BIN_FILES         = %w(./bin/smc)
+BIN_FILES         = %w(smc)
 
 VERS              = SmallCage::VERSION::STRING
 REV = File.read(".svn/entries")[/committed-rev="(d+)"/, 1] rescue nil
