@@ -1,5 +1,6 @@
 == 0.1.3 2009-05-01
 
+* moved to github.
 * stop using newgem and generate Rakefile using cutagem.
 * fix svnignore_reset bug.
 
