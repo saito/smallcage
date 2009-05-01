@@ -1,6 +1,11 @@
+== 0.1.3 2009-05-01
+
+* stop using newgem and generate Rakefile using cutagem.
+* fix svnignore_reset bug.
+
 == 0.1.2 2009-01-16
 
- * stop using /dev/null for WEBrick access log. 
+* stop using /dev/null for WEBrick access log. 
 
 == 0.1.1 2008-09-22
 
