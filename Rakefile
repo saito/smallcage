@@ -62,7 +62,7 @@ spec = Gem::Specification.new do |s|
 	#s.add_dependency('activesupport', '>=1.3.1')
 	#s.required_ruby_version = '>= 1.8.2'
 
-	s.files = %w(Rakefile README.txt History.txt Licence.txt) +
+	s.files = %w(Rakefile README.txt History.txt License.txt) +
 		Dir.glob("{bin,doc,lib,test,project,spec}/**/*")
 
 	s.extensions = FileList["ext/**/extconf.rb"].to_a
