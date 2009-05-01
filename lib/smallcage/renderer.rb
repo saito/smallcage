@@ -11,8 +11,13 @@ class SmallCage::Renderer
   end
     
   def render_string(str, obj)
-    erb_class = ERB.new(str, nil, '-').def_class(@loader.erb_base, "erb")
-    result = erb_class.new(@loader, self, obj).erb
+    begin
+      erb_class = ERB.new(str, nil, '-').def_class(@loader.erb_base, "erb")
+      result = erb_class.new(@loader, self, obj).erb
+    rescue => e
+      STDERR.puts "Can't render: #{obj["uri"]}"
+      raise e
+    end
     return result
   end
 
