@@ -12,11 +12,11 @@ require 'lib/smallcage'
 include FileUtils
 
 NAME              = "smallcage"
-AUTHOR            = "bluemark"
-EMAIL             = "ml-webdev@bluemark.co.jp"
+AUTHORS           = ["SAITO Toshihiro", "gom", "KOSEKI Kengo"]
+EMAIL             = "smallcage@googlegroups.com"
 DESCRIPTION       = "Lightweight CMS package."
 RUBYFORGE_PROJECT = "smallcage"
-HOMEPATH          = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
+HOMEPATH          = "http://www.smallcage.org"
 BIN_FILES         = %w(smc)
 
 VERS              = SmallCage::VERSION::STRING
@@ -49,7 +49,7 @@ spec = Gem::Specification.new do |s|
 	s.rdoc_options     += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
 	s.summary           = DESCRIPTION
 	s.description       = DESCRIPTION
-	s.author            = AUTHOR
+	s.authors           = AUTHORS
 	s.email             = EMAIL
 	s.homepage          = HOMEPATH
 	s.executables       = BIN_FILES
