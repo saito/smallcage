@@ -33,8 +33,9 @@ RDOC_OPTS = [
 	"--inline-source",
 ]
 
-task :default => [:test]
-task :package => [:clean]
+SRC_FILES = FileList.new(%w{Rakefile README.txt History.txt License.txt})
+SRC_FILES.include("{bin,doc,lib,test,project,spec}/**/*")
+SRC_FILES.exclude(/~$/)
 
 spec = Gem::Specification.new do |s|
 	s.name              = NAME
@@ -52,17 +53,17 @@ spec = Gem::Specification.new do |s|
 	s.rubyforge_project = RUBYFORGE_PROJECT
 	s.bindir            = "bin"
 	s.require_path      = "lib"
-	#s.autorequire       = ""
 	s.test_files        = Dir["spec/*_spec.rb"]
+	s.files             = SRC_FILES
 
+	#s.autorequire       = ""
 	#s.add_dependency('activesupport', '>=1.3.1')
 	#s.required_ruby_version = '>= 1.8.2'
-
-	s.files = %w(Rakefile README.txt History.txt License.txt) +
-		Dir.glob("{bin,doc,lib,test,project,spec}/**/*")
-
-	s.extensions = FileList["ext/**/extconf.rb"].to_a
+	#s.extensions = FileList["ext/**/extconf.rb"].to_a
 end
+
+task :default => [:spec]
+task :package => [:clean]
 
 Rake::GemPackageTask.new(spec) do |p|
 	p.need_tar = true
