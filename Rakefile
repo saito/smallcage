@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'rake'
 require 'rake/clean'
-require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
@@ -9,6 +8,9 @@ require 'rake/contrib/rubyforgepublisher'
 require 'rake/contrib/sshpublisher'
 require 'fileutils'
 require 'lib/smallcage'
+require 'spec'
+require 'spec/rake/spectask'
+
 include FileUtils
 
 NAME              = "smallcage"
@@ -34,12 +36,6 @@ RDOC_OPTS = [
 task :default => [:test]
 task :package => [:clean]
 
-Rake::TestTask.new("test") do |t|
-	t.libs   << "test"
-	t.pattern = "test/**/*_test.rb"
-	t.verbose = true
-end
-
 spec = Gem::Specification.new do |s|
 	s.name              = NAME
 	s.version           = VERS
@@ -57,7 +53,7 @@ spec = Gem::Specification.new do |s|
 	s.bindir            = "bin"
 	s.require_path      = "lib"
 	#s.autorequire       = ""
-	s.test_files        = Dir["test/*_test.rb"]
+	s.test_files        = Dir["spec/*_spec.rb"]
 
 	#s.add_dependency('activesupport', '>=1.3.1')
 	#s.required_ruby_version = '>= 1.8.2'
@@ -137,4 +133,11 @@ end
 desc 'Update gem spec'
 task :gemspec do
   open("#{NAME}.gemspec", 'w').write spec.to_ruby
+end
+
+desc "Run the specs under ./spec/"
+Spec::Rake::SpecTask.new do |t|
+  t.libs << "lib"
+  t.spec_opts = ['--options', "spec/spec.opts"]
+  t.spec_files = FileList['spec/*_spec.rb']
 end
