@@ -8,7 +8,6 @@ class SmallCage::ErbBase
     n = name.to_s
     
     return @obj[n] unless @obj[n].nil?
-    return @obj["strings"][0] if n == "body" && ! @obj["strings"][0].nil?
 
     # render if template file exists. or return nil.
     return @renderer.render(name, @obj)

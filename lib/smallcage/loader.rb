@@ -87,6 +87,7 @@ module SmallCage
       result["uri"]      = uri_out
       result["arrays"]   = []
       result["strings"]  = []
+      result["body"]     = nil
 
       # target is directory and _dir.smc is not exist.
       return result unless source_path.exist?
@@ -110,6 +111,8 @@ module SmallCage
           result["strings"] << o.to_s
         end
       end
+      
+      result["body"] = result["strings"][0] if result["body"].nil?
 
       return result
     end
@@ -205,8 +208,11 @@ module SmallCage
     
     def load_anonymous(dir, rex)
       module_names = []
-      
       mod = Module.new
+      result = { :module => mod, :names => module_names }
+      
+      return result unless File.exist?(dir)
+
       Dir.entries(dir).sort.each do |h|
         next unless h =~ rex
         
@@ -217,14 +223,14 @@ module SmallCage
         begin
           mod.module_eval(src, "#{dir}/#{h}")
         rescue => ex
-          puts ex.to_s # TODO show error
+          STDERR << ex.to_s # TODO show error
           load("#{dir}/#{h}", true) # try to know error line number.
           raise "Can't load #{dir}/#{h} / line# unknown"
         end
         module_names << module_name
       end
       
-      return { :module => mod, :names => module_names }
+      return result
     end
     private :load_anonymous
 
