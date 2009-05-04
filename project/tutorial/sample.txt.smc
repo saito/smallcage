@@ -1,0 +1,7 @@
+foo: abcd
+bar: efgh
+--- |
+BODY FIRST LINE.
+SECOND
+THIRD
+Here is end of body.

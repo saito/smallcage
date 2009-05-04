@@ -1,0 +1,29 @@
+=== vars ===
+
+<%- (@obj.keys - %w{template uri path strings arrays body dirs}).sort.each do |key| -%>
+ * <%= key %>	<%= @obj[key].inspect %>
+<%- end -%>
+
+=== special variables ===
+
+ * template	<%= template.inspect %>
+ * uri		<%= uri.inspect %>
+ * uri.smc	<%= uri.smc.inspect %>
+ * path		<%= path.inspect %>
+ * path.smc	<%= path.smc.inspect %>
+ * strings      <%= strings.inspect %>
+ * arrays       <%= arrays.inspect %>
+ * body         <%= body.inspect %>
+
+=== directory info ===
+
+<%- dirs.each_with_index do |dir,i| -%>
+ * dirs[<%= i %>]
+ <%- dir.keys.sort.each do |k| -%>
+   * dirs[<%= i %>]["<%= k %>"]	<%= dir[k].inspect %>
+ <%- end %>
+<%- end -%>
+=== smc object ===
+
+ * @obj.class.name	<%= @obj.class.name %>
+ * @obj.keys.inspect	<%= @obj.keys.inspect %>

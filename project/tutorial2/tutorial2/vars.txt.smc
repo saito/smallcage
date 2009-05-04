@@ -1,0 +1,26 @@
+template: smc_variables
+title: How smc file convert into smc object.
+array_sample:
+  - item1
+  - item2
+overwrite: OVER
+--- |
+text part 1.
+foo bar
+---
+- AAA
+- BBB
+- CCC
+---
+- 111
+- 222
+- 333
+--- |
+text part 2.
+baz baz
+---
+hash_sample:
+  key1: value-A
+  key2: value-B
+note: All YAML hash documents gather into one hash value.
+overwrite: WRITE
