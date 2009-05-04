@@ -7,7 +7,7 @@ describe SmallCage::Loader do
     @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
   end
 
-  it "should load path value which returns Pathname object" do
+  it "should load path value which is instance of Pathname" do
     ldr = SmallCage::Loader.new(@docroot)
     obj = ldr.load(@docroot + "a/b/c/index.html.smc")
 
@@ -52,4 +52,38 @@ describe SmallCage::Loader do
     end
     objects[0]["strings"][0].should == "abc\ndef\n\nghi"
   end
+  
+  it "should load body value which equals strings[0]" do
+    ldr = SmallCage::Loader.new(@docroot)
+    obj = ldr.load(@docroot + "a/b/c/index.html.smc")
+    
+    obj["strings"][0].should == "abc\ndef\n\nghi"  
+    obj["body"].should == obj["strings"][0]
+    
+    # same String instance
+    obj["strings"][0].replace("XXX")
+    obj["body"].should == "XXX"
+
+    obj["strings"][0] = "ABC"
+    obj["body"].should == "XXX"
+  end
+  
+  it "should load dirs" do
+    ldr = SmallCage::Loader.new(@docroot)
+    obj = ldr.load(@docroot + "a/b/c/index.html.smc")
+    
+    dirs = obj["dirs"]
+    dirs.length.should == 4
+    
+    dirs[0]["uri"].should == "/"
+    dirs[1]["uri"].should == "/a/"
+    dirs[2]["uri"].should == "/a/b/"
+    dirs[3]["uri"].should == "/a/b/c/"
+    (dirs[3]["path"] + "index.html.smc").file?.should be_true
+    
+    dirs[0]["var"].should == "xxx"
+    dirs[0]["strings"][0].should == "BODYBODYBODY"
+    dirs[0]["body"].should == "BODYBODYBODY"
+  end
+  
 end
