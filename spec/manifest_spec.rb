@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
 
-
-
 describe "SmallCage::Commands::Manifest" do
 
   before do
@@ -17,18 +15,20 @@ describe "SmallCage::Commands::Manifest" do
     @manifest_file.file?.should be_true
 
     source = @manifest_file.read
-    source.include?(<<'EOT').should be_true
-<ul class="files">
+    source = source.match(%r{<ul class="files">\n(.+?)\n</ul>}m)[1].split(/\n/)
+
+    contents = <<'EOT'.split(/\n/)
+<li><a href="./_dir.smc">./_dir.smc</a></li>
+<li><a href="./_smc/">./_smc/</a></li>
 <li><a href="./a/">./a/</a></li>
 <li><a href="./a/b/">./a/b/</a></li>
 <li><a href="./a/b/c/">./a/b/c/</a></li>
 <li><a href="./a/b/c/index.html.smc">./a/b/c/index.html.smc</a></li>
-<li><a href="./_dir.smc">./_dir.smc</a></li>
-<li><a href="./_smc/">./_smc/</a></li>
-<li><a href="./_smc/helpers/">./_smc/helpers/</a></li>
-<li><a href="./_smc/templates/">./_smc/templates/</a></li>
-</ul>
 EOT
+
+    source.each do |line|
+      contents.should include(line)
+    end
   end
   
   after do
