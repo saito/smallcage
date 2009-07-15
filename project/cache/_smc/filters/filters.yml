@@ -1,0 +1,2 @@
+after_rendering_filters:
+  - name: cache_filter
