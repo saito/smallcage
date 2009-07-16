@@ -148,7 +148,7 @@ module SmallCage::Commands
         qps
       end
       
-      return y_or_n("Import these files?[yN]: ", false)
+      return y_or_n("Import these files?[Yn]: ", true)
     end
     private :confirm_entries
     
