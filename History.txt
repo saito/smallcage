@@ -1,11 +1,11 @@
 == 0.1.4 2009-07-27
 
-* add cache control filter and rake task. 
+* add cache control filter and rake task (for CDN, etag, etc.). 
 * move rake tasks into *.rake files.
 * switch 'smc import' default answer to 'Yes'.
 * add the most primitive project template: tutorial.
-* add project template for explain smc object and template: tutorial2.
-* set 'body' to one of the default smc object key.
+* add project template to explain smc object and template: tutorial2.
+* added 'body' to default smc object keys.
 * avoid error when helper directory doesn't exist.
 * show smc filename when template error occurs. 
  
