@@ -1,3 +1,14 @@
+== 0.1.4 2009-07-27
+
+* add cache control filter and task using svninfo command. 
+* move rake tasks into *.rake files.
+* switch 'smc import' default answer to 'Yes'.
+* add the most primitive project template: tutorial.
+* add project template for explain smc object and template: tutorial2.
+* set 'body' to one of the default smc object key.
+* avoid error when helper directory doesn't exist.
+* show smc filename when template error occurs. 
+ 
 == 0.1.3 2009-05-01
 
 * moved to github.
