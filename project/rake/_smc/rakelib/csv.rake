@@ -7,19 +7,28 @@ namespace :csv do
   end
 
   # csv_to_smc sample task.
-  task :sample_update => [:require] do
-    csv_to_smc("_smc/sample.csv") {|data,rownum| "path/to/contents/#{"%04d" % (rownum - 1)}_#{data["key"]}.smc" }
+  task :update_samples => [:require] do
+
+    # By default, csv rows are saved as array.
+    csv_to_smc("_smc/samples.csv") {|data,rownum| "samples/#{"%04d" % rownum}.html.smc" }
+
+    # You can create hash using label_row/skip_rows parameters.
+    # csv_to_smc("_smc/samples.csv", 1, 0) {|data,rownum| "samples/#{"%04d" % rownum}.html.smc" }
+
   end
 
 end
 
 
-def csv_to_smc(csv_file, label_row = 0, skip_rows = 1)
+def csv_to_smc(csv_file, skip_rows = nil, label_row = nil)
   labels = nil
+  skip_rows ||= 0
+  label_row ||= -1
+
   rownum = -1
   CSV.foreach(csv_file) do |row|
     rownum += 1
-    labels = row if label_row == rownum
+    labels = row.map{|cell| cell.to_s } if label_row == rownum
     next if rownum < skip_rows
 
     if labels
