@@ -1,6 +1,6 @@
 == 0.1.4 2009-07-27
 
-* add cache control filter and task using svninfo command. 
+* add cache control filter and rake task. 
 * move rake tasks into *.rake files.
 * switch 'smc import' default answer to 'Yes'.
 * add the most primitive project template: tutorial.
