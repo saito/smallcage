@@ -20,6 +20,8 @@ describe "SmallCage::Commands::Manifest" do
     contents = <<'EOT'.split(/\n/)
 <li><a href="./_dir.smc">./_dir.smc</a></li>
 <li><a href="./_smc/">./_smc/</a></li>
+<li><a href="./_smc/filters/">./_smc/filters/</a></li>
+<li><a href="./_smc/filters/filters.yml">./_smc/filters/filters.yml</a></li>
 <li><a href="./a/">./a/</a></li>
 <li><a href="./a/b/">./a/b/</a></li>
 <li><a href="./a/b/c/">./a/b/c/</a></li>

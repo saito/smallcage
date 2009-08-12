@@ -245,13 +245,12 @@ module SmallCage
       result = {}
       return {} unless @filters_dir.directory?
       
-      filters = load_anonymous(@filters_dir, %r{([^/]+_filter)\.rb$})
+      filter_modules = load_anonymous(@filters_dir, %r{([^/]+_filter)\.rb$})
+      smc_module = filter_modules[:module].const_get("SmallCage")
       
-      config = load_filters_config
-      config.each do |filter_type,filter_list|
+      load_filters_config.each do |filter_type,filter_list|
         result[filter_type] = []
-        smc_module = filters[:module].const_get("SmallCage")
-        filter_list.each do |fc|
+        filter_list.to_a.each do |fc|
           fc = { "name" => fc } if fc.is_a? String
           filter_class = smc_module.const_get(fc["name"].camelize)
           result[filter_type] << filter_class.new(fc)
@@ -264,7 +263,7 @@ module SmallCage
     def load_filters_config
       path = @filters_dir.join("filters.yml")
       return {} unless path.file?
-      return YAML.load(path.read())
+      return YAML.load(path.read()) || {}
     end
     private :load_filters_config
     
