@@ -1,3 +1,2 @@
 after_rendering_filters:
   - name: nkf_filter
-    args: "-W -s" # UTF-8 to SJIS
