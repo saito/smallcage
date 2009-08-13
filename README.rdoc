@@ -1,0 +1,74 @@
+= SmallCage -- Lightweigt CMS Package.
+
+
+== Installation
+
+  $ sudo gem install smallcage
+
+
+== Usage
+
+If successfully installed, smc command will be available.
+
+  $ smc
+  Usage: smc <subcommand> [options]
+  SmallCage 0.1.5 - Lightweight CMS Package.
+  Subcommands are:
+      update [path]                    Build smc contents.
+      clean  [path]                    Remove files generated from *.smc source.
+      server [path] [port]             Start HTTP server.
+      auto   [path] [port]             Start auto update daemon.
+      import [name|uri]                Import project.
+      export [path] [outputpath]       Export project.
+      manifest [path]                  Generate Manifest.html file.
+
+  Options are:
+  
+      -h, --help                       Show this help message.
+      -v, --version                    Show version info.
+
+Create document root.
+  
+  $ mkdir htdocs
+  $ cd htdocs
+
+Import default project.
+
+  $ smc import
+  Import: base
+  Create:
+    /_smc
+    /_smc/helpers
+    /_smc/helpers/base_helper.rb
+    /_smc/helpers/site_helper.rb
+    /_smc/templates
+    /_smc/templates/default.rhtml
+    /_smc/templates/footer.rhtml
+    /_smc/templates/header.rhtml
+
+  Import these files?[Yn]: y
+  A /_smc
+  A /_smc/helpers
+  A /_smc/helpers/base_helper.rb
+  A /_smc/helpers/site_helper.rb
+  A /_smc/templates
+  A /_smc/templates/default.rhtml
+  A /_smc/templates/footer.rhtml
+  A /_smc/templates/header.rhtml
+  :
+
+Publish all smc files.
+
+  $ smc update
+  A /index.html
+  A /sample/index.html
+  A /sample/redirect.html
+  A /sample/sub/contents.html
+  A /sample/sub/index.html
+
+Start HTTP server.
+
+  $ smc server . 8080
+
+...and access http://localhost:8080
+

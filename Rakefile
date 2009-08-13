@@ -29,11 +29,11 @@ RDOC_OPTS = [
   "--charset", "utf-8",
   "--opname", "index.html",
   "--line-numbers",
-  "--main", "README.txt",
+  "--main", "README.rdoc",
   "--inline-source",
 ]
 
-SRC_FILES = FileList.new(%w{Rakefile README.txt History.txt License.txt})
+SRC_FILES = FileList.new(%w{Rakefile README.rdoc History.txt License.txt})
 SRC_FILES.include("{bin,doc,lib,test,project,spec}/**/*")
 SRC_FILES.exclude(/~$/)
 
@@ -42,7 +42,7 @@ spec = Gem::Specification.new do |s|
   s.version           = VERS
   s.platform          = Gem::Platform::RUBY
   s.has_rdoc          = true
-  s.extra_rdoc_files  = ["README.txt", "History.txt"]
+  s.extra_rdoc_files  = ["README.rdoc", "History.txt"]
   s.rdoc_options     += RDOC_OPTS + ['--exclude', '^(examples|extras)/']
   s.summary           = DESCRIPTION
   s.description       = DESCRIPTION
@@ -82,14 +82,14 @@ end
 
 
 Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'html'
+  rdoc.rdoc_dir = 'pkg/htdocs'
   rdoc.options += RDOC_OPTS
-  rdoc.template = "resh"
+  #rdoc.template = "resh"
   #rdoc.template = "#{ENV['template']}.rb" if ENV['template']
   if ENV['DOC_FILES']
     rdoc.rdoc_files.include(ENV['DOC_FILES'].split(/,\s*/))
   else
-    rdoc.rdoc_files.include('README.txt', 'History.txt')
+    rdoc.rdoc_files.include('README.rdoc', 'History.txt')
     rdoc.rdoc_files.include('lib/**/*.rb')
     rdoc.rdoc_files.include('ext/**/*.c')
   end
