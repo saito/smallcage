@@ -68,7 +68,13 @@ module SmallCage::Commands
       target_files = modified_files 
 
       runner = SmallCage::Runner.new({ :path => @target })
-      runner.update
+      begin
+        runner.update
+      rescue Exception => e
+        STDERR.puts e.to_s
+        STDERR.puts $@[0..4].join("\n")
+        STDERR.puts ":"
+      end
       
       update_http_server(target_files)
       puts_line
@@ -100,6 +106,12 @@ module SmallCage::Commands
       else
         update_http_server(target_files)
       end
+      puts_line
+    rescue Exception => e
+      STDERR.puts e.to_s
+      STDERR.puts $@[0..4].join("\n")
+      STDERR.puts ":"
+      print "\a" unless quiet? # Bell
       puts_line
     end
     private :update_modified_files

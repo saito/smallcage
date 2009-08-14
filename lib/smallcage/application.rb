@@ -43,7 +43,7 @@ Subcommands are:
     update [path]                    Build smc contents.
     clean  [path]                    Remove files generated from *.smc source.
     server [path] [port]             Start HTTP server.
-    auto   [path] [port]             Start auto update daemon.
+    auto   [path] [port]             Start auto update server.
     import [name|uri]                Import project.
     export [path] [outputpath]       Export project.
     manifest [path]                  Generate Manifest.html file.
