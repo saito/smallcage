@@ -1,10 +1,12 @@
-== 0.1.5 
+== 0.1.5 2009-08-15
 
-* use @erbout for ERB output variable name.
+* use @erbout for ERB output buffer variable name.
 * add ERB capture method to base_helper.rb.
 * add get directory config method to base_helper.rb.
 * add NKF helper to nkf project template.
 * avoid error when filter config is empty.
+* add statistics line to update command. 
+* do not abort auto update server when ERB error occurred.
 
 == 0.1.4 2009-07-27
 
