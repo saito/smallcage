@@ -9,6 +9,7 @@ module SmallCage::Commands
     end
     
     def execute
+      start = Time.now
       target = Pathname.new(@opts[:path])
       unless target.exist?
         raise "target directory or file does not exist.: " + target.to_s
@@ -18,10 +19,14 @@ module SmallCage::Commands
       @renderer = SmallCage::Renderer.new(@loader)
 
       urilist = render_smc_files
+      rendered = urilist.length
       if list_file.exist?
         urilist = delete_expired_files(urilist)
       end
       save_list(urilist)
+      elapsed = Time.now - start
+      
+      puts "-- #{rendered} files.  #{"%.3f" % elapsed} sec.  #{"%.3f" % (elapsed/rendered)} sec/file."
     end
 
     def render_smc_files
