@@ -26,7 +26,7 @@ module SmallCage::Commands
       save_list(urilist)
       elapsed = Time.now - start
       
-      puts "-- #{rendered} files.  #{"%.3f" % elapsed} sec.  #{"%.3f" % (elapsed/rendered)} sec/file."
+      puts "-- #{rendered} files.  #{"%.3f" % elapsed} sec.  #{"%.3f" % (elapsed/rendered)} sec/file." unless @opts[:quiet]
     end
 
     def render_smc_files
