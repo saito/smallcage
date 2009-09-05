@@ -142,6 +142,7 @@ module SmallCage
       each_smc_file do |path|
         next if path.directory?
         next if path.basename.to_s == DIR_PROP_FILE
+        next if path.basename.to_s == LOCAL_PROP_FILE
         obj = load(path)
         yield obj
       end
