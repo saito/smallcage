@@ -1,0 +1,8 @@
+only_local_smc: true
+---
+- only
+- local
+- smc
+- array
+--- |
+strings

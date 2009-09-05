@@ -5,6 +5,7 @@ describe SmallCage::Loader do
 
   before do
     @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    @docroot3 = Pathname.new(File.dirname(__FILE__) + "/data/htdocs3")
   end
 
   it "should load path value which is instance of Pathname" do
@@ -84,6 +85,27 @@ describe SmallCage::Loader do
     dirs[0]["var"].should == "xxx"
     dirs[0]["strings"][0].should == "BODYBODYBODY"
     dirs[0]["body"].should == "BODYBODYBODY"
+  end
+
+  it "should load _local.smc" do
+    ldr = SmallCage::Loader.new(@docroot3)
+    obj = ldr.load(@docroot3 + "a/b/c/index.html.smc")
+
+    dirs = obj["dirs"]
+    dirs[0]["a"].should == 123
+    dirs[0]["b"].should == 567
+    dirs[0]["body"].strip.should == "localsmc"
+    dirs[0]["strings"][0].strip.should == "localsmc"
+
+    dirs[2]["a"].should == 123
+    dirs[2]["b"].should == 345
+    dirs[2]["z"].should == 999
+    dirs[2]["body"].should == "dirsmc"
+
+    dirs[3]["only_local_smc"].should be_true
+    dirs[3]["arrays"][0][2].should == "smc"
+    dirs[3]["body"].should == "strings"
+
   end
   
 end

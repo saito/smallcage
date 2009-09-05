@@ -1,13 +1,14 @@
 module SmallCage
   class Loader
     DEFAULT_TEMPLATE = "default"
-    DIR_PROP_FILE = "_dir.smc"
+    DIR_PROP_FILE    = "_dir.smc"
+    LOCAL_PROP_FILE  = "_local.smc"
     MAX_DEPTH = 100
   
     attr_reader :root, :target, :erb_base
   
     def initialize(target)
-      target = Pathname.new(target.to_s.strip.gsub(%r{(.+)/$}, '\1'))
+      target = Pathname.new(target.to_s.strip.chomp('/'))
       target = real_target(target) 
 
       @target = target # absolute
@@ -21,101 +22,104 @@ module SmallCage
 
     # return root dir Pathname object.
     def self.find_root(path, depth = MAX_DEPTH)
-      unless path.exist?
-        raise "Not found: " + path.to_s 
-      end
+      raise "Not found: #{path}" unless path.exist?
       d = path.realpath
-      
-      if d.file?
-        d = d.parent
-      end
-      
-      i = 0
+      d = d.parent if d.file?
       loop do
-        if d.join("_smc").directory?
-          return d
-        end
-        break if d.root?
+        return d if d.join("_smc").directory?
+        break if d.root? || (depth -= 1) <= 0
         d = d.parent
-
-        i += 1
-        break if depth <= i
       end
-      
-      raise "Root not found: " + path
+      raise "Root not found: #{path}"
     end
   
     def load(path)
-      unless path.exist?
-        raise "Not found: " + path.to_s 
-      end
+      raise "Not found: #{path}" unless path.exist?
 
       docpath = SmallCage::DocumentPath.new(@root, path)
 
-      result = {}
       if path.file?
-        unless docpath.smc?
-          raise "Path is not smc file: " + docpath.to_s
-        end
-
-        path_smc = docpath.path
-        path_out = docpath.outfile.path
-        uri_smc  = docpath.uri
-        uri_out  = docpath.outuri
-        source_path = path_smc
-
-        result["dirs"]     = load_dirs(path)
-        result["template"] = DEFAULT_TEMPLATE
-      else # directory
-        path_smc = nil
-        path_out = path
-        uri_smc  = nil
-        uri_out  = docpath.uri
-        uri_out += "/" unless uri_out =~ %r{/$}
-        source_path = path + DIR_PROP_FILE
-        
-        if source_path.file?
-          path_smc = source_path
-          uri_smc = SmallCage::DocumentPath.to_uri(@root, source_path)
-        end
+        return load_smc_file(docpath)
+      else 
+        return load_dir_prop(docpath)
       end
-      
-      add_smc_method(path_out, path_smc)
-      add_smc_method(uri_out, uri_smc)
+    end
 
-      result["path"]     = path_out
-      result["uri"]      = uri_out
+    def load_smc_file(docpath)
+      raise "Path is not smc file: #{docpath}" unless docpath.smc?
+
+      result = create_base_smc_object(docpath.outfile.path, docpath.path,
+                                      docpath.outuri,       docpath.uri)
+      
+      result["template"] = DEFAULT_TEMPLATE
+      result["dirs"]     = load_dirs(docpath.path)
+
+      return result.merge(load_yaml(docpath.path))
+    end
+    private :load_smc_file
+
+    def load_dir_prop(docpath)
+      path_smc = nil
+      uri_smc  = nil
+      uri_out  = docpath.uri
+      uri_out += "/" unless uri_out[-1] == ?/
+
+      dir_prop_file   = docpath.path + DIR_PROP_FILE
+      local_prop_file = docpath.path + LOCAL_PROP_FILE
+      if dir_prop_file.file?
+        path_smc = dir_prop_file
+        uri_smc  = SmallCage::DocumentPath.to_uri(@root, dir_prop_file)
+      end
+
+      result = create_base_smc_object(docpath.path, path_smc,
+                                      uri_out, uri_smc)
+
+      result.merge!(load_yaml(dir_prop_file))   if dir_prop_file.file?
+      result.merge!(load_yaml(local_prop_file)) if local_prop_file.file?
+
+      return result
+    end
+    private :load_dir_prop
+    
+    def create_base_smc_object(path_out, path_smc, uri_out, uri_smc)
+      result = {}
       result["arrays"]   = []
       result["strings"]  = []
       result["body"]     = nil
+      result["path"]     = add_smc_method(path_out, path_smc)
+      result["uri"]      = add_smc_method(uri_out,  uri_smc )
+      return result
+    end
+    private :create_base_smc_object
 
-      # target is directory and _dir.smc is not exist.
-      return result unless source_path.exist?
+    def load_yaml(path)
+      result = {}
 
-      source = source_path.read
+      source = path.read
       return result if source.strip.empty?
-
       begin
         obj = YAML.load_stream(source)
         return result if obj.nil?
       rescue => e
-        raise "Can't load file: #{source_path} / #{e}"
+        raise "Can't load file: #{path} / #{e}"
       end
-      
       obj.documents.each do |o|
-        if o.is_a? Hash
-          result = result.merge(o)
-        elsif o.is_a? Array
+        case o
+        when Hash
+          result.merge!(o)
+        when Array
+          result["arrays"] ||= []
           result["arrays"]  << o
         else
+          result["strings"] ||= []
           result["strings"] << o.to_s
         end
       end
-      
-      result["body"] = result["strings"][0] if result["body"].nil?
+      result["body"] ||= result["strings"][0] if result["strings"]
 
       return result
     end
+    private :load_yaml
 
     def load_dirs(path)
       result = []
@@ -276,6 +280,8 @@ module SmallCage
       def obj.smc
         return @__smallcage.nil? ? nil : @__smallcage[:smc]
       end
+
+      return obj
     end
     private :add_smc_method
 
