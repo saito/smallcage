@@ -1,4 +1,4 @@
-== 0.1.6
+== 0.1.6 2009-09-07
 
 * use _local.smc for local machine settings. This file overwrite _dir.smc.
 * erase statistics line when quiet option is on.
