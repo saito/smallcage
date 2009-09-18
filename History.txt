@@ -1,3 +1,7 @@
+== 0.1.7 2009-09-18
+
+* bugfix issue #2: The files under the common prefix directory should not be removed. http://github.com/bluemark/smallcage/issues/#issue/2
+
 == 0.1.6 2009-09-07
 
 * use _local.smc for local machine settings. This file overwrite _dir.smc.

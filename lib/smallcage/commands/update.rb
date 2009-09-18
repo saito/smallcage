@@ -51,8 +51,9 @@ module SmallCage::Commands
     def delete_expired_files(urilist)
       old_urilist = load_list
       root = @loader.root
-      target_uri = SmallCage::DocumentPath.new(root, @loader.target).uri
-
+      target     = SmallCage::DocumentPath.new(root, @loader.target)
+      target_uri = target.uri
+      target_uri += "/" if target.path.directory? and target_uri[-1] != ?/
       if @loader.target.file?
         old_urilist << target_uri unless old_urilist.include?(target_uri)
         return old_urilist
@@ -67,7 +68,7 @@ module SmallCage::Commands
           not_target_uris << uri
         end
       end
-      
+
       deletelist = target_uris - urilist
 
       deletelist.each do |uri|
