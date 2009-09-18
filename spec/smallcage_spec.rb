@@ -54,5 +54,32 @@ describe "smallcage" do
     end
     
   end
+  
+  # http://github.com/bluemark/smallcage/issues/#issue/2
+  it "should not delete files under the common prefix directory" do
+    root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs3")
+    begin
+      SmallCage::Runner.run({ :command => "update", :path => root.to_s, :quiet => true })
+      
+      (root + "a/index.html").file?.should be_true
+      (root + "ab/index.html").file?.should be_true
+      (root + "abc/index.html").file?.should be_true
+
+      SmallCage::Runner.run({ :command => "update", :path => (root + "a").to_s, :quiet => true })
+      
+      (root + "a/index.html").file?.should be_true
+      (root + "ab/index.html").file?.should be_true
+      (root + "abc/index.html").file?.should be_true
+
+      SmallCage::Runner.run({ :command => "update", :path => (root + "ab").to_s, :quiet => true })
+
+      (root + "a/index.html").file?.should be_true
+      (root + "ab/index.html").file?.should be_true
+      (root + "abc/index.html").file?.should be_true
+    ensure
+      SmallCage::Runner.run({:command => "clean", :path => root.to_s, :quiet => true })
+    end
+    
+  end
 
 end
