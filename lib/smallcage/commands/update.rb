@@ -1,5 +1,7 @@
 module SmallCage::Commands
   class Update
+    include SmallCage
+
     def self.execute(opts)
       self.new(opts).execute
     end
@@ -15,8 +17,8 @@ module SmallCage::Commands
         raise "target directory or file does not exist.: " + target.to_s
       end
       
-      @loader = SmallCage::Loader.new(target)
-      @renderer = SmallCage::Renderer.new(@loader)
+      @loader   = Loader.new(target)
+      @renderer = Renderer.new(@loader)
 
       urilist = render_smc_files
       rendered = urilist.length
@@ -33,25 +35,52 @@ module SmallCage::Commands
       urilist = []
       @loader.each_smc_obj do |obj|
         urilist << obj["uri"].smc
-        mark = obj["path"].exist? ? "U " : "A "
         render_smc_obj(obj)
-        puts mark + obj["uri"] unless @opts[:quiet]
       end
       return urilist
     end
     private :render_smc_files
 
     def render_smc_obj(obj)
+      list = @renderer.render(obj["template"] + ".uri", obj)
+      if list
+        render_multi(obj, list.split(/\r\n|\r|\n/))
+      else
+        render_single(obj)
+      end
+    end
+    private :render_smc_obj
+
+    def render_single(obj)
+      mark = obj["path"].exist? ? "U " : "A "
       result = @renderer.render(obj["template"], obj)
       result = after_rendering_filters(obj, result)
       output_result(obj, result)
+      puts mark + obj["uri"] unless @opts[:quiet]
     end
-    private :render_smc_obj
+    private :render_single
+
+    def render_multi(obj, list)
+      obj['uris'] ||= list
+      list = list.map {|uri| uri.strip }
+      root = @loader.root
+      smcpath = @loader.target
+      smcuri  = DocumentPath.to_uri(root, smcpath)
+      list.each_with_index do |uri, index|
+        next if uri.empty?
+        docpath     = DocumentPath.create_with_uri(root, uri, @loader.target)
+        obj['uri']  = DocumentPath.add_smc_method(docpath.uri, smcuri)
+        obj['path'] = DocumentPath.add_smc_method(docpath.path, smcpath)
+        obj['cursor'] = index
+        render_single(obj)
+      end
+    end
+    private :render_multi
 
     def delete_expired_files(urilist)
       old_urilist = load_list
       root = @loader.root
-      target     = SmallCage::DocumentPath.new(root, @loader.target)
+      target     = DocumentPath.new(root, @loader.target)
       target_uri = target.uri
       target_uri += "/" if target.path.directory? and target_uri[-1] != ?/
       if @loader.target.file?
@@ -72,7 +101,7 @@ module SmallCage::Commands
       deletelist = target_uris - urilist
 
       deletelist.each do |uri|
-        delfile = SmallCage::DocumentPath.new(root, root + ("." + uri)).outfile
+        delfile = DocumentPath.new(root, root + ("." + uri)).outfile
         next unless delfile.path.file?
         
         File.delete(delfile.path)
@@ -96,7 +125,7 @@ module SmallCage::Commands
       f = list_file
       FileUtils.makedirs(f.parent)
       open(f, "w") do |io|
-        io << "version: " + SmallCage::VERSION::STRING + "\n"
+        io << "version: " + VERSION::STRING + "\n"
         urilist.each do |u|
           io << u + "\n"
         end
