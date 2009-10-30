@@ -63,14 +63,14 @@ module SmallCage::Commands
     def render_multi(obj, list)
       obj['uris'] ||= list
       list = list.map {|uri| uri.strip }
-      root = @loader.root
-      smcpath = @loader.target
-      smcuri  = DocumentPath.to_uri(root, smcpath)
+      smcuri  = obj['uri'].smc
+      smcpath = obj['path'].smc
+      base    = obj['path'].parent
       list.each_with_index do |uri, index|
         next if uri.empty?
-        docpath     = DocumentPath.create_with_uri(root, uri, @loader.target)
-        obj['uri']  = DocumentPath.add_smc_method(docpath.uri, smcuri)
-        obj['path'] = DocumentPath.add_smc_method(docpath.path, smcpath)
+        docpath       = DocumentPath.create_with_uri(@loader.root, uri, base)
+        obj['uri']    = DocumentPath.add_smc_method(docpath.uri, smcuri)
+        obj['path']   = DocumentPath.add_smc_method(docpath.path, smcpath)
         obj['cursor'] = index
         render_single(obj)
       end
