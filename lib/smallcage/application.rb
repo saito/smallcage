@@ -1,10 +1,6 @@
-
-VERSION_NOTE = "SmallCage #{SmallCage::VERSION::STRING} - Lightweight CMS Package."
-OPTIONS = {}
-OPTIONS[:original_argv] = ARGV.clone
-
 class SmallCage::Application
   require 'optparse'
+  VERSION_NOTE = "SmallCage #{SmallCage::VERSION::STRING} - Lightweight CMS Package."
   
   @@signal_handlers = nil
 
@@ -31,12 +27,23 @@ class SmallCage::Application
   end
 
   def self.execute
+    STDOUT.sync = true
+    self.new.execute
+  end
 
-STDOUT.sync = true
+  def execute
+    @options = {}
+    @parser = create_main_parser
+    parse_main_options
+    @command_parsers = create_command_parsers
+    parse_command
+    parse_command_options
+    SmallCage::Runner.run(@options)
+  end
 
-OptionParser.new do |opts|
-
-  opts.banner =<<BANNER
+  def create_main_parser
+    parser = OptionParser.new
+    parser.banner =<<BANNER
 Usage: #{File.basename($0)} <subcommand> [options]
 #{VERSION_NOTE}
 Subcommands are:
@@ -50,115 +57,108 @@ Subcommands are:
 
 Options are:
 BANNER
+    return parser
+  end
+  private :create_main_parser
 
-  opts.separator ""
-  opts.on("-h", "--help", "Show this help message.") do
-    puts opts
-    exit
-  end
-  opts.on("-v", "--version", "Show version info.") do
-    puts VERSION_NOTE
-    exit
-  end
-
-  subparsers = Hash.new do |h,k|
-    $stderr.puts "no such subcommand: #{k}"
-    exit 1
-  end
-  
-  subparsers[:update] = OptionParser.new do |subp|
-    subp.banner =<<EOT
-Usage: update [PATH]
-EOT
-  end
-  
-  subparsers[:server] = OptionParser.new do |subp|
-    subp.banner =<<EOT
-Usage: server [PATH] [PORT]
-EOT
-  end
-
-  subparsers[:auto] = OptionParser.new do |subp|
-    subp.banner =<<EOT
-Usage: auto [PATH]
-EOT
-  end
-
-  subparsers[:generate] = OptionParser.new do |subp|
-  end
-  subparsers[:release] = OptionParser.new do |subp|
-  end
-  subparsers[:help] = OptionParser.new do |subp|
-  end
-  subparsers[:import] = OptionParser.new do |subp|
-  end
-  subparsers[:export] = OptionParser.new do |subp|
-  end
-  subparsers[:manifest] = OptionParser.new do |subp|
-  end
-  subparsers[:clean] = OptionParser.new do |subp|
-  end
-
-  commands = Hash.new {|h,k| k}
-  commands.merge!({
-  	:up => :update,
-  	:sv => :server,
-  	:au => :auto,
-  	:gen => :generate,
-  	:rel => :release,
-  	:st => :status,
-  })
-
-  opts.order!(ARGV)
-  unless ARGV.empty?
-    OPTIONS[:command] = commands[ARGV.shift.to_sym]
-    subparsers[OPTIONS[:command]].parse!(ARGV)
-  end
-  
-  if OPTIONS[:command].nil?
-    puts opts
-    exit
-  elsif OPTIONS[:command] == :help
-    subcmd = ARGV.shift
-    if subcmd.nil?
-      puts opts
-    else
-      puts subparsers[subcmd.to_sym]
+  def parse_main_options
+    @parser.separator ""
+    @parser.on("-h", "--help", "Show this help message.") do
+      puts @parser
+      exit
     end
-    exit
-  elsif OPTIONS[:command] == :update
-    OPTIONS[:path] = ARGV.shift
-    OPTIONS[:path] ||= "."
-  elsif OPTIONS[:command] == :server
-    OPTIONS[:path] = ARGV.shift
-    OPTIONS[:port] = ARGV.shift
-    OPTIONS[:path] ||= "."
-    OPTIONS[:port] ||= 80
-  elsif OPTIONS[:command] == :auto
-    OPTIONS[:path] = ARGV.shift
-    OPTIONS[:path] ||= "."
-    OPTIONS[:port] = ARGV.shift
-  elsif OPTIONS[:command] == :import
-  	OPTIONS[:from] = ARGV.shift
-  	OPTIONS[:from] ||= "default"
-  	
-  	OPTIONS[:to] = ARGV.shift
-  	OPTIONS[:to] ||= "."
-  elsif OPTIONS[:command] == :export
-  	OPTIONS[:path] = ARGV.shift
-  	OPTIONS[:path] ||= "."
-  	
-  	OPTIONS[:out] = ARGV.shift
-  elsif OPTIONS[:command] == :manifest
-    OPTIONS[:path] = ARGV.shift
-    OPTIONS[:path] ||= "."
-  elsif OPTIONS[:command] == :clean
-    OPTIONS[:path] = ARGV.shift
-    OPTIONS[:path] ||= "."
+    @parser.on("-v", "--version", "Show version info.") do
+      puts VERSION_NOTE
+      exit
+    end
+    @parser.order!(ARGV)
   end
-end
+  private :parse_main_options
 
-SmallCage::Runner.run(OPTIONS)
+  def create_command_parsers
+    parsers = Hash.new do |h,k|
+      STDERR << "no such subcommand: #{k}"
+      exit 1
+    end
 
-end
+    banners = {
+      :update => "smc update [path]\n",
+      :clean  => "smc clean [path]\n",
+      :server => "smc server [path] [port]\n",
+      :auto   => "smc auto [path] [port]\n",
+      :import => "smc import [name|uri]",
+      :export => "smc export [path] [outputpath]",
+      :help   => "smc help [command]\n",
+    }
+  
+    banners.each do |k,v|
+      parsers[k] = OptionParser.new do |cp|
+        cp.banner = "Usage: " + v
+      end
+    end
+
+    return parsers
+  end
+  private :create_command_parsers
+
+  def parse_command
+    commands = Hash.new {|h,k| k}
+    commands.merge!({
+      :up => :update,
+      :sv => :server,
+      :au => :auto,
+    })
+
+    unless ARGV.empty?
+      @options[:command] = commands[ARGV.shift.to_sym]
+      @command_parsers[@options[:command]].parse!(ARGV)
+    end
+
+    if @options[:command].nil?
+      puts @parser
+      exit
+    end
+  end
+  private :parse_command
+
+  def parse_command_options
+    if @options[:command] == :help
+      subcmd = ARGV.shift
+      if subcmd.nil?
+        puts @parser
+      else
+        puts @command_parsers[subcmd.to_sym]
+      end
+      exit
+    elsif @options[:command] == :update
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
+    elsif @options[:command] == :server
+      @options[:path] = ARGV.shift
+      @options[:port] = ARGV.shift
+      @options[:path] ||= "."
+      @options[:port] ||= 80
+    elsif @options[:command] == :auto
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
+      @options[:port] = ARGV.shift
+    elsif @options[:command] == :import
+      @options[:from] = ARGV.shift
+      @options[:from] ||= "default"
+      @options[:to] = ARGV.shift
+      @options[:to] ||= "."
+    elsif @options[:command] == :export
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
+      @options[:out] = ARGV.shift
+    elsif @options[:command] == :manifest
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
+    elsif @options[:command] == :clean
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
+    end
+  end
+  private :parse_command_options
+
 end
