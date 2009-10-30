@@ -77,7 +77,7 @@ BANNER
 
   def create_command_parsers
     parsers = Hash.new do |h,k|
-      STDERR << "no such subcommand: #{k}"
+      STDERR << "no such subcommand: #{k}\n"
       exit 1
     end
 
