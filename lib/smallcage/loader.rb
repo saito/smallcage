@@ -193,7 +193,7 @@ module SmallCage
     
     
     def load_erb_base
-      result = Class.new(SmallCage::ErbBase)
+      result = Class.new(ErbBase)
       class << result
         def include_helpers(anon_module, mod_names)
           smc_module = anon_module.const_get("SmallCage")
