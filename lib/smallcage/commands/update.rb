@@ -69,6 +69,8 @@ module SmallCage::Commands
       list.each_with_index do |uri, index|
         next if uri.empty?
         docpath       = DocumentPath.create_with_uri(@loader.root, uri, base)
+        next if docpath.path.directory?
+        FileUtils.mkpath(docpath.path.parent)
         obj['uri']    = DocumentPath.add_smc_method(docpath.uri, smcuri)
         obj['path']   = DocumentPath.add_smc_method(docpath.path, smcpath)
         obj['cursor'] = index
