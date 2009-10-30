@@ -36,7 +36,7 @@ module SmallCage
     def load(path)
       raise "Not found: #{path}" unless path.exist?
 
-      docpath = SmallCage::DocumentPath.new(@root, path)
+      docpath = DocumentPath.new(@root, path)
 
       if path.file?
         return load_smc_file(docpath)
@@ -68,7 +68,7 @@ module SmallCage
       local_prop_file = docpath.path + LOCAL_PROP_FILE
       if dir_prop_file.file?
         path_smc = dir_prop_file
-        uri_smc  = SmallCage::DocumentPath.to_uri(@root, dir_prop_file)
+        uri_smc  = DocumentPath.to_uri(@root, dir_prop_file)
       end
 
       result = create_base_smc_object(docpath.path, path_smc,
@@ -86,8 +86,8 @@ module SmallCage
       result["arrays"]   = []
       result["strings"]  = []
       result["body"]     = nil
-      result["path"]     = add_smc_method(path_out, path_smc)
-      result["uri"]      = add_smc_method(uri_out,  uri_smc )
+      result["path"]     = DocumentPath.add_smc_method(path_out, path_smc)
+      result["uri"]      = DocumentPath.add_smc_method(uri_out,  uri_smc )
       return result
     end
     private :create_base_smc_object
@@ -170,13 +170,13 @@ module SmallCage
             next if f.directory?
             next if f.to_s =~ %r{/_smc/}
             next if f.to_s =~ %r{\.smc$}
-            yield SmallCage::DocumentPath.new(@root, p + f)
+            yield DocumentPath.new(@root, p + f)
           end
         end
       else
         return if @target.to_s =~ %r{/_smc/}
         return if @target.to_s =~ %r{\.smc$}
-        yield SmallCage::DocumentPath.new(@root, @target)
+        yield DocumentPath.new(@root, @target)
       end
     end
     
@@ -272,19 +272,5 @@ module SmallCage
     end
     private :load_filters_config
     
-    def add_smc_method(obj, value)
-      obj.instance_eval do
-        @__smallcage ||= {}
-        @__smallcage[:smc] = value
-      end
-
-      def obj.smc
-        return @__smallcage.nil? ? nil : @__smallcage[:smc]
-      end
-
-      return obj
-    end
-    private :add_smc_method
-
   end
 end
