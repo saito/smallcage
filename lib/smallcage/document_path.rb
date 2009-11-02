@@ -4,7 +4,7 @@ module SmallCage
     attr_reader :root, :uri, :path
     
     def initialize(root, path)
-      @root = Pathname.new(root).realpath;
+      @root = Pathname.new(root).realpath
 
       @path = Pathname.new(path)
       if @path.exist?

@@ -3,11 +3,14 @@ module SmallCage
   # Updated files list model. 
   # Do not access File system exept list.yml.
   class UpdateList
+    attr_reader :rendered
+
     def initialize(list_file, target_uri)
       @list_file = list_file
       @target_uri = target_uri
-      @expires_src = {}
-      @expires_dst = {}
+      @expired_src = {}
+      @expired_dst = {}
+      @rendered = 0
       load
     end
 
@@ -25,9 +28,9 @@ module SmallCage
         src = item["src"]
         @map[src] = item
         if target?(src)
-          @expires_src[src] = true
+          @expired_src[src] = true
           item.dst.each do |d|
-            @expires_dst[d] = [true, src]
+            @expired_dst[d] = [true, src]
           end
         end
       end
@@ -35,6 +38,7 @@ module SmallCage
     private :load
 
     def save
+      FileUtils.mkpath(@list_file.parent)
       open(@list_file, "w") do |io|
         io << @data.to_yaml
       end
@@ -50,10 +54,10 @@ module SmallCage
       return item["mtime"].to_i
     end
 
-    # srcuri and dsturi could be not listed (unknown file).
-    def updated(srcuri, mtime, dsturi)
+    def update(srcuri, mtime, dsturi)
       update_list(srcuri, mtime, dsturi)
       stop_expiration(srcuri, dsturi)
+      @rendered += 1
     end
 
     def update_list(srcuri, mtime, dsturi)
@@ -64,7 +68,7 @@ module SmallCage
     private :update_list
 
     def update_list_item(srcuri, mtime, dsturi)
-      return false if @map[srcuri]
+      return false unless @map[srcuri]
       item = @map[srcuri]
       item["mtime"] = mtime.to_i
       item["dst"] << dsturi unless item["dst"].include?(dsturi)
@@ -91,7 +95,7 @@ module SmallCage
       return result
     end
 
-    def expire_src(srcuri)
+    def expire_src
       @expired_src.each do |srcuri,v|
         mark_expired_src(srcuri)
       end
