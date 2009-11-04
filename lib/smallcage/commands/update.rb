@@ -61,7 +61,9 @@ module SmallCage::Commands
       result = after_rendering_filters(obj, result)
       output_result(obj, result)
       puts mark + obj["uri"] unless @opts[:quiet]
-      @list.update(obj["uri"].smc, mtime, obj["uri"])
+
+      # create new uri String to remove smc instance-specific method.
+      @list.update(obj["uri"].smc, mtime, String.new(obj["uri"]))
     end
     private :render_single
 

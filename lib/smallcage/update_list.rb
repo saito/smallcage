@@ -5,6 +5,7 @@ module SmallCage
   class UpdateList
     attr_reader :rendered
 
+    # target_uri must be ends with / when target is directory.
     def initialize(list_file, target_uri)
       @list_file = list_file
       @target_uri = target_uri
@@ -29,13 +30,18 @@ module SmallCage
         @map[src] = item
         if target?(src)
           @expired_src[src] = true
-          item.dst.each do |d|
+          item["dst"].each do |d|
             @expired_dst[d] = [true, src]
           end
         end
       end
     end
     private :load
+
+    def target?(uri)
+      return uri[0...@target_uri.length] == @target_uri
+    end
+    private :target?
 
     def save
       FileUtils.mkpath(@list_file.parent)
@@ -61,7 +67,7 @@ module SmallCage
     end
 
     def update_list(srcuri, mtime, dsturi)
-      if update_list_item(srcuri, mtime, dsturi)
+      unless update_list_item(srcuri, mtime, dsturi)
         add_list_item(srcuri, mtime, dsturi)
       end
     end
