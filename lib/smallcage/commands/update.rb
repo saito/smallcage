@@ -24,10 +24,10 @@ module SmallCage::Commands
       expire_old_files @list.expire
       @list.save
 
-      rendered = @list.rendered
+      count = @list.update_count
       elapsed  = Time.now - start
-      puts "-- #{rendered} files.  #{"%.3f" % elapsed} sec." +
-        "  #{"%.3f" % (elapsed/rendered)} sec/file." unless @opts[:quiet]
+      puts "-- #{count} files.  #{"%.3f" % elapsed} sec." +
+        "  #{"%.3f" % (elapsed/count)} sec/file." unless @opts[:quiet]
     end
 
     def expire_old_files(uris)

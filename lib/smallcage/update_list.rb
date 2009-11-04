@@ -3,7 +3,7 @@ module SmallCage
   # Updated files list model. 
   # Do not access File system exept list.yml.
   class UpdateList
-    attr_reader :rendered
+    attr_reader :update_count
 
     # target_uri must be ends with / when target is directory.
     def initialize(list_file, target_uri)
@@ -11,7 +11,7 @@ module SmallCage
       @target_uri = target_uri
       @expired_src = {}
       @expired_dst = {}
-      @rendered = 0
+      @update_count = 0
       load
     end
 
@@ -45,13 +45,14 @@ module SmallCage
 
     def save
       FileUtils.mkpath(@list_file.parent)
+      @data["version"] = VERSION::STRING
       open(@list_file, "w") do |io|
-        io << @data.to_yaml
+        io << to_yaml
       end
     end
 
     def to_yaml
-      @data.to_yaml
+      return @data.to_yaml
     end
 
     def mtime(srcuri)
@@ -63,7 +64,7 @@ module SmallCage
     def update(srcuri, mtime, dsturi)
       update_list(srcuri, mtime, dsturi)
       stop_expiration(srcuri, dsturi)
-      @rendered += 1
+      @update_count += 1
     end
 
     def update_list(srcuri, mtime, dsturi)
