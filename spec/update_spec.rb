@@ -16,13 +16,10 @@ describe 'update' do
       out.file?.should be_true
       out.delete
     
-      pwd = Dir.pwd
-      Dir.chdir(path)
-    
-      opts[:path] = "."
-      SmallCage::Runner.run(opts)
-    
-      Dir.chdir(pwd)
+      Dir.chdir(path) do
+        opts[:path] = "."
+        SmallCage::Runner.run(opts)
+      end
 
       out.file?.should be_true
       out.delete
