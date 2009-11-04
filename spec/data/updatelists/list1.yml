@@ -1,0 +1,13 @@
+--- 
+version: 0.0.1
+list: 
+- mtime: 1250000000
+  src: /index.html.smc
+  dst: 
+  - /index.html
+- mtime: 1250000001
+  src: /items/items.smc
+  dst: 
+  - /items/item-001.html
+  - /items/item-002.html
+  - /items/item-003.html
