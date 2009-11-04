@@ -34,7 +34,7 @@ EOT
   end
   
   after do
-    SmallCage::Runner.run(@opts.merge(:command => "clean"))
+    SmallCage::Runner.run(@opts.merge(:command => "clean", :quiet => true))
     @manifest_file.delete
   end
 
