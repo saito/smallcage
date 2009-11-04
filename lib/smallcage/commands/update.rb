@@ -35,7 +35,7 @@ module SmallCage::Commands
       uris.each do |uri|
         file = root + uri[1..-1]
         if file.exist?
-          puts "D #{uri}"
+          puts "D #{uri}" unless @opts[:quiet]
           file.delete
         end
       end
@@ -44,7 +44,9 @@ module SmallCage::Commands
 
     def create_update_list(root, target)
       docpath = DocumentPath.new(root, target)
-      return UpdateList.new(root + "_smc/tmp/list.yml", docpath.uri)
+      uri = docpath.uri
+      uri += "/" if docpath.path.directory? && uri[-1] != ?/
+      return UpdateList.new(root + "_smc/tmp/list.yml", uri)
     end
     private :create_update_list
 
