@@ -21,7 +21,7 @@ module SmallCage::Commands
       @renderer = Renderer.new(@loader)
       @list     = create_update_list(@loader.root, target)
       render_smc_files
-      @list.expire
+      expire_old_files @list.expire
       @list.save
 
       rendered = @list.rendered
@@ -29,6 +29,18 @@ module SmallCage::Commands
       puts "-- #{rendered} files.  #{"%.3f" % elapsed} sec." +
         "  #{"%.3f" % (elapsed/rendered)} sec/file." unless @opts[:quiet]
     end
+
+    def expire_old_files(uris)
+      root = @loader.root
+      uris.each do |uri|
+        file = root + uri[1..-1]
+        if file.exist?
+          puts "D #{uri}"
+          file.delete
+        end
+      end
+    end
+    private :expire_old_files
 
     def create_update_list(root, target)
       docpath = DocumentPath.new(root, target)
