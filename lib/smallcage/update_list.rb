@@ -5,6 +5,13 @@ module SmallCage
   class UpdateList
     attr_reader :update_count
 
+    def self.create(root_path, target_path)
+      docpath = DocumentPath.new(root_path, target_path)
+      uri = docpath.uri
+      uri += "/" if docpath.path.directory? && uri[-1] != ?/
+      return self.new(root_path + "_smc/tmp/list.yml", uri)
+    end
+
     # target_uri must be ends with / when target is directory.
     def initialize(list_file, target_uri)
       @list_file = list_file

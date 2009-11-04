@@ -19,7 +19,7 @@ module SmallCage::Commands
       
       @loader   = Loader.new(target)
       @renderer = Renderer.new(@loader)
-      @list     = create_update_list(@loader.root, target)
+      @list     = UpdateList.create(@loader.root, target)
       render_smc_files
       expire_old_files @list.expire
       @list.save
@@ -27,7 +27,7 @@ module SmallCage::Commands
       count = @list.update_count
       elapsed  = Time.now - start
       puts "-- #{count} files.  #{"%.3f" % elapsed} sec." +
-        "  #{"%.3f" % (elapsed/count)} sec/file." unless @opts[:quiet]
+        "  #{"%.3f" % (count == 0 ? 0 : elapsed/count)} sec/file." unless @opts[:quiet]
     end
 
     def expire_old_files(uris)
@@ -42,16 +42,7 @@ module SmallCage::Commands
     end
     private :expire_old_files
 
-    def create_update_list(root, target)
-      docpath = DocumentPath.new(root, target)
-      uri = docpath.uri
-      uri += "/" if docpath.path.directory? && uri[-1] != ?/
-      return UpdateList.new(root + "_smc/tmp/list.yml", uri)
-    end
-    private :create_update_list
-
     def render_smc_files
-      result = []
       @loader.each_smc_obj do |obj|
         render_smc_obj(obj)
       end
