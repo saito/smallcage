@@ -143,6 +143,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://www.smallcage.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{smallcage}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Lightweight CMS package.}
   s.test_files = [
