@@ -166,4 +166,67 @@ EOT
     
   end
 
+  it "should support single file target" do
+    file = root + "list-single.yml"
+    begin
+      list = SmallCage::UpdateList.new(file, "/index.html.smc")
+      list.update("/index.html.smc", 1, "/index.html")
+      e = list.expire
+      e.length.should == 0
+      list.save
+
+      list = SmallCage::UpdateList.new(file, "/index.html.smc")
+      e = list.expire
+      e.length.should == 1
+
+      list = SmallCage::UpdateList.new(file, "/index2.html.smc")
+      e = list.expire
+      e.length.should == 0
+
+      list = SmallCage::UpdateList.new(file, "/index.html.smc/")
+      e = list.expire
+      e.length.should == 0
+
+      list = SmallCage::UpdateList.new(file, "/abc/index.html.smc")
+      list.update("/abc/index.html.smc", 2, "/abc/index.html")
+      e = list.expire
+      e.length.should == 0
+      list.save
+      list = SmallCage::UpdateList.new(file, "/ab/")
+      e = list.expire
+      e.length.should == 0
+
+      list = SmallCage::UpdateList.new(file, "/")
+      e = list.expire
+      e.length.should == 2
+    ensure
+      file.delete
+    end
+  end
+
+
+  it "should not expire file which other source published" do
+    file = root + "list-switch.yml"
+    begin
+      list = SmallCage::UpdateList.new(file, "/")
+      list.update("/index.html.smc", 1, "/aaa")
+      list.update("/index.html.smc", 1, "/bbb")
+      e = list.expire
+      e.length.should == 0
+      list.save
+      
+      list = SmallCage::UpdateList.new(file, "/")
+      e = list.expire
+      e.length.should == 2
+      
+      list = SmallCage::UpdateList.new(file, "/")
+      list.update("/other/file/1.smc", 2, "/aaa")
+      list.update("/other-file-2.smc", 2, "/bbb")
+      e = list.expire
+      e.length.should == 0
+    ensure
+      file.delete
+    end
+  end
+
 end
