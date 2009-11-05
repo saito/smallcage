@@ -7,12 +7,12 @@ begin
     gemspec.email = "smallcage@googlegroups.com"
     gemspec.homepage = "http://www.smallcage.org"
     gemspec.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
-    gemspec.rubyforge_project = 'smallcage'
+#    gemspec.rubyforge_project = 'smallcage'
   end
   Jeweler::GemcutterTasks.new
-  Jeweler::RubyforgeTasks.new do |rubyforge|
-    rubyforge.doc_task = "rdoc"
-  end
+#  Jeweler::RubyforgeTasks.new do |rubyforge|
+#    rubyforge.doc_task = "rdoc"
+#  end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
