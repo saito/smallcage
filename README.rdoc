@@ -12,7 +12,7 @@ If successfully installed, smc command will be available.
 
   $ smc
   Usage: smc <subcommand> [options]
-  SmallCage 0.1.5 - Lightweight CMS Package.
+  SmallCage 0.1.9 - simple website generator
   Subcommands are:
       update [path]                    Build smc contents.
       clean  [path]                    Remove files generated from *.smc source.

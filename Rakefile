@@ -2,8 +2,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "smallcage"
-    gemspec.summary = "Lightweight CMS package."
-    gemspec.description = "Lightweight CMS package."
+    gemspec.summary = "simple website generator"
+    gemspec.description = "simple website generator"
     gemspec.email = "smallcage@googlegroups.com"
     gemspec.homepage = "http://www.smallcage.org"
     gemspec.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
