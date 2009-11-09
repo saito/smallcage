@@ -1,4 +1,4 @@
-= SmallCage -- Lightweigt CMS Package.
+= SmallCage -- simple website generator
 
 
 == Installation
