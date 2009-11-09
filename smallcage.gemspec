@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
   s.date = %q{2009-11-09}
   s.default_executable = %q{smc}
-  s.description = %q{simple website generator}
+  s.description = %q{Lightweight CMS package.}
   s.email = %q{smallcage@googlegroups.com}
   s.executables = ["smc"]
   s.extra_rdoc_files = [
@@ -127,6 +127,7 @@ Gem::Specification.new do |s|
      "spec/data/multifiles/_smc/templates/default.rhtml",
      "spec/data/multifiles/_smc/templates/items.rhtml",
      "spec/data/multifiles/_smc/templates/items.uri.rhtml",
+     "spec/data/multifiles/index.html.smc",
      "spec/data/multifiles/items/index.html.smc",
      "spec/data/updatelists/list1.yml",
      "spec/document_path_spec.rb",
@@ -139,13 +140,14 @@ Gem::Specification.new do |s|
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/update_list_spec.rb",
-     "spec/update_spec.rb"
+     "spec/update_spec.rb",
+     "spec/uri_spec.rb"
   ]
   s.homepage = %q{http://www.smallcage.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{simple website generator}
+  s.summary = %q{Lightweight CMS package.}
   s.test_files = [
     "spec/document_path_spec.rb",
      "spec/export_spec.rb",
@@ -156,7 +158,8 @@ Gem::Specification.new do |s|
      "spec/smallcage_spec.rb",
      "spec/spec_helper.rb",
      "spec/update_list_spec.rb",
-     "spec/update_spec.rb"
+     "spec/update_spec.rb",
+     "spec/uri_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -164,9 +167,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
+      s.add_dependency(%q<rspec>, [">= 1.2.9"])
     end
   else
+    s.add_dependency(%q<rspec>, [">= 1.2.9"])
   end
 end
 
