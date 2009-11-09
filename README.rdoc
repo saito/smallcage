@@ -17,11 +17,12 @@ If successfully installed, smc command will be available.
       update [path]                    Build smc contents.
       clean  [path]                    Remove files generated from *.smc source.
       server [path] [port]             Start HTTP server.
-      auto   [path] [port]             Start auto update daemon.
+      auto   [path] [port]             Start auto update server.
       import [name|uri]                Import project.
       export [path] [outputpath]       Export project.
+      uri    [path]                    Print URIs.
       manifest [path]                  Generate Manifest.html file.
-
+  
   Options are:
   
       -h, --help                       Show this help message.
