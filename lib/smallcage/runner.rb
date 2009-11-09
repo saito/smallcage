@@ -44,6 +44,11 @@ module SmallCage
       SmallCage::Commands::Export.execute(@opts)
     end
 
+    def uri
+      require_command "uri"
+      SmallCage::Commands::Uri.execute(@opts)
+    end
+
     def require_command(name)
       require "smallcage/commands/#{name}.rb"
     end

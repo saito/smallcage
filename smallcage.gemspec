@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{smallcage}
-  s.version = "0.1.8"
+  s.version = "0.1.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
-  s.date = %q{2009-11-05}
+  s.date = %q{2009-11-09}
   s.default_executable = %q{smc}
   s.description = %q{Lightweight CMS package.}
   s.email = %q{smallcage@googlegroups.com}
@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
      "lib/smallcage/commands/manifest.rb",
      "lib/smallcage/commands/server.rb",
      "lib/smallcage/commands/update.rb",
+     "lib/smallcage/commands/uri.rb",
      "lib/smallcage/document_path.rb",
      "lib/smallcage/erb_base.rb",
      "lib/smallcage/http_server.rb",
@@ -143,7 +144,6 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://www.smallcage.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{smallcage}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Lightweight CMS package.}
   s.test_files = [

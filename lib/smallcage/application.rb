@@ -53,6 +53,7 @@ Subcommands are:
     auto   [path] [port]             Start auto update server.
     import [name|uri]                Import project.
     export [path] [outputpath]       Export project.
+    uri    [path]                    Print URIs.
     manifest [path]                  Generate Manifest.html file.
 
 Options are:
@@ -89,6 +90,7 @@ BANNER
       :import => "smc import [name|uri]",
       :export => "smc export [path] [outputpath]",
       :help   => "smc help [command]\n",
+      :uri    => "smc uri [path]\n",
     }
   
     banners.each do |k,v|
@@ -151,6 +153,9 @@ BANNER
       @options[:path] = ARGV.shift
       @options[:path] ||= "."
       @options[:out] = ARGV.shift
+    elsif @options[:command] == :uri
+      @options[:path] = ARGV.shift
+      @options[:path] ||= "."
     elsif @options[:command] == :manifest
       @options[:path] = ARGV.shift
       @options[:path] ||= "."
