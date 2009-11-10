@@ -1,5 +1,16 @@
 = SmallCage -- simple website generator
 
+SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work.
+
+With SmallCage, you can
+
+* simply separate your template from content.
+* convert your content to a plain, static website. It's easy to serve and test.
+* generate multi pages from a single CSV file or even Google Docs spreadsheet.
+* share your template with various web applications: Ruby on Rails, WordPress, and MovableType.
+* manage your website with a source code management system like a Git, Subversion, and CVS.
+* customize the rules of convert with Ruby.
+
 
 == Installation
 

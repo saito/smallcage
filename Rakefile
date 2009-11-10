@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "smallcage"
-    gem.summary = "Lightweight CMS package."
-    gem.description = "Lightweight CMS package."
+    gem.summary = "simple website generator"
+    gem.description = "SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work."
     gem.email = "smallcage@googlegroups.com"
     gem.homepage = "http://www.smallcage.org"
     gem.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
