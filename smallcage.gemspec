@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{smallcage}
-  s.version = "0.1.9"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
-  s.date = %q{2009-11-09}
+  s.date = %q{2009-11-11}
   s.default_executable = %q{smc}
-  s.description = %q{Lightweight CMS package.}
+  s.description = %q{SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work.}
   s.email = %q{smallcage@googlegroups.com}
   s.executables = ["smc"]
   s.extra_rdoc_files = [
@@ -147,7 +147,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Lightweight CMS package.}
+  s.summary = %q{simple website generator}
   s.test_files = [
     "spec/document_path_spec.rb",
      "spec/export_spec.rb",
