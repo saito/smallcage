@@ -1,11 +1,16 @@
+require "rexml/document" 
+
 module SmallCage
   class CacheFilter
+    TARGET_EXT = %w{css js png gif jpg ico}
+    TARGET_PATTERN = "**/*--latest.{#{TARGET_EXT.join(",")}}"
+    TARGET_SRC_REX = %r{(["'])(?!https?://)([^"']+--latest\.(?:#{TARGET_EXT.join("|")}))(["'])}
 
     def initialize(opts)
     end
 
     def after_rendering_filter(obj, str)
-      str.gsub %r{(\s(?:src|href)=["'])(?!https?://)([^"']+--latest\.(?:css|js|png|gif|jpg))(["'])} do
+      str.gsub TARGET_SRC_REX do
         pre  = $1
         path = $2
         pro  = $3
@@ -31,5 +36,53 @@ module SmallCage
       return entry
     end
     private :find_latest
+
+    
+    # Get svn revision of file path + ".smc" or path
+    def self.get_revision(path)
+      smcpath = Pathname.new(path.to_s + ".smc")
+      path = smcpath if smcpath.file?
+      
+      src = %x{svn info --xml #{path}}
+      begin
+        doc = REXML::Document.new(src)
+        revision = doc.elements['/info/entry/commit/@revision'].value
+        return revision
+      rescue
+        puts "Can't get revision number: #{path}"
+        return "0"
+      end    
+    end
+    
+    def self.outfiles(srcfile, outfiles)
+      r = srcfile.rindex("--latest")
+      prefix = srcfile[0..r]
+      suffix = srcfile[r + 8 .. -1]
+      result = []
+      outfiles.each do |f|
+        if f[0..r] == prefix && f[- suffix.length .. -1] == suffix
+          rev = f[r ... -suffix.length]
+          if rev =~ /^-(\d+)$/
+            result << [f, $1.to_i]
+          end
+        end
+      end
+      return result.sort {|a,b| a[1] <=> b[1]}
+    end
+    
+    def self.create_cache(list, dryrun, quiet = false)
+      list.each do |path|
+        revision = SmallCage::CacheFilter.get_revision(path)
+        to = path.pathmap("%{--latest$,-#{revision}}X%x")
+        puts File.exist?(to) ? "(cache)U #{to}" : "(cache)A #{to}" unless quiet 
+        begin
+          FileUtils.copy(path,to) unless dryrun
+        rescue => e
+          puts "  ERROR: #{e} #{path} -> #{to}"
+        end
+      end
+    end
+
   end
+  
 end
