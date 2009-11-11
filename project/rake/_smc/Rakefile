@@ -1,6 +1,5 @@
 Dir.chdir(File.dirname(__FILE__) + "/..")
 
-require 'pathname'
 require 'rubygems'
 require 'smallcage'
 
