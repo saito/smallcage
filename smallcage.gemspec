@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
-  s.date = %q{2009-11-11}
+  s.date = %q{2009-11-13}
   s.default_executable = %q{smc}
   s.description = %q{SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work.}
   s.email = %q{smallcage@googlegroups.com}
@@ -57,6 +57,7 @@ Gem::Specification.new do |s|
      "project/cache/_smc/filters/cache_filter.rb",
      "project/cache/_smc/filters/filters.yml",
      "project/cache/_smc/rakelib/cache.rake",
+     "project/gdata/_smc/rakelib/gdata.rake",
      "project/lang/_smc/helpers/lang_helper.rb",
      "project/lang/_smc/templates/other_lang.rhtml",
      "project/news/_smc/helpers/news_helper.rb",
