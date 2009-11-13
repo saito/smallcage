@@ -25,7 +25,8 @@ module SmallCage
       
       rex = /^(.+)--latest(\.[^.]+)$/
       pattern    = relpath.to_s.sub(rex, '\1-*\2')
-      ext = $2
+      pre = $1
+      pro = $2
 
       # Search largest numbered file.
       entry = nil
@@ -33,8 +34,8 @@ module SmallCage
         files = []
         Dir.glob(pattern).each do |f|
           next if f == relpath
-          tmppath = f[0...-ext.length]
-          next unless tmppath =~ /-0*(\d+)$/
+          number = f[pre.length ... -pro.length]
+          next unless number =~ /^-0*(\d+)$/
           files << [f, $1.to_i]
         end
         files.reject {|f| f == relpath }
