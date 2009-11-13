@@ -30,7 +30,7 @@ module SmallCage
       # Search largest numbered file.
       entry = nil
       Dir.chdir(dir) do
-        files = [] 
+        files = []
         Dir.glob(pattern).each do |f|
           next if f == relpath
           tmppath = f[0...-ext.length]
@@ -38,7 +38,7 @@ module SmallCage
           files << [f, $1.to_i]
         end
         files.reject {|f| f == relpath }
-        entry = files.sort{|a,b| a[1] <=> b[1] }.last[0]
+        entry = files.sort{|a,b| a[1] <=> b[1] }.last.to_a[0]
       end
       return path unless entry
       
