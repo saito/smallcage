@@ -26,6 +26,17 @@ class GDataExporter
   end
   private :auth_file
 
+  def umask_close
+    old = File.umask
+    File.umask(077)
+    begin
+      yield
+    ensure
+      File.umask(old)
+    end
+  end
+  private :umask_close
+
   def env
     unless File.file?(CONFIG_FILE)
       puts "ERROR: Config file not found: #{CONFIG_FILE}"
@@ -62,22 +73,46 @@ You can get document keys using 'gdata:keys' task.
 EOT
     end
 
-    unless AUTH_ROOT.directory?
-      puts "ERROR: #{AUTH_ROOT}/ doesn't exist. Create directory."
-      return
+    unless AUTH_ROOT.exist?
+      umask_close do
+        Dir.mkdir(AUTH_ROOT)
+        puts "OK: auth dir created: #{AUTH_ROOT}"
+      end
     end
-    if auth_file.exist?
-      puts "OK: auth file exists: #{auth_file}"
+    if AUTH_ROOT.stat.mode & 077 != 0
+      puts "ERROR: Close group/other permission for security: #{AUTH_ROOT}"
+    end
+
+    afile = auth_file
+    if afile.file?
+      if afile.stat.mode & 077 != 0
+        puts "ERROR: Close group/other permission for security: #{afile}"
+      else
+        puts "OK: auth file exists: #{afile}"
+      end
     else
-      puts "ERROR: auth file doesn't exist: #{auth_file}"
+      puts "ERROR: auth file doesn't exist. execute gdata:login task.: #{afile}"
     end
   end
   
   def login
-    auth = YAML.load_file(auth_file)
+    umask_close { _login }
+  end
+
+  def _login
+    unless AUTH_ROOT.directory?
+      Dir.mkdir(AUTH_ROOT)
+      puts "OK: auth dir created: #{AUTH_ROOT}"
+    end
+    check_permission(AUTH_ROOT)
+
+    if auth_file.exist?
+      auth = YAML.load_file(auth_file)
+    end
     auth ||= {}
     if auth["email"] || auth["pass"]
       puts "ERROR: using email/pass in the auth file: #{auth_file}"
+      return
     end
 
     (email,pass) = login_prompt_highline
@@ -91,6 +126,7 @@ EOT
     end
     puts "OK: Login token saved: #{auth_file}"
   end
+  private :_login
 
   def login_prompt_highline
     email = ask("Email: ")
@@ -99,7 +135,16 @@ EOT
   end
   private :login_prompt_highline
 
+  def check_permission(path)
+    if path.stat.mode & 077 != 0
+      raise "Close group/other permission for security: #{path}"
+    end
+  end
+
   def list
+    check_permission(auth_file.parent)
+    check_permission(auth_file)
+
     c = GData::Client::DocList.new
     auth = YAML.load_file(auth_file)
 
@@ -124,10 +169,17 @@ EOT
   end
 
   def export
+    check_permission(auth_file.parent)
+    check_permission(auth_file)
+
     c = GData::Client::Spreadsheets.new
-    auth = YAML.load_file(auth_file)
+    auth = YAML.load_file(auth_file) || {}
 
     if auth["email"].to_s.empty?
+      if auth["spreadsheets"].to_s.empty?
+        puts "ERROR: execute gdata:login task."
+        return
+      end
       c.auth_handler = GData::Auth::ClientLogin.new("wise")
       c.auth_handler.token = auth["spreadsheets"]
     else
@@ -147,6 +199,7 @@ end
 
 namespace :gdata do
 
+  desc "show Google Data API configuration."
   task :env do
     exporter = GDataExporter.new
     exporter.env
@@ -158,12 +211,14 @@ namespace :gdata do
     exporter.login
   end
 
+  desc "list all Google Spreadsheets."
   task :list do
     exporter = GDataExporter.new
     exporter.list
   end
 
-  task :update do
+  desc "export Google Spreadsheets as CSV."
+  task :export do
     exporter = GDataExporter.new
     exporter.export
   end
