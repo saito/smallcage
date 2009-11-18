@@ -62,13 +62,14 @@ td {
 }
 
 #content ul {
+    margin: 0;
+    padding: 0;
 	margin:15px 0 15px 25px;
 }
 
 #content ul li {
-	border-bottom:1px solid #eee;
-	padding:10px;
-	color:#444;
+    margin: 0;
+    padding: 0;
 }
 
 #content img {
@@ -171,12 +172,13 @@ blockquote {
 }
 
 #content h2 {
+    color: #000;
 	font:190% Times;
 	margin-top:45px;
 }
 
 #content h2 a {
-	color:#333;
+	color:#000;
 	text-decoration:none;
 }
 
@@ -211,18 +213,18 @@ blockquote {
 }
 
 #header h3 {
-	font:80% Verdana;
-	color:#999;
+	font:100% Verdana;
+	color:#000;
 	display:inline;
 	margin-left:35px;
 }
 
 ul#nav {
-	background:#8EDF53;
+	background:#333333;
 	padding:10px;
 	font-size:80%;
-	border-top:3px solid #6CCC26;
-	border-bottom:3px solid #6CCC26;
+	border-top:2px solid #000000;
+	border-bottom:2px solid #000000;
 	font-weight:bold;
 	margin:45px 0 0 0;
 }
@@ -245,17 +247,15 @@ ul#nav li a:hover {
 }
 
 ul#nav li a.active {
-	background:#fff;
-	color:#333;
-	border-right:2px solid #6CCC26;
-	border-bottom:2px solid #6CCC26;
+	background:#666;
+	color:#fff;
 }
 
 p.about {
-	border-top:3px solid #6CCC26;
-	border-bottom:3px solid #6CCC26;
+	border-top:2px solid #000;
+	border-bottom:2px solid #000;
 	color:#fff;
-	background:#8EDF53;
+	background:#333;
 	padding:10px;
 }
 
