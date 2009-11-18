@@ -1,0 +1,8 @@
+<%- unless lang.nil? -%>
+<%- unless lang == "ja" -%>
+<a href="<%= switch_lang('ja') %>">Japanese</a>
+<%- end -%>
+<%- unless lang == "en" -%>
+<a href="<%= switch_lang('en') %>">English</a>
+<%- end -%>
+<%- end -%>

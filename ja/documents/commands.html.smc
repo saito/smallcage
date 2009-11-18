@@ -1,0 +1,142 @@
+template: textile
+title: Command Line Reference
+--- |
+h2. Command Line Reference
+
+h3. help
+
+<blockquote><pre>
+
+smc help
+
+</pre></blockquote>
+
+ヘルプを表示します。
+
+h3. update
+
+<blockquote><pre>
+
+smc update [target]
+
+</pre></blockquote>
+
+targetディレクトリ、またはファイルを更新します。targetは、_smcディレクトリが置かれたディレクトリ以下にある必要があります。targetを省略すると、カレントディレクトリをアップデートします。
+
+targetにディレクトリを指定した場合は、そのディレクトリ以下の <code>*.smc</code> ファイルを更新します。
+
+また、前回のupdateで存在した <code>*.smc</code> ファイルが消えていた場合、該当する出力ファイルを削除します。
+
+
+例:
+
+<blockquote><pre>
+
+$ cd projectdir
+$ smc update
+
+$ smc update .
+
+$ smc update ./index.html.smc
+
+</pre></blockquote>
+
+
+
+h3. auto
+
+<blockquote><pre>
+
+smc auto [target] [port]
+
+</pre></blockquote>
+
+target で指定したディレクトリ以下のファイルに変更があった場合、自動でupdateを実行します。またportで指定されたポート番号で、HTTPサーバを起動します。portを省略すると、HTTPサーバは起動しません。
+
+このHTTPサーバには、更新されたページを自動で表示する機能があります。http://localhost:ポート番号/_smc/auto にアクセスすると、最後に更新されたページを別ウィンドウに表示し続けます。
+
+例:
+
+<blockquote><pre>
+
+smc auto . 8080
+
+</pre></blockquote>
+
+h3. import
+
+<blockquote><pre>
+
+smc import [projectname]
+
+</pre></blockquote>
+
+プロジェクトの雛形を作成します。
+
+例:
+
+<blockquote><pre>
+
+$ smc import default,standard,redcloth
+
+$ smc import http://example.com/externalproject/
+
+</pre></blockquote>
+
+
+
+h3. export
+
+<blockquote><pre>
+
+smc export [target] [exportdir]
+
+</pre></blockquote>
+
+プロジェクトを書き出します。_smcディレクトリや <code>*.smc</code>ファイルを取り除いたツリーが exportdir にコピーされます。
+
+exportdirディレクトリが既に存在している場合はエラーになります。exportdirを省略すると、/_smc/tmp/export/(日付)/ ディレクトリにエクスポートされます。
+
+例:
+
+<blockquote><pre>
+
+$ smc export . /tmp/mysite
+
+</pre></blockquote>
+
+
+h3. clean
+
+<blockquote><pre>
+
+smc clean [target]
+
+</pre></blockquote>
+
+例:
+
+<blockquote><pre>
+
+$ smc clean ./project
+
+</pre></blockquote>
+
+
+h3. server
+
+<blockquote><pre>
+
+smc server [targetdir] [port]
+
+</pre></blockquote>
+
+HTTPサーバを起動します。targetdirがドキュメントルートになります。smcのプロジェクトである必要はありません。
+
+例:
+
+<blockquote><pre>
+
+$ smc server ./htdocs 8080
+
+</pre></blockquote>

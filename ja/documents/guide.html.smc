@@ -1,0 +1,296 @@
+template: textile
+title: User's Guide
+--- |
+h2. SmallCage User's Guide
+
+h3. .smc file
+
+SmallCageは、(filename).smc という名前のファイルから、(filename)を生成するアプリケーションです。例えば、
+
+<blockquote><pre>
+
+index.html.smc → index.html
+
+</pre></blockquote>
+
+という生成を行います。
+
+smcファイルは、出力に必要なデータをYAML形式で記述したファイルです。smcファイルは次のような見た目をしています。
+
+<blockquote><pre>
+
+ --- |
+ <p>simple sample</p>
+
+</pre></blockquote>
+
+また、次のように構造化されている場合もあります。
+
+<blockquote><pre>
+
+ template: gallery
+ image: photo1.jpg
+ date: 2020-01-02
+ title: my picture
+ site:
+   - http://www.example.com/abc
+   - http://www.example.com/def
+   - http://www.example.com/ghi
+ map: http://maps.example.com/xxx
+ --- |
+ <p>description</p>
+
+</pre></blockquote>
+
+
+YAMLのMappingのキーは自由に設定できます。キーは、テンプレートからその名前で参照されます。
+
+ただし、以下の名前はSmallCageによって特別扱いされます。
+
+* template …… テンプレート名
+* dirs …… ディレクトリ情報
+* uri / uri.smc …… 出力するファイル/smcファイルのURI
+* file / file.smc …… 出力するファイル/smcファイルのパス
+* strings …… smcファイルに書かれた文字列の配列
+* arrays …… smcファイルに書かれた配列の配列
+* body …… <code>strings[0]</code>のエイリアス
+
+
+
+h4. template 
+
+/_smc/templates/以下に置かれたテンプレートの名前を指定します。例。
+
+<blockquote><pre>
+
+template: free
+→ /_smc/templates/free.rhtml
+
+</pre></blockquote>
+
+template指定を省略すると /_smc/templates/default.rhtml を使用します。
+
+h4. dirs
+
+ディレクトリについての情報を格納した配列が設定されます。配列の要素は出力するファイルの親ディレクトリに対応します。<code>dirs[0]</code>には、ドキュメントルートの情報が格納されています。<code>dirs.last</code>には、smcファイルが置かれたディレクトリの情報が格納されます。
+
+_dir.smc という名前のファイルで、dirsの要素に独自のディレクトリ情報を加えることができます。
+
+h4. uri
+
+出力するファイルのURIが設定されます。また、uri.smcという名前でsmcファイルのURIを取得できます。例。
+
+<blockquote><pre>
+
+smcファイル /abc/def/index.html.smc
+uri /abc/def/index.html
+uri.smc /abc/def/index.html.smc
+
+</pre></blockquote>
+
+h4. file
+
+出力するファイルのパスが、Pathnameオブジェクトで設定されます。uriと同様にfile.smc で smcファイルを指すPathnameオブジェクトを取得できます。例。
+
+<blockquote><pre>
+
+ドキュメントルート: /home/smc/project 
+smcファイル: /abc/def/index.html.smc
+file: /home/smc/project/abc/def/index.html (Pathname)
+file.smc: /home/smc/project/abc/def/index.html.smc (Pathname)
+
+</pre></blockquote>
+
+h4. strings
+
+文字列の配列。YAML文書の1つがスカラー値だった場合に、stringsに追加されます。
+
+h4. arrays
+
+配列の配列。YAML文書の1つが配列だった場合に、arraysに追加されます。
+
+h4. body
+
+<code>strings[0]</code>のエイリアスです。最初の文字列は、bodyでアクセスできます。
+
+
+h3. smc object
+
+SmallCageは、smcファイルを読み込んでsmcオブジェクトを作成します。smcオブジェクトはRubyのHashインスタンスです。
+
+'<code>---</code>'で区切られたYAML文書のうち、Mapping型のものは全てHashに格納されます。キーが重複した場合は、後から定義されたもので上書きされます。
+
+Scalar型の文書は、smcオブジェクトのstringsというキーに格納されます。これは文字列の配列です。
+
+Sequence型の文書は、arraysというキーに格納されます。これは配列の配列です。
+
+
+例。以下のsmcファイルがあった場合、
+
+<blockquote><pre>
+ template: default
+ title: This is the page!
+ --- |
+ <p>abc</p>
+ ---
+ - a
+ - b
+ - c
+ --- |
+ <p>something difference</p>
+ ---
+ - x
+ - y
+ - z
+ ---
+ site: http://example.com
+</pre></blockquote>
+
+以下のsmcオブジェクトに変換されます。
+
+<blockquote><pre>
+ @obj = {
+  "template" => "default",
+  "title" => "This is the page!",
+  "site" => "http://example.com",
+  "strings" => [
+    "<p>abc</p>",
+    "<p>something difference</p>"
+  ],
+  "arrays" => [
+    ["a", "b", "c"],
+    ["x", "y", "z"]
+  ],
+  "body" => "<p>abc</p>" # bodyはstrings[0]のエイリアスです。
+ }
+</pre></blockquote>
+
+テンプレートから単純な名前でアクセスできるようにすることが、この変換の目的です。
+
+
+h3. _dir.smc file
+
+_dir.smcファイルは、そのファイルが置かれたディレクトリの情報を定義するファイルです。_dir.smcから_dirファイルは生成されません。
+
+テンプレートからは、dirsという名前でディレクトリ情報の配列を取得できます。<code>dirs[0]</code>はドキュメントルートのディレクトリ情報です。
+
+
+
+h3. _smc directory
+
+_smcディレクトリが置かれた場所がドキュメントルートになります。
+
+
+h3. Templates
+
+テンプレートは、/_smc/templates/に置かれたERB形式のファイルです。拡張子は.rhtmlとします。smcファイルから、templateという名前でテンプレートを指定できます。
+
+<blockquote><pre>
+template: free
+</pre></blockquote>
+
+は/_smc/templates/free.rhtml を使います。templateを省略するとdefault.rhtmlが使用されます。
+
+smcオブジェクトは、テンプレートから@objという名前でアクセスできます。
+
+<blockquote><pre>
+<%= @obj["image"] %>
+</pre></blockquote>
+
+また、通常@objは省略できます。例えば、上の例は、
+
+<blockquote><pre>
+<%= image %>
+</pre></blockquote>
+
+と書くことができます。出力中のファイルのURIを表示したいなら、
+
+<blockquote><pre>
+<%= uri %>
+</pre></blockquote>
+
+です(uriは上で説明した特別扱いされる名前の1つです)。ドキュメントルートのURIを出力したい場合は、
+
+<blockquote><pre>
+<%= dirs[0]["uri"] %>
+</pre></blockquote>
+
+とします。現在のディレクトリは
+
+<blockquote><pre>
+<%= dirs.last["uri"] %>
+</pre></blockquote>
+
+と書けます。
+
+テンプレートも単純な名前でインクルードすることができます。例えば、
+
+<blockquote><pre>
+<%= header %>
+<%= body %>
+<%= footer %>
+</pre></blockquote>
+
+と書くことで、bodyの前後にheader.rhtmlとfooter.rhtmlをインクルードできます。
+
+
+h3. Helper methods
+
+ヘルパーメソッドは、/_smc/helpers/*.rbで定義されたメソッドです。テンプレートからは、メソッド名でアクセスすることができます。例えば /_smc/helpers/site_helper.rb に
+
+<blockquote><pre>
+module SmallCage
+  module SiteHelper
+  	def current_date
+  	  Time.new.strftime("%Y-%m-%d")
+  	end
+  end
+end
+</pre></blockquote>
+
+とあった場合、テンプレートで
+
+<blockquote><pre>
+<%= current_date %>
+</pre></blockquote>
+
+のように呼び出すことができます。
+
+上の例にあるとおり、ヘルパーメソッドは、SmallCageモジュール内のファイル名をキャメルケースにしたモジュールに記述します。
+
+h3. Namespace
+
+テンプレートで使用する名前には、以下のような優先順位があります。
+
+1. テンプレート内で定義されたローカル変数、メソッド等
+
+名前がテンプレート内で定義されていればその名前を参照します。
+
+2. ヘルパメソッド
+
+その名前が未定義だった場合、ヘルパメソッドを探します。
+
+3. smcオブジェクト
+
+ヘルパメソッドが無ければ、smcオブジェクトのキーを探します。
+
+4. テンプレート名
+
+smcオブジェクトのキーが見つからなければ、最後にその名前のテンプレートを探します。
+
+この優先順位により、テンプレートをsmcファイルから上書きできます。例えば、
+
+<blockquote><pre>
+<%= copyright %>
+</pre></blockquote>
+
+が通常はcopyright.rhtmlをインクルードしている場合に、特定のsmcファイルだけ
+
+<blockquote><pre>
+copyright: (c) 2001-2020 Special Page Inc.
+</pre></blockquote>
+
+のようにして別の内容を書き出すことができます。また、ヘルパメソッドでsmcオブジェクトの値を上書きできます。上の例でcopyrightという名前のヘルパーメソッドがあった場合は、テンプレートの有無やsmcファイルの内容に関わらず、ヘルパーメソッドが呼ばれます。
+
+ヘルパメソッドの呼び出し部分を別のテンプレートに書くことで、ヘルパの優先順位をsmcオブジェクトよりも下げることができます。
+

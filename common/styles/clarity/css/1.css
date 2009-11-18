@@ -1,0 +1,305 @@
+/* CSS Document */
+
+body {
+	background:#fff;
+	font: 16px/1.95em "Lucida Grande","Lucida Sans Unicode",geneva,verdana,sans-serif;
+	margin:0;
+	color:#666;
+	padding-top:20px;
+	border:3px solid #eee;
+}
+
+html {
+	border:15px solid #f6f6f6;
+	border-left:30px solid #f6f6f6;
+	border-right:30px solid #f6f6f6;
+}
+
+* {
+	margin:0;
+	padding:0;
+	outline:none;
+}
+
+#footer {
+	padding:20px 50px;
+	margin-top:50px;
+	clear:both;
+	border-top:2px solid #eee;
+	font:80% Verdana;
+	line-height:25px;
+}
+
+#footer a {
+	color:#999;
+}
+
+#footer .validate {
+	float:right;
+}
+
+table {
+	width:100%;
+	padding:10px;
+	border:1px solid #eee;
+}
+
+th {
+	color:#6CCC26;
+	border-bottom:1px solid #eee;
+	padding:5px;
+}
+
+td {
+	padding:5px;
+	text-align:center;
+	background:#fafafa;
+}
+
+#container {
+	width:95%;
+	margin:0 auto;
+}
+
+#content ul {
+	margin:15px 0 15px 25px;
+}
+
+#content ul li {
+	border-bottom:1px solid #eee;
+	padding:10px;
+	color:#444;
+}
+
+#content img {
+	background:#fff;
+	padding:1px;
+	border:3px solid #eee;
+	margin:10px;
+}
+
+
+
+#sidebar ul {
+	list-style:none;
+}
+
+#sidebar ul a {
+	color:#444;
+	font:80% Verdana;
+	text-decoration:none;
+}
+
+#sidebar ul a span {
+	color:#ccc;
+}
+
+#sidebar ul a:hover span {
+	color:#333;
+}
+
+#sidebar p {
+	font:80% Verdana;
+	line-height:24px;
+	margin:10px 0 20px 0;
+}
+
+#sidebar ul li {
+	background:#fafafa;
+	margin:1px 0 0 0;
+	padding:5px;
+}
+
+#sidebar h3 {
+	font:120% Arial;
+	margin:5px 0;
+	color:#222;
+}
+
+#content {
+	width:70%;
+	float:left;
+	margin-bottom:50px;
+}
+
+#sidebar {
+	margin-left:75%;
+	border-left:1px solid #eee;
+	padding-left:30px;
+}
+
+.articleinfo {
+	font:80% Verdana;
+	border-top:1px solid #eee;
+	color:#999;
+	padding:20px 0;
+}
+
+.articleinfo a {
+	color:#6CCC26;
+}
+
+.articleinfo a:hover {
+	text-decoration:none;
+}
+
+#content h3 {
+	margin:20px 0;
+}
+
+blockquote {
+	background:#f6f6f6;
+	padding:0 10px;
+	border:1px solid #eee;
+	font:100% Georgia;
+}
+
+#content p {
+	line-height:30px;
+	margin:20px 0;
+	word-spacing:2px;
+}
+
+#content p a {
+	color:#222;
+	text-decoration:none;
+	border-bottom:1px solid #ccc;
+}
+
+#content p a:hover {
+	border-bottom:1px solid #aaa;
+}
+
+#content h2 {
+	font:190% Times;
+	margin-top:45px;
+}
+
+#content h2 a {
+	color:#333;
+	text-decoration:none;
+}
+
+#header {
+	width:100%;
+	margin:0 auto;
+	padding:20px 0;
+}
+
+#header .right {
+	float:right;
+}
+
+#header h1 {
+	font:290% Times New Roman;
+	letter-spacing:-2px;
+	margin-bottom:5px;
+	margin-left:35px;
+}
+
+#header h1 a {
+	color:#000;
+	text-decoration:none;
+}
+
+#header h1 a span {
+	color:#ccc;
+}
+
+#header h1 a:hover span {
+	color:#A3E800;
+}
+
+#header h3 {
+	font:80% Verdana;
+	color:#999;
+	display:inline;
+	margin-left:35px;
+}
+
+ul#nav {
+	background:#8EDF53;
+	padding:10px;
+	font-size:80%;
+	border-top:3px solid #6CCC26;
+	border-bottom:3px solid #6CCC26;
+	font-weight:bold;
+	margin:45px 0 0 0;
+}
+
+ul#nav li {
+	display:inline;
+	list-style:none;
+	margin-right:10px;
+}
+
+ul#nav li a {
+	padding:10px 14px;
+	color:#fff;
+	text-decoration:none;
+}
+
+ul#nav li a:hover {
+	background:#7EDB39;
+	color:#fff;
+}
+
+ul#nav li a.active {
+	background:#fff;
+	color:#333;
+	border-right:2px solid #6CCC26;
+	border-bottom:2px solid #6CCC26;
+}
+
+p.about {
+	border-top:3px solid #6CCC26;
+	border-bottom:3px solid #6CCC26;
+	color:#fff;
+	background:#8EDF53;
+	padding:10px;
+}
+
+p.about a {
+	color:#fff;
+}
+	
+
+
+
+/* These are standard sIFR styles... do not modify */
+
+.sIFR-flash {
+	visibility: visible !important;
+	margin: 0;
+}
+
+.sIFR-replaced {
+	visibility: visible !important;
+}
+
+span.sIFR-alternate {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 0;
+	display: block;
+	overflow: hidden;
+}
+
+/* Hide Adblock Object tab: the text should show up just fine, not poorly with a tab laid over it. */
+.sIFR-flash + div[adblocktab=true] {
+  display: none !important;
+}
+
+/* These "decoy" styles are used to hide the browser text before it is replaced... the negative-letter spacing in this case is used to make the browser text metrics match up with the sIFR text metrics since the sIFR text in this example is so much narrower... your own settings may vary... any weird sizing issues you may run into are usually fixed by tweaking these decoy styles */
+
+
+
+.sIFR-hasFlash h2 {
+	visibility: hidden;
+	letter-spacing: -9px;
+	font-size: 55px;
+}
+
+

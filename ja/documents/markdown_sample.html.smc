@@ -1,0 +1,8 @@
+template: markdown
+--- |
+
+Markdown Sample
+---------------
+
+Redclothの[markdown](http://daringfireball.net/projects/markdown/)エンジンを使ったサンプルです。
+

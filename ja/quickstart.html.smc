@@ -1,0 +1,75 @@
+template: textile
+title: Quick Start
+--- |
+h2. Quick Start
+
+
+h3. Install
+
+"RubyGems":http://docs.rubygems.org/ を使ってインストールします。
+
+<blockquote>
+<pre>
+
+$ gem install smallcage
+
+</pre>
+</blockquote>
+
+
+h3. Create Project
+
+smc importコマンドでプロジェクトのテンプレートをインポートします。
+
+<blockquote>
+<pre>
+
+$ mkdir mysite
+$ cd mysite
+$ smc import default,standard
+
+</pre>
+</blockquote>
+
+defaultは最低限のファイルを含むプロジェクトテンプレートです。standardは一般的なサイトのプロジェクトテンプレートです。
+
+
+h3. Update
+
+smc updateコマンドで、サイトを構築します。
+
+<blockquote>
+<pre>
+
+$ smc update
+
+</pre>
+</blockquote>
+
+(filename).smcファイルから、(filename)が生成されます。
+
+
+h3. Start HTTP Server
+
+<blockquote>
+<pre>
+
+$ smc server . 8080
+
+</pre>
+</blockquote>
+
+"http://localhost:8080/":http://localhost:8080/ にアクセスしてサイトが表示されることを確認します。サーバを停止する時は、Control-Cを押します。
+
+
+h3. Start Auto Update Daemon
+
+<blockquote>
+<pre>
+
+$ smc auto 
+
+</pre>
+</blockquote>
+
+*.smc ファイルを修正した時に自動で smc update を実行します。
