@@ -253,8 +253,12 @@ p.about a {
 	color:#fff;
 }
 	
-
-
+#langSwitch {
+    float: right;
+    color: #fff;
+}
+#langSwitch a {
+}
 
 /* These are standard sIFR styles... do not modify */
 
