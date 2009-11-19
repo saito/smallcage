@@ -21,6 +21,10 @@ html {
 	outline:none;
 }
 
+a:link { color: #000; text-decoration:underlined; }
+a:hover { color: #ccc; }
+a:visited { color: #000; }
+
 #footer {
 	padding:20px 50px;
 	margin-top:50px;
@@ -86,17 +90,12 @@ td {
 }
 
 #sidebar ul a {
-	color:#444;
 	font:80% Verdana;
 	text-decoration:none;
 }
 
-#sidebar ul a span {
-	color:#ccc;
-}
-
-#sidebar ul a:hover span {
-	color:#333;
+#sidebar ul a:hover {
+	color:#999;
 }
 
 #sidebar p {
@@ -161,15 +160,6 @@ blockquote {
 	word-spacing:2px;
 }
 
-#content p a {
-	color:#222;
-	text-decoration:none;
-	border-bottom:1px solid #ccc;
-}
-
-#content p a:hover {
-	border-bottom:1px solid #aaa;
-}
 
 #content h2 {
     color: #000;
@@ -242,12 +232,12 @@ ul#nav li a {
 }
 
 ul#nav li a:hover {
-	background:#7EDB39;
+	background:#ccc;
 	color:#fff;
 }
 
 ul#nav li a.active {
-	background:#666;
+	background:#444;
 	color:#fff;
 }
 
