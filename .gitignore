@@ -1,1 +1,4 @@
 *.html
+_smc/tmp/
+index.html.en
+index.html.ja

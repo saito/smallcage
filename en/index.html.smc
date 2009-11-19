@@ -1,0 +1,25 @@
+template: textile
+title: Home
+--- |
+h2. About
+
+SmallCage is a simple but powerful website generator.
+It converts content with templates (contains common elements used throughout the website) into a plain, static web page. Basically, one YAML formatted text file will be converted into one web page, with a template written in eRuby, let you customize how it works entirely. No database, no application container is needed. No more repetition in many pages. Keep your site well with just a bit of work.
+
+With SmallCage, you can
+* simply separate your layout from content.
+* convert contents to a plain, static website - easy to test and serve.
+* generate multi pages from a single CSV file or Google Docs spreadsheet.
+* share your templates with various web applications: Ruby on Rails, WordPress, and MovableType.
+* manage your website with a source code management system like Git, Subversion, CVS, or every tool of your choice.
+* customize how contents are processed during the conversion with Ruby.
+
+h2. Objectives
+
+* Fast – Save time for starting up a project and going through an iteration.
+* Open – Easily collaborate with other applications.
+* Simple – Don’t make it complicated.
+
+
+h2. Links
+* Please refer "github wiki":http://wiki.github.com/bluemark/smallcage for installation and detailed usage.
