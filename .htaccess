@@ -1,0 +1,4 @@
+AddLanguage ja .ja
+AddLanguage en .en
+LanguagePriority ja en
+Options +MultiViews
