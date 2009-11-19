@@ -9,7 +9,7 @@ It converts content with templates (contains common elements used throughout the
 With SmallCage, you can
 * simply separate your layout from content.
 * convert contents to a plain, static website - easy to test and serve.
-* generate multi pages from a single CSV file or Google Docs spreadsheet.
+* generate multiple pages from a single CSV file or Google Docs spreadsheet.
 * share your templates with various web applications: Ruby on Rails, WordPress, and MovableType.
 * manage your website with a source code management system like Git, Subversion, CVS, or every tool of your choice.
 * customize how contents are transformed during the conversion process with Ruby.
