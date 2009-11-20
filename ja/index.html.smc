@@ -12,7 +12,7 @@ SmallCageでできること
 * 1枚のCSVファイルやひとつのGoogle Docs スプレッドシートから、複数のウェブページを生成することができます。
 * Ruby on Rails, WordPress, MovableTypeなど様々なアプリケーション向けのテンプレートを出力することができます。
 * ファイルベース。SmallCageで扱うデータはすべてファイルです。Git, Subversion, CVSなど、お好きなソース管理ツールでバージョン管理しましょう。
-* コンテンツをHTMLへの変換内容はRubyで書かれ、自由にカスタマイズ可能です。
+* コンテンツをHTMLへ変換する際の操作内容はRubyで書かれ、自由にカスタマイズ可能です。
 
 
 h2. Objectives
