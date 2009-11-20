@@ -8,21 +8,15 @@ It converts content with templates (contains common elements used throughout the
 
 With SmallCage, you can
 * simply separate your layout from content.
-* convert contents to a plain, static website - easy to test and serve.
+* convert contents to a plain, static website &ndash; easy to test and serve.
 * generate multiple pages from a single CSV file or Google Docs spreadsheet.
 * share your templates with various web applications: Ruby on Rails, WordPress, and MovableType.
 * manage your website with a source code management system like Git, Subversion, CVS, or every tool of your choice.
 * customize how contents are transformed during the conversion process with Ruby.
 
-h2. Objectives
-
-* Fast – Save time for starting up a project and going through an iteration.
-* Open – Easily collaborate with other applications.
-* Simple – Don’t make it complicated.
-
 
 h2. Links
 
-* "github project home":http://github.com/bluemark/smallcage
-* "Documentations":http://wiki.github.com/bluemark/smallcage
-* "Gemcutter":http://gemcutter.org/gems/smallcage - SmallCage is distributed as a rubygem.
+* "Project home":http://github.com/bluemark/smallcage (github)
+* "Documentations":http://wiki.github.com/bluemark/smallcage (github)
+* "RubyGem":http://gemcutter.org/gems/smallcage (gemcutter)

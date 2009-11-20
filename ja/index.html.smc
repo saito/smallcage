@@ -15,15 +15,8 @@ SmallCageでできること
 * コンテンツをHTMLへ変換する際の操作内容はRubyで書かれ、自由にカスタマイズ可能です。
 
 
-h2. Objectives
-
-* Fast - プロジェクトの立ち上げとイテレーションにかかる時間を短縮すること。
-* Open - 他のアプリケーションと簡単に連携できること。
-* Simple - 単純な仕組みで動くこと。
-
-
 h2. Links
 
-* "github プロジェクトホーム":http://github.com/bluemark/smallcage
-* "ドキュメンテーション":http://wiki.github.com/bluemark/smallcage
-* "Gemcutter":http://gemcutter.org/gems/smallcage - SmallCageはgemで配布しています
+* "プロジェクトホーム":http://github.com/bluemark/smallcage (github)
+* "ドキュメンテーション":http://wiki.github.com/bluemark/smallcage (github)
+* "RubyGem":http://gemcutter.org/gems/smallcage (Gemcutter)

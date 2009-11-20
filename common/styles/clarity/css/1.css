@@ -26,7 +26,7 @@ a:hover { color: #ccc; }
 a:visited { color: #000; }
 
 #footer {
-	padding:20px 50px;
+	padding:25px;
 	margin-top:50px;
 	clear:both;
 	border-top:2px solid #eee;
@@ -117,8 +117,6 @@ td {
 }
 
 #content {
-	width:70%;
-	float:left;
 	margin-bottom:50px;
 }
 
@@ -255,9 +253,8 @@ p.about a {
 	
 #langSwitch {
     float: right;
-    color: #fff;
-}
-#langSwitch a {
+    margin-right: 25px;
+    font-size: .8em;
 }
 
 /* These are standard sIFR styles... do not modify */
