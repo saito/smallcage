@@ -148,7 +148,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{simple website generator}
+  s.summary = %q{a simple website generator}
   s.test_files = [
     "spec/document_path_spec.rb",
      "spec/export_spec.rb",

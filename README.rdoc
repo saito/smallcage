@@ -1,4 +1,4 @@
-= SmallCage -- simple website generator
+= SmallCage -- a simple website generator
 
 SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work.
 
@@ -23,7 +23,7 @@ If successfully installed, smc command will be available.
 
   $ smc
   Usage: smc <subcommand> [options]
-  SmallCage 0.1.9 - simple website generator
+  SmallCage 0.1.9 - a simple website generator
   Subcommands are:
       update [path]                    Build smc contents.
       clean  [path]                    Remove files generated from *.smc source.
