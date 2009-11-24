@@ -1,12 +1,5 @@
-Dir.chdir(File.dirname(__FILE__) + "/..")
-
 require 'rubygems'
 require 'smallcage'
 
+Dir.chdir(File.dirname(__FILE__) + "/..")
 FileList["_smc/rakelib/*.rake"].each {|f| load f }
-
-task :default => :smcupdate
-
-task :smcupdate do
-  system "smc update"
-end
