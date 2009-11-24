@@ -15,7 +15,7 @@ namespace :svn do
     set_svnignore
   end
 
-  desc "confirm svn commands."
+  desc "Confirm svn commands."
   task :ignore_dryrun do
     set_svnignore(true)
   end
