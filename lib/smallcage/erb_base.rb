@@ -6,7 +6,7 @@ class SmallCage::ErbBase
 
   def method_missing(*args)
     if 1 < args.length
-      raise NameError.new("method_missing called with more than one arguments: #{@renderer.current_template} #{args.inspect}")
+      raise NameError.new("method_missing called with more than one argument: #{@renderer.current_template} #{args.inspect}")
     end
 
     name = args[0].to_s
