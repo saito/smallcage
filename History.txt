@@ -1,3 +1,8 @@
+== 0.2.1 2009-11-24
+
+* Rakefile can be put in any directory.
+* rake tasks minor bug fix.
+
 == 0.2.0 2009-11-13
 
 * add Google Data project template.

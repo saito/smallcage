@@ -14,9 +14,8 @@ class GDataExporter
   def load_config
     if File.file?(CONFIG_FILE)
       @config = YAML.load_file(CONFIG_FILE)
-    else
-      @config ||= {}
     end
+    @config ||= {}
     @config["gdata_auth"] ||= "default"
   end
   private :load_config
@@ -37,27 +36,8 @@ class GDataExporter
   end
   private :umask_close
 
-  def env
-    unless File.file?(CONFIG_FILE)
-      puts "ERROR: Config file not found: #{CONFIG_FILE}"
-      return
-    end
-    puts "OK: Config file exists: #{CONFIG_FILE.realpath}"
-
-    puts "OK: Auth name(gdata_auth): #{@config["gdata_auth"]}"
-
-    if @config["gdata_files"]
-      puts "OK: gdata_files"
-      @config["gdata_files"].to_a.each do |fileconf|
-        puts <<"EOT"
-- title: "#{fileconf["title"]}"
-  key: #{fileconf["key"]}
-  file: #{fileconf["file"]}
-EOT
-      end
-    else
-      puts <<'EOT'
-ERROR: gdata_files doesn't set.
+  def config_sample
+    puts <<'EOT'
 
 Configulation sample (add these lines to _dir.smc):
 ----------------------------------------------------------------
@@ -68,9 +48,34 @@ gdata_files:
 - key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   file: _smc/data/sample2.csv
 ----------------------------------------------------------------
-You can get document keys using 'gdata:keys' task.
+You can get document keys using 'gdata:list' task.
 
 EOT
+  end
+  private :config_sample
+
+  def env
+    unless File.file?(CONFIG_FILE)
+      puts "ERROR: Configuration file not found: #{CONFIG_FILE}"
+      config_sample
+      return
+    end
+    puts "OK: Configuration file exists: #{CONFIG_FILE.realpath}"
+
+    puts "OK: Auth name(gdata_auth): #{@config["gdata_auth"]}"
+
+    if @config["gdata_files"]
+      puts "OK: Configuration value exists: gdata_files"
+      @config["gdata_files"].to_a.each do |fileconf|
+        puts <<"EOT"
+- title: "#{fileconf["title"]}"
+  key: #{fileconf["key"]}
+  file: #{fileconf["file"]}
+EOT
+      end
+    else
+      puts "ERROR: Counfiguration value not found: gdata_files"
+      config_sample
     end
 
     unless AUTH_ROOT.exist?
@@ -199,25 +204,25 @@ end
 
 namespace :gdata do
 
-  desc "show Google Data API configuration."
+  desc "Show Google Data API configuration."
   task :env do
     exporter = GDataExporter.new
     exporter.env
   end
 
-  desc "login Google Data API."
+  desc "Login Google Data API."
   task :login do
     exporter = GDataExporter.new
     exporter.login
   end
 
-  desc "list all Google Spreadsheets."
+  desc "List all Google Spreadsheets."
   task :list do
     exporter = GDataExporter.new
     exporter.list
   end
 
-  desc "export Google Spreadsheets as CSV."
+  desc "Export Google Spreadsheets as CSV."
   task :export do
     exporter = GDataExporter.new
     exporter.export
