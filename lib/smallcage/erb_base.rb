@@ -4,10 +4,13 @@ class SmallCage::ErbBase
     @loader, @renderer, @obj = loader, renderer, obj
   end
 
-  def method_missing(name)
-    n = name.to_s
-    
-    return @obj[n] unless @obj[n].nil?
+  def method_missing(*args)
+    if 1 < args.length
+      raise NameError.new("method_missing called with more than one arguments: #{@renderer.current_template} #{args.inspect}")
+    end
+
+    name = args[0].to_s
+    return @obj[name] unless @obj[name].nil?
 
     # render if template file exists. or return nil.
     return @renderer.render(name, @obj)

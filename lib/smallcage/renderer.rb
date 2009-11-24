@@ -1,4 +1,5 @@
 class SmallCage::Renderer
+  attr_reader :current_template
 
   def initialize(loader)
     @loader = loader
@@ -7,6 +8,7 @@ class SmallCage::Renderer
   def render(name, obj)
     path = @loader.template_path(name)
     return nil if path.nil?
+    @current_template = path
     return render_string(path.read, obj)
   end
     
