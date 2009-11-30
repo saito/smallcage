@@ -11,8 +11,8 @@ With SmallCage, you can
 * manage your website with a source code management system like a Git, Subversion, and CVS.
 * customize the rules of convert with Ruby.
 
-Please visit our wiki for more detailed discussion.
-http://wiki.github.com/bluemark/smallcage
+{Please visit our wiki for more detailed discussion.}[http://wiki.github.com/bluemark/smallcage]
+
 
 == Installation
 
