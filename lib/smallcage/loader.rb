@@ -100,7 +100,7 @@ module SmallCage
       begin
         obj = YAML.load_stream(source)
         return result if obj.nil?
-      rescue => e
+      rescue Exception => e
         raise "Can't load file: #{path} / #{e}"
       end
       obj.documents.each do |o|
@@ -210,7 +210,10 @@ module SmallCage
       return result
     end
     private :load_erb_base
-    
+
+    # XXX This anonymouse loading process was required for smcweb server,
+    # but can't solve problem completely. Smcweb should execute smc command
+    # as another process.
     def load_anonymous(dir, rex)
       module_names = []
       mod = Module.new
@@ -227,9 +230,9 @@ module SmallCage
         src = File.read("#{dir}/#{h}")
         begin
           mod.module_eval(src, "#{dir}/#{h}")
-        rescue => ex
+        rescue Exception => ex
           STDERR << ex.to_s # TODO show error
-          load("#{dir}/#{h}", true) # try to know error line number.
+          Kernel.load("#{dir}/#{h}", true) # try to know error line number.
           raise "Can't load #{dir}/#{h} / line# unknown"
         end
         module_names << module_name
