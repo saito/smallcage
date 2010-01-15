@@ -1,16 +1,10 @@
 #!/usr/bin/env ruby
-#
-#  Created on 2007-8-22.
-#  Copyright (c) 2007. All rights reserved.
-
-unless defined? Gem
-  $:.unshift File.dirname(__FILE__) + "/../lib"
-end
 
 begin
+  require 'smallcage'
+rescue LoadError
   require 'rubygems'
   require 'smallcage'
-  SmallCage::Application.execute
-rescue LoadError
 end
+SmallCage::Application.execute
 
