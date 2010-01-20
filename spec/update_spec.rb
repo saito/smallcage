@@ -75,5 +75,23 @@ describe 'update' do
     
   end
 
+  it "should cause error when undefined method called with argument." do
+    root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs4")
+    begin
+      lambda {
+        SmallCage::Runner.run({:command => "update", :path => root.to_s, :quiet => true })
+      }.should raise_error(NameError)
+
+      begin
+        SmallCage::Runner.run({:command => "update", :path => root.to_s, :quiet => true })
+      rescue NameError => e
+        msg = e.message
+        msg.should match %r{^Can\'t render: /error1\.html: method_missing called with more than one argument: template:.+/_smc/templates/error1\.rhtml args:\[:abc, 123\]}
+      end
+    ensure
+      SmallCage::Runner.run({:command => "clean", :path => root.to_s, :quiet => true })
+    end
+  end
+
   
 end
