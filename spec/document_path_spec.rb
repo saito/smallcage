@@ -2,10 +2,10 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'smallcage'
 
 describe SmallCage::DocumentPath do
-  root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
   
   before do
-    @docpath = SmallCage::DocumentPath.new(root, root + "a/b/c/index.html.smc")
+    @rootdir = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    @docpath = SmallCage::DocumentPath.new(@rootdir, @rootdir + "a/b/c/index.html.smc")
   end
   
   it "should have uri property" do
@@ -30,13 +30,53 @@ describe SmallCage::DocumentPath do
   end
   
   it "should return root uri" do
-    docpath = SmallCage::DocumentPath.new(root, root)
+    docpath = SmallCage::DocumentPath.new(@rootdir, @rootdir)
     docpath.uri.should == "/"
   end
   
   it "should return directory uri" do
-    docpath = SmallCage::DocumentPath.new(root, root + "a/b")
+    docpath = SmallCage::DocumentPath.new(@rootdir, @rootdir + "a/b")
     docpath.uri.should == "/a/b"
+  end
+
+  it "should raise Exception when the path doesn't exist under the root directory" do
+    rootdir = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    path    = Pathname.new(File.dirname(__FILE__))
+
+    ok = false
+    begin
+      docpath = SmallCage::DocumentPath.new(rootdir, path)
+    rescue => e
+      e.message.should =~ /\AIllegal path: /
+      ok = true
+    end
+    ok.should be_true
+
+
+    rootdir = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    path    = Pathname.new(File.dirname(__FILE__) + "/data/htdocs")
+
+    ok = false
+    begin
+      docpath = SmallCage::DocumentPath.new(rootdir, path)
+    rescue => e
+      e.message.should =~ /\AIllegal path: /
+      ok = true
+    end
+    ok.should be_true
+
+
+    rootdir = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    path    = Pathname.new(File.dirname(__FILE__) + "/data/htdocs2")
+
+    ok = false
+    begin
+      docpath = SmallCage::DocumentPath.new(rootdir, path)
+    rescue => e
+      e.message.should =~ /\AIllegal path: /
+      ok = true
+    end
+    ok.should be_true
   end
   
 end

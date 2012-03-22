@@ -31,14 +31,20 @@ class SmallCage::Application
     self.new.execute
   end
 
-  def execute
+  def execute(argv = ARGV)
+    options = parse_options(argv)
+    SmallCage::Runner.run(options)
+  end
+
+  def parse_options(argv)
+    @argv = argv
     @options = {}
     @parser = create_main_parser
     parse_main_options
     @command_parsers = create_command_parsers
     parse_command
     parse_command_options
-    SmallCage::Runner.run(@options)
+    @options
   end
 
   def create_main_parser
@@ -72,7 +78,7 @@ BANNER
       puts VERSION_NOTE
       exit
     end
-    @parser.order!(ARGV)
+    @parser.order!(@argv)
   end
   private :parse_main_options
 
@@ -91,6 +97,7 @@ BANNER
       :export => "smc export [path] [outputpath]",
       :help   => "smc help [command]\n",
       :uri    => "smc uri [path]\n",
+      :manifest => "smc manifest [path]\n",
     }
   
     banners.each do |k,v|
@@ -111,9 +118,9 @@ BANNER
       :au => :auto,
     })
 
-    unless ARGV.empty?
-      @options[:command] = commands[ARGV.shift.to_sym]
-      @command_parsers[@options[:command]].parse!(ARGV)
+    unless @argv.empty?
+      @options[:command] = commands[@argv.shift.to_sym]
+      @command_parsers[@options[:command]].parse!(@argv)
     end
 
     if @options[:command].nil?
@@ -125,7 +132,7 @@ BANNER
 
   def parse_command_options
     if @options[:command] == :help
-      subcmd = ARGV.shift
+      subcmd = @argv.shift
       if subcmd.nil?
         puts @parser
       else
@@ -133,34 +140,34 @@ BANNER
       end
       exit
     elsif @options[:command] == :update
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
     elsif @options[:command] == :server
-      @options[:path] = ARGV.shift
-      @options[:port] = ARGV.shift
+      @options[:path] = @argv.shift
+      @options[:port] = @argv.shift
       @options[:path] ||= "."
       @options[:port] ||= 80
     elsif @options[:command] == :auto
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
-      @options[:port] = ARGV.shift
+      @options[:port] = @argv.shift
     elsif @options[:command] == :import
-      @options[:from] = ARGV.shift
+      @options[:from] = @argv.shift
       @options[:from] ||= "default"
-      @options[:to] = ARGV.shift
+      @options[:to] = @argv.shift
       @options[:to] ||= "."
     elsif @options[:command] == :export
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
-      @options[:out] = ARGV.shift
+      @options[:out] = @argv.shift
     elsif @options[:command] == :uri
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
     elsif @options[:command] == :manifest
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
     elsif @options[:command] == :clean
-      @options[:path] = ARGV.shift
+      @options[:path] = @argv.shift
       @options[:path] ||= "."
     end
   end
