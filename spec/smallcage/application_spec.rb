@@ -3,6 +3,30 @@ require 'smallcage'
 
 describe SmallCage::Application do
 
+  def capture_result
+    status = nil
+    result = nil
+    tmpout = StringIO.new
+    tmperr = StringIO.new
+    original_out, $stdout = $stdout, tmpout
+    original_err, $stderr = $stderr, tmperr
+    begin
+      result = yield
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+      $stderr = original_err
+    end
+
+    return { 
+      :exit => status,
+      :result => result,
+      :stdout => tmpout.string,
+      :stderr => tmperr.string
+    }
+  end
+
   before(:each) do
     @target = SmallCage::Application.new
   end
@@ -30,10 +54,10 @@ describe SmallCage::Application do
 
   it "should parse auto command" do
     options = @target.parse_options(["auto", "."])
-    options.should == { :path => ".", :command => :auto, :port => nil }
+    options.should == { :path => ".", :command => :auto, :port => nil, :bell => false }
 
     options = @target.parse_options(["au", ".", "8080"])
-    options.should == { :path => ".", :command => :auto, :port => "8080" }
+    options.should == { :path => ".", :command => :auto, :port => "8080", :bell => false }
   end
 
   it "should parse import command" do
@@ -69,105 +93,127 @@ describe SmallCage::Application do
   end
 
   it "should exit 1 if command is empty" do
-    status = nil
-    tmpout = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      @target.parse_options([])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 1
-    tmpout.string.should =~ /\AUsage:/
-    tmpout.string.should =~ /^Subcommands are:/
+    result = capture_result { @target.parse_options([]) }
+    result[:exit].should == 1
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
   end
 
   it "should show help" do
-    status = nil
-    tmpout = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      @target.parse_options(["help"])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 0
-    tmpout.string.should =~ /\AUsage:/
-    tmpout.string.should =~ /^Subcommands are:/
+    result = capture_result { @target.parse_options(["help"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
   end
-
 
   it "should show help if the arguments include --help" do
-    status = nil
-    tmpout = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      @target.parse_options(["--help", "update"])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 0
-    tmpout.string.should =~ /\AUsage:/
-    tmpout.string.should =~ /^Subcommands are:/
+    result = capture_result { @target.parse_options(["--help", "update"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
   end
 
-
   it "should show subcommand help" do
-    status = nil
-    tmpout = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      @target.parse_options(["help", "update"])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 0
-    tmpout.string.should =~ /\AUsage: smc update \[path\]/
+    result = capture_result { @target.parse_options(["help", "update"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\AUsage: smc update \[path\]/
+    result[:stderr].should be_empty
   end
 
   it "should exit if the command is unknown" do
-    status = nil
-    tmpout = StringIO.new
-    tmperr = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      original_err, $stderr = $stderr, tmperr
-      @target.parse_options(["xxxx"])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 1
-    tmpout.string.should be_empty
-    tmperr.string.should == "no such subcommand: xxxx\n"
+    result = capture_result { @target.parse_options(["xxxx"]) }
+    result[:exit].should == 1
+    result[:stdout].should be_empty
+    result[:stderr].should == "no such subcommand: xxxx\n"
   end
 
-
   it "should show version" do
-    status = nil
-    tmpout = StringIO.new
-    tmperr = StringIO.new
-    begin
-      original_out, $stdout = $stdout, tmpout
-      original_err, $stderr = $stderr, tmperr
-      @target.parse_options(["--version", "update"])
-    rescue SystemExit => e
-      status = e.status
-    ensure
-      $stdout = original_out
-    end
-    status.should == 0
-    tmpout.string.should =~ /\ASmallCage \d+\.\d+\.\d+ - /
-    tmperr.string.should be_empty
+    result = capture_result { @target.parse_options(["--version", "update"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
+    result[:stderr].should be_empty
+  end
+
+  it "should exit when subcommand is empty" do
+    result = capture_result { @target.parse_options(["", "--version"]) }
+    result[:exit].should == 1
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
+  end
+
+  it "should ignore subcommand with --version option" do
+    result = capture_result { @target.parse_options(["help", "--version"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
+    result[:stderr].should be_empty
+  end
+
+  it "should ignore subcommand with -v option" do
+    result = capture_result { @target.parse_options(["help", "-v"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
+    result[:stderr].should be_empty
+  end
+
+  it "should ignore subcommand with --help option" do
+    result = capture_result { @target.parse_options(["update", "--help"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
+  end
+
+  it "should ignore subcommand with -h option" do
+    result = capture_result { @target.parse_options(["update", "-h"]) }
+    result[:exit].should == 0
+    result[:stdout].should =~ /\AUsage:/
+    result[:stdout].should =~ /^Subcommands are:/
+    result[:stderr].should be_empty
+  end
+
+  it "should exit with unknown main option --QQQ" do
+    result = capture_result { @target.parse_options(["--QQQ"]) }
+    result[:exit].should == 1
+    result[:stdout].should be_empty
+    result[:stderr].should == "invalid option: --QQQ\n"
+  end
+
+  it "should exit with unknown sub option --QQQ" do
+    result = capture_result { @target.parse_options(["update", "--QQQ"]) }
+    result[:exit].should == 1
+    result[:stdout].should be_empty
+    result[:stderr].should == "invalid option: --QQQ\n"
+  end
+
+  it "should accept auto command --bell option" do
+    result = capture_result { @target.parse_options(["auto", "--bell"]) }
+    result[:exit].should == nil
+    result[:stdout].should be_empty
+    result[:stderr].should be_empty
+    result[:result].should == {
+      :command => :auto,
+      :port => nil,
+      :path => ".",
+      :bell => true
+    }
+  end
+
+  it "should set bell option false as default" do
+    result = capture_result { @target.parse_options(["auto"]) }
+    result[:exit].should == nil
+    result[:stdout].should be_empty
+    result[:stderr].should be_empty
+    result[:result].should == {
+      :command => :auto,
+      :port => nil,
+      :path => ".",
+      :bell => false
+    }
+
   end
 
 end

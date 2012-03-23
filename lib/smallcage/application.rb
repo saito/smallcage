@@ -83,15 +83,13 @@ BANNER
 
   def parse_main_options
     @parser.order!(@argv)
+  rescue OptionParser::InvalidOption => e
+    $stderr.puts e.message
+    exit(false)
   end
   private :parse_main_options
 
   def create_command_parsers
-    parsers = Hash.new do |h,k|
-      $stderr.puts "no such subcommand: #{k}"
-      exit(false)
-    end
-
     banners = {
       :update => "smc update [path]\n",
       :clean  => "smc clean [path]\n",
@@ -103,18 +101,59 @@ BANNER
       :uri    => "smc uri [path]\n",
       :manifest => "smc manifest [path]\n",
     }
-  
-    banners.each do |k,v|
-      parsers[k] = OptionParser.new do |cp|
-        cp.banner = "Usage: " + v
-      end
+
+    parsers = {}
+    banners.each do |command, banner|
+      parsers[command] = create_default_command_parser(banner)
+    end
+
+    parsers[:auto].on("--bell", "Ring bell after publish.") do |boolean|
+      @options[:bell] = boolean
     end
 
     return parsers
   end
   private :create_command_parsers
 
+  def create_default_command_parser(banner)
+    parser = OptionParser.new
+    parser.banner = "Usage: " + banner
+
+    # ignore subcommand. (smc help --version => show version)
+    parser.on("-h", "--help") do
+      puts @parser
+      exit(true)
+    end
+    parser.on("-v", "--version") do
+      puts VERSION_NOTE
+      exit(true)
+    end
+
+    return parser
+  end
+  private :create_default_command_parser
+
   def parse_command
+    @options[:command] = get_command
+
+    if @options[:command].nil?
+      puts @parser
+      exit(false)
+    end
+    parser = @command_parsers[@options[:command]]
+    if parser.nil?
+      $stderr.puts "no such subcommand: #{@options[:command]}"
+      exit(false)
+    end
+    parser.parse!(@argv)
+  rescue OptionParser::InvalidOption => e
+    $stderr.puts e.message
+    exit(false)
+  end
+  private :parse_command
+
+
+  def get_command
     commands = Hash.new {|h,k| k}
     commands.merge!({
       :up => :update,
@@ -122,17 +161,12 @@ BANNER
       :au => :auto,
     })
 
-    unless @argv.empty?
-      @options[:command] = commands[@argv.shift.to_sym]
-      @command_parsers[@options[:command]].parse!(@argv)
-    end
-
-    if @options[:command].nil?
-      puts @parser
-      exit(false)
-    end
+    command_name = @argv.shift.to_s.strip
+    return nil if command_name.empty?
+    return commands[command_name.to_sym]
   end
-  private :parse_command
+  private :get_command
+
 
   def parse_command_options
     if @options[:command] == :help
@@ -155,6 +189,7 @@ BANNER
       @options[:path] = @argv.shift
       @options[:path] ||= "."
       @options[:port] = @argv.shift
+      @options[:bell] ||= false
     elsif @options[:command] == :import
       @options[:from] = @argv.shift
       @options[:from] ||= "default"
