@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{smallcage}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["SAITO Toshihiro", "gommmmmm", "KOSEKI Kengo"]
-  s.date = %q{2009-11-24}
+  s.date = %q{2012-03-23}
   s.default_executable = %q{smc}
   s.description = %q{SmallCage is a simple, but powerful website generator. It converts content and template files, which has common elements in a website, to a plain, static website. No database, no application container, and no repeat in many pages is needed. You can keep your site well with very little work.}
   s.email = %q{smallcage@googlegroups.com}
@@ -138,6 +138,9 @@ Gem::Specification.new do |s|
      "spec/loader_spec.rb",
      "spec/manifest_spec.rb",
      "spec/misc_spec.rb",
+     "spec/smallcage/application_spec.rb",
+     "spec/smallcage/commands/auto_spec.rb",
+     "spec/smallcage/commands/server_spec.rb",
      "spec/smallcage_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
@@ -157,6 +160,9 @@ Gem::Specification.new do |s|
      "spec/loader_spec.rb",
      "spec/manifest_spec.rb",
      "spec/misc_spec.rb",
+     "spec/smallcage/application_spec.rb",
+     "spec/smallcage/commands/auto_spec.rb",
+     "spec/smallcage/commands/server_spec.rb",
      "spec/smallcage_spec.rb",
      "spec/spec_helper.rb",
      "spec/update_list_spec.rb",
