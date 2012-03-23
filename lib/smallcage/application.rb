@@ -76,6 +76,11 @@ BANNER
       puts VERSION_NOTE
       exit(true)
     end
+    
+    @options[:quiet] = false
+    parser.on("-q", "--quiet", "Do not print message.") do |boolean|
+      @options[:quiet] = boolean
+    end
 
     return parser
   end
@@ -119,7 +124,7 @@ BANNER
     parser = OptionParser.new
     parser.banner = "Usage: " + banner
 
-    # ignore subcommand. (smc help --version => show version)
+    # these options can place both before and after the subcommand.
     parser.on("-h", "--help") do
       puts @parser
       exit(true)
@@ -127,6 +132,9 @@ BANNER
     parser.on("-v", "--version") do
       puts VERSION_NOTE
       exit(true)
+    end
+    parser.on("-q", "--quiet") do |boolean|
+      @options[:quiet] = boolean
     end
 
     return parser

@@ -33,63 +33,63 @@ describe SmallCage::Application do
 
   it "should parse update command" do
     options = @target.parse_options(["update", "."])
-    options.should == { :path => ".", :command => :update }
+    options.should == { :path => ".", :command => :update, :quiet => false }
 
     options = @target.parse_options(["up", "."])
-    options.should == { :path => ".", :command => :update }
+    options.should == { :path => ".", :command => :update, :quiet => false }
   end
 
   it "should parse clean command" do
     options = @target.parse_options(["clean", "."])
-    options.should == { :path => ".", :command => :clean }
+    options.should == { :path => ".", :command => :clean, :quiet => false }
   end
 
   it "should parse server command" do
     options = @target.parse_options(["server", "."])
-    options.should == { :path => ".", :command => :server, :port => 80 } # num
+    options.should == { :path => ".", :command => :server, :quiet => false, :port => 80 } # num
 
     options = @target.parse_options(["sv", ".", "8080"])
-    options.should == { :path => ".", :command => :server, :port => "8080" } # string
+    options.should == { :path => ".", :command => :server, :quiet => false, :port => "8080" } # string
   end
 
   it "should parse auto command" do
     options = @target.parse_options(["auto", "."])
-    options.should == { :path => ".", :command => :auto, :port => nil, :bell => false }
+    options.should == { :path => ".", :command => :auto, :port => nil, :bell => false, :quiet => false }
 
     options = @target.parse_options(["au", ".", "8080"])
-    options.should == { :path => ".", :command => :auto, :port => "8080", :bell => false }
+    options.should == { :path => ".", :command => :auto, :port => "8080", :bell => false, :quiet => false }
   end
 
   it "should parse import command" do
     options = @target.parse_options(["import", "base", "."])
-    options.should == {  :command => :import, :from => "base", :to => "." }
+    options.should == {  :command => :import, :from => "base", :to => ".", :quiet => false }
 
     options = @target.parse_options(["import"])
-    options.should == {  :command => :import, :from => "default", :to => "." }
+    options.should == {  :command => :import, :from => "default", :to => ".", :quiet => false }
   end
   
   it "should parse export command" do
     options = @target.parse_options(["export", ".", "path"])
-    options.should == { :command => :export, :path => ".",  :out => "path" }
+    options.should == { :command => :export, :path => ".",  :out => "path", :quiet => false }
 
     options = @target.parse_options(["export"])
-    options.should == { :command => :export, :path => ".",  :out => nil }
+    options.should == { :command => :export, :path => ".",  :out => nil, :quiet => false }
   end
 
   it "should parse uri command" do
     options = @target.parse_options(["uri", "./path/to/target"])
-    options.should == { :command => :uri, :path => "./path/to/target" }
+    options.should == { :command => :uri, :path => "./path/to/target", :quiet => false }
 
     options = @target.parse_options(["uri"])
-    options.should == { :command => :uri, :path => "." }
+    options.should == { :command => :uri, :path => ".", :quiet => false }
   end
 
   it "should parse manifest command" do
     options = @target.parse_options(["manifest", "./path/to/target"])
-    options.should == { :command => :manifest, :path => "./path/to/target" }
+    options.should == { :command => :manifest, :path => "./path/to/target", :quiet => false }
 
     options = @target.parse_options(["manifest"])
-    options.should == { :command => :manifest, :path => "." }
+    options.should == { :command => :manifest, :path => ".", :quiet => false }
   end
 
   it "should exit 1 if command is empty" do
@@ -198,7 +198,8 @@ describe SmallCage::Application do
       :command => :auto,
       :port => nil,
       :path => ".",
-      :bell => true
+      :bell => true,
+      :quiet => false,
     }
   end
 
@@ -211,9 +212,48 @@ describe SmallCage::Application do
       :command => :auto,
       :port => nil,
       :path => ".",
-      :bell => false
+      :bell => false,
+      :quiet => false,
     }
+  end
 
+  it "should accept --quiet option" do
+    result = capture_result { @target.parse_options(["--quiet", "update"]) }
+    result[:exit].should == nil
+    result[:stdout].should be_empty
+    result[:stderr].should be_empty
+    result[:result].should == {
+      :command => :update,
+      :path => ".",
+      :quiet => true,
+    }
+  end
+
+  it "should accept --quiet option after subcommand" do
+    result = capture_result { @target.parse_options(["update", "--quiet"]) }
+    result[:exit].should == nil
+    result[:stdout].should be_empty
+    result[:stderr].should be_empty
+    result[:result].should == {
+      :command => :update,
+      :path => ".",
+      :quiet => true,
+    }
+  end
+
+  it "should accept --quiet option before and after subcommand" do
+    opts = ["--quiet", "auto", "--quiet", "path", "--bell", "80"]
+    result = capture_result { @target.parse_options(opts) }
+    result[:exit].should == nil
+    result[:stdout].should be_empty
+    result[:stderr].should be_empty
+    result[:result].should == {
+      :command => :auto,
+      :path => "path",
+      :port => "80",
+      :bell => true,
+      :quiet => true,
+    }
   end
 
 end

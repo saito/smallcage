@@ -78,6 +78,7 @@ module SmallCage::Commands
       
       update_http_server(target_files)
       puts_line
+      notify
     end
     private :update_target
 
@@ -107,12 +108,14 @@ module SmallCage::Commands
         update_http_server(target_files)
       end
       puts_line
+      notify
     rescue Exception => e
       STDERR.puts e.to_s
       STDERR.puts $@[0..4].join("\n")
       STDERR.puts ":"
-      print "\a" unless quiet? # Bell
       puts_line
+      notify
+      notify
     end
     private :update_modified_files
     
@@ -127,10 +130,15 @@ module SmallCage::Commands
     def puts_line
       return if quiet?
       puts "-" * 60
-      print "\a" # Bell
     end
     private :puts_line
     
+    def notify
+      return unless @opts[:bell]
+      print "\a" # Bell
+    end
+    private :notify
+
     def update_http_server(target_files)
       return unless @http_server
       path = target_files.find {|p| p.basename.to_s != "_dir.smc" }
