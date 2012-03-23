@@ -46,10 +46,24 @@ describe SmallCage::Application do
 
   it "should parse server command" do
     options = @target.parse_options(["server", "."])
-    options.should == { :path => ".", :command => :server, :quiet => false, :port => 80 } # num
+    options.should == { :path => ".", :command => :server, :quiet => false, :port => 8080 } # num
 
     options = @target.parse_options(["sv", ".", "8080"])
-    options.should == { :path => ".", :command => :server, :quiet => false, :port => "8080" } # string
+    options.should == { :path => ".", :command => :server, :quiet => false, :port => 8080 } # string
+  end
+
+  it "should accept only number port" do
+    result = capture_result { @target.parse_options(["server", ".", "pot"]) }
+    result[:exit].should == 1
+    result[:stdout].should be_empty
+    result[:stderr].should == "illegal port number: pot\n"
+  end
+
+  it "should not accept port 0" do
+    result = capture_result { @target.parse_options(["server", ".", "0"]) }
+    result[:exit].should == 1
+    result[:stdout].should be_empty
+    result[:stderr].should == "illegal port number: 0\n"
   end
 
   it "should parse auto command" do
@@ -57,7 +71,7 @@ describe SmallCage::Application do
     options.should == { :path => ".", :command => :auto, :port => nil, :bell => false, :quiet => false }
 
     options = @target.parse_options(["au", ".", "8080"])
-    options.should == { :path => ".", :command => :auto, :port => "8080", :bell => false, :quiet => false }
+    options.should == { :path => ".", :command => :auto, :port => 8080, :bell => false, :quiet => false }
   end
 
   it "should parse import command" do
@@ -248,7 +262,7 @@ describe SmallCage::Application do
     result[:result].should == {
       :command => :auto,
       :path => "path",
-      :port => "80",
+      :port => 80,
       :bell => true,
       :quiet => true,
     }

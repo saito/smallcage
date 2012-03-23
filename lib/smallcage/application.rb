@@ -109,7 +109,7 @@ EOT
       :server => <<EOT,
 smc server [path] [port] [options]
     path : target directory (default:'.')
-    port : HTTP server port number (default:80)
+    port : HTTP server port number (default:8080)
 EOT
 
       :auto   => <<EOT,
@@ -209,7 +209,6 @@ EOT
   end
   private :get_command
 
-
   def parse_command_options
     if @options[:command] == :help
       subcmd = @argv.shift
@@ -224,13 +223,12 @@ EOT
       @options[:path] ||= "."
     elsif @options[:command] == :server
       @options[:path] = @argv.shift
-      @options[:port] = @argv.shift
       @options[:path] ||= "."
-      @options[:port] ||= 80
+      @options[:port] = get_port_number(8080)
     elsif @options[:command] == :auto
       @options[:path] = @argv.shift
       @options[:path] ||= "."
-      @options[:port] = @argv.shift
+      @options[:port] = get_port_number(nil)
       @options[:bell] ||= false
     elsif @options[:command] == :import
       @options[:from] = @argv.shift
@@ -253,5 +251,17 @@ EOT
     end
   end
   private :parse_command_options
+
+  def get_port_number(default)
+    return default if @argv.empty?
+      
+    port = @argv.shift
+    if port.to_i == 0
+      $stderr.puts "illegal port number: #{port}"
+      exit(false)
+    end
+    return port.to_i
+  end
+  private :get_port_number
 
 end
