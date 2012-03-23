@@ -1,3 +1,10 @@
+== 0.2.2 2012-03-23
+
+* add --quiet / -q option.
+* add --bell option to auto command.
+* change server command default port number from 80 to 8080.
+* fix exit status.
+
 == 0.2.1 2009-11-24
 
 * Rakefile can be put in any directory.
