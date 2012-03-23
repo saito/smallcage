@@ -67,7 +67,7 @@ module SmallCage::Commands
       modified_special_files
       target_files = modified_files 
 
-      runner = SmallCage::Runner.new({ :path => @target })
+      runner = SmallCage::Runner.new({ :path => @target, :quiet => @opts[:quiet] })
       begin
         runner.update
       rescue Exception => e
@@ -95,9 +95,9 @@ module SmallCage::Commands
       return if target_files.empty?
       target_files.each do |tf|
         if tf.basename.to_s == "_dir.smc"
-          runner = SmallCage::Runner.new({ :path => tf.parent })
+          runner = SmallCage::Runner.new({ :path => tf.parent, :quiet => @opts[:quiet] })
         else
-          runner = SmallCage::Runner.new({ :path => tf })
+          runner = SmallCage::Runner.new({ :path => tf, :quiet => @opts[:quiet] })
         end
         runner.update
       end
