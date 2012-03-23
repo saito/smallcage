@@ -53,13 +53,13 @@ class SmallCage::Application
   def create_main_parser
     parser = OptionParser.new
     parser.banner =<<BANNER
-Usage: #{File.basename($0)} <subcommand> [options]
+Usage: #{File.basename($0)} [options] <subcommand> [subcommand-options]
 #{VERSION_NOTE}
 Subcommands are:
     update [path]                    Build smc contents.
     clean  [path]                    Remove files generated from *.smc source.
     server [path] [port]             Start HTTP server.
-    auto   [path] [port]             Start auto update server.
+    auto   [path] [port] [--bell]    Start auto update server.
     import [name|uri]                Import project.
     export [path] [outputpath]       Export project.
     uri    [path]                    Print URIs.
@@ -96,15 +96,48 @@ BANNER
 
   def create_command_parsers
     banners = {
-      :update => "smc update [path]\n",
-      :clean  => "smc clean [path]\n",
-      :server => "smc server [path] [port]\n",
-      :auto   => "smc auto [path] [port]\n",
-      :import => "smc import [name|uri]",
-      :export => "smc export [path] [outputpath]",
-      :help   => "smc help [command]\n",
-      :uri    => "smc uri [path]\n",
-      :manifest => "smc manifest [path]\n",
+      :update => <<EOT,
+smc update [path] [options]
+    path : target directory. (default:'.')
+EOT
+
+      :clean  => <<EOT,
+smc clean [path] [options]
+    path : target directory (default:'.')
+EOT
+
+      :server => <<EOT,
+smc server [path] [port] [options]
+    path : target directory (default:'.')
+    port : HTTP server port number (default:80)
+EOT
+
+      :auto   => <<EOT,
+smc auto [path] [port] [options]
+    path : target directory (default:'.')
+    port : HTTP server port number (default:don't launch the server)
+EOT
+
+      :import => <<EOT,
+smc import [name|uri] [options]
+EOT
+
+      :export => <<EOT,
+smc export [path] [outputpath] [options]
+EOT
+
+      :help   => <<EOT,
+smc help [command]
+EOT
+
+      :uri    => <<EOT,
+smc uri [path] [options]
+EOT
+
+      :manifest => <<EOT,
+smc manifest [path] [options]
+EOT
+
     }
 
     parsers = {}
@@ -112,7 +145,7 @@ BANNER
       parsers[command] = create_default_command_parser(banner)
     end
 
-    parsers[:auto].on("--bell", "Ring bell after publish.") do |boolean|
+    parsers[:auto].on("--bell", "Ring bell after publishing files.") do |boolean|
       @options[:bell] = boolean
     end
 
@@ -123,17 +156,18 @@ BANNER
   def create_default_command_parser(banner)
     parser = OptionParser.new
     parser.banner = "Usage: " + banner
+    parser.separator "Options are:"
 
     # these options can place both before and after the subcommand.
-    parser.on("-h", "--help") do
-      puts @parser
+    parser.on("-h", "--help", "Show this help message.") do
+      puts parser
       exit(true)
     end
-    parser.on("-v", "--version") do
+    parser.on("-v", "--version", "Show version info.") do
       puts VERSION_NOTE
       exit(true)
     end
-    parser.on("-q", "--quiet") do |boolean|
+    parser.on("-q", "--quiet", "Do not print message.") do |boolean|
       @options[:quiet] = boolean
     end
 

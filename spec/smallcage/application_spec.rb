@@ -162,16 +162,14 @@ describe SmallCage::Application do
   it "should ignore subcommand with --help option" do
     result = capture_result { @target.parse_options(["update", "--help"]) }
     result[:exit].should == 0
-    result[:stdout].should =~ /\AUsage:/
-    result[:stdout].should =~ /^Subcommands are:/
+    result[:stdout].should =~ /\AUsage: smc update \[path\] \[options\]/
     result[:stderr].should be_empty
   end
 
   it "should ignore subcommand with -h option" do
     result = capture_result { @target.parse_options(["update", "-h"]) }
     result[:exit].should == 0
-    result[:stdout].should =~ /\AUsage:/
-    result[:stdout].should =~ /^Subcommands are:/
+    result[:stdout].should =~ /\AUsage: smc update \[path\] \[options\]/
     result[:stderr].should be_empty
   end
 
