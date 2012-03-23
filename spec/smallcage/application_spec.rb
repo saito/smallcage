@@ -68,5 +68,106 @@ describe SmallCage::Application do
     options.should == { :command => :manifest, :path => "." }
   end
 
+  it "should exit 1 if command is empty" do
+    status = nil
+    tmpout = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      @target.parse_options([])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 1
+    tmpout.string.should =~ /\AUsage:/
+    tmpout.string.should =~ /^Subcommands are:/
+  end
+
+  it "should show help" do
+    status = nil
+    tmpout = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      @target.parse_options(["help"])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 0
+    tmpout.string.should =~ /\AUsage:/
+    tmpout.string.should =~ /^Subcommands are:/
+  end
+
+
+  it "should show help if the arguments include --help" do
+    status = nil
+    tmpout = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      @target.parse_options(["--help", "update"])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 0
+    tmpout.string.should =~ /\AUsage:/
+    tmpout.string.should =~ /^Subcommands are:/
+  end
+
+
+  it "should show subcommand help" do
+    status = nil
+    tmpout = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      @target.parse_options(["help", "update"])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 0
+    tmpout.string.should =~ /\AUsage: smc update \[path\]/
+  end
+
+  it "should exit if the command is unknown" do
+    status = nil
+    tmpout = StringIO.new
+    tmperr = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      original_err, $stderr = $stderr, tmperr
+      @target.parse_options(["xxxx"])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 1
+    tmpout.string.should be_empty
+    tmperr.string.should == "no such subcommand: xxxx\n"
+  end
+
+
+  it "should show version" do
+    status = nil
+    tmpout = StringIO.new
+    tmperr = StringIO.new
+    begin
+      original_out, $stdout = $stdout, tmpout
+      original_err, $stderr = $stderr, tmperr
+      @target.parse_options(["--version", "update"])
+    rescue SystemExit => e
+      status = e.status
+    ensure
+      $stdout = original_out
+    end
+    status.should == 0
+    tmpout.string.should =~ /\ASmallCage \d+\.\d+\.\d+ - /
+    tmperr.string.should be_empty
+  end
 
 end

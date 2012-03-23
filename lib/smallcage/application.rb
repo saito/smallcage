@@ -39,11 +39,14 @@ class SmallCage::Application
   def parse_options(argv)
     @argv = argv
     @options = {}
+
     @parser = create_main_parser
     parse_main_options
+
     @command_parsers = create_command_parsers
     parse_command
     parse_command_options
+
     @options
   end
 
@@ -62,30 +65,31 @@ Subcommands are:
     uri    [path]                    Print URIs.
     manifest [path]                  Generate Manifest.html file.
 
-Options are:
 BANNER
+
+    parser.separator "Options are:"
+    parser.on("-h", "--help", "Show this help message.") do
+      puts parser
+      exit(true)
+    end
+    parser.on("-v", "--version", "Show version info.") do
+      puts VERSION_NOTE
+      exit(true)
+    end
+
     return parser
   end
   private :create_main_parser
 
   def parse_main_options
-    @parser.separator ""
-    @parser.on("-h", "--help", "Show this help message.") do
-      puts @parser
-      exit
-    end
-    @parser.on("-v", "--version", "Show version info.") do
-      puts VERSION_NOTE
-      exit
-    end
     @parser.order!(@argv)
   end
   private :parse_main_options
 
   def create_command_parsers
     parsers = Hash.new do |h,k|
-      STDERR << "no such subcommand: #{k}\n"
-      exit 1
+      $stderr.puts "no such subcommand: #{k}"
+      exit(false)
     end
 
     banners = {
@@ -125,7 +129,7 @@ BANNER
 
     if @options[:command].nil?
       puts @parser
-      exit
+      exit(false)
     end
   end
   private :parse_command
@@ -138,7 +142,7 @@ BANNER
       else
         puts @command_parsers[subcmd.to_sym]
       end
-      exit
+      exit(true)
     elsif @options[:command] == :update
       @options[:path] = @argv.shift
       @options[:path] ||= "."
