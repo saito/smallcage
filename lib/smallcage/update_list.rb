@@ -1,7 +1,7 @@
 module SmallCage
 
   # Updated files list model. 
-  # Do not access File system exept list.yml.
+  # Do not access File system except list.yml.
   class UpdateList
     attr_reader :update_count
 
@@ -12,7 +12,7 @@ module SmallCage
       return self.new(root_path + "_smc/tmp/list.yml", uri)
     end
 
-    # target_uri must be ends with / when target is directory.
+    # target_uri must be ended with / when the target is a directory.
     def initialize(list_file, target_uri)
       @list_file = list_file
       @target_uri = target_uri
