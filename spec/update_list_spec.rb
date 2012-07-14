@@ -109,8 +109,7 @@ EOT
       list = SmallCage::UpdateList.new(file, "/")
       e = list.expire
       e.length.should == 2
-      e[0].should == "/index.html"
-      e[1].should == "/index2.html"
+      e.should =~ ["/index.html", "/index2.html"]
       
       list = SmallCage::UpdateList.new(file, "/abc/")
       list.update("/abc/index.html.smc", 2, "/abc/index.html")
