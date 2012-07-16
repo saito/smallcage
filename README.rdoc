@@ -86,3 +86,4 @@ Start HTTP server.
 
 ...and access http://localhost:8080
 
+{<img src="https://secure.travis-ci.org/bluemark/smallcage.png" />}[http://travis-ci.org/bluemark/smallcage]
