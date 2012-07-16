@@ -150,10 +150,10 @@ module SmallCage
     
     def each_smc_file
       if @target.directory?
-        p = Pathname.new(@target)
+        path = Pathname.new(@target)
         Dir.chdir(@target) do
-          Dir.glob("**/*.smc") do |f|
-            yield p + f
+          Dir.glob("**/*.smc").sort.each do |f|
+            yield path + f
           end
         end
       else
@@ -163,14 +163,14 @@ module SmallCage
     
     def each_not_smc_file
       if @target.directory?
-        p = Pathname.new(@target)
+        path = Pathname.new(@target)
         Dir.chdir(@target) do
-          Dir.glob("**/*") do |f|
-            f = p + f
+          Dir.glob("**/*").sort.each do |f|
+            f = path + f
             next if f.directory?
             next if f.to_s =~ %r{/_smc/}
             next if f.to_s =~ %r{\.smc$}
-            yield DocumentPath.new(@root, p + f)
+            yield DocumentPath.new(@root, path + f)
           end
         end
       else
