@@ -1,3 +1,5 @@
+YAML::ENGINE.yamler = 'syck' if RUBY_VERSION >= "1.9.2"
+
 module SmallCage
   class Loader
     DEFAULT_TEMPLATE = "default"
