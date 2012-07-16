@@ -111,7 +111,7 @@ module SmallCage::Commands
       source = open(mfuri) {|io| io.read }
       result = []
       
-      files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>})
+      files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>}) #"
       files.each do |f|
         raise "illegal path:#{f[0]},#{f[1]}" if f[0] != f[1]
         raise "illegal path:#{f[0]}" if f[0] =~ %r{/\.\.}
@@ -180,7 +180,7 @@ module SmallCage::Commands
       end
       
       def external?
-        from =~ %r{^https?://}
+        from.to_s =~ %r{^https?://}
       end
       
       def exist?

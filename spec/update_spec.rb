@@ -3,7 +3,7 @@ require 'smallcage'
 
 describe 'update' do
 
-  it "should update not docroot directory" do
+  it "should not update docroot directory" do
     docroot  = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
     path = docroot + "a/b/"
 
