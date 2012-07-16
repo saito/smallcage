@@ -1,5 +1,11 @@
 = History
 
+== 0.2.3 2012-07-16
+
+* use syck YAML engine for Ruby 1.9.2 and above.
+* switch from jeweler to bundler.
+* use Travis CI.
+
 == 0.2.2 2012-03-23
 
 * add --quiet / -q option.
