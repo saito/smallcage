@@ -4,7 +4,7 @@ require 'smallcage'
 describe "smallcage" do
 
   it "show version" do
-    # puts "------- version:" + SmallCage::VERSION::STRING
+    # puts "------- version:" + SmallCage::VERSION
   end
   
 end

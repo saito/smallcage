@@ -28,7 +28,7 @@ module SmallCage
       else
         @data = {}
       end
-      @data["version"] ||= VERSION::STRING
+      @data["version"] ||= VERSION
       @data["list"] ||= []
 
       @map = {}
@@ -52,7 +52,7 @@ module SmallCage
 
     def save
       FileUtils.mkpath(@list_file.parent)
-      @data["version"] = VERSION::STRING
+      @data["version"] = VERSION
       open(@list_file, "w") do |io|
         io << to_yaml
       end

@@ -35,7 +35,7 @@ EOT
       list.save
 
       data = YAML.load_file(file)
-      data["version"].should == SmallCage::VERSION::STRING
+      data["version"].should == SmallCage::VERSION
     ensure
       file.delete
     end

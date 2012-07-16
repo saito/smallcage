@@ -1,6 +1,6 @@
 class SmallCage::Application
   require 'optparse'
-  VERSION_NOTE = "SmallCage #{SmallCage::VERSION::STRING} - a simple website generator"
+  VERSION_NOTE = "SmallCage #{SmallCage::VERSION} - a simple website generator"
   
   @@signal_handlers = nil
 
