@@ -1,6 +1,7 @@
 $:.unshift File.dirname(__FILE__)
 
 require 'yaml'
+require 'syck'
 require 'erb'
 require 'pathname'
 require 'open-uri'

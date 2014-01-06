@@ -14,4 +14,5 @@ Gem::Specification.new do |gem|
   gem.name          = "smallcage"
   gem.require_paths = ["lib"]
   gem.version       = SmallCage::VERSION
+  gem.extensions    = 'ext/mkrf_conf.rb'
 end
