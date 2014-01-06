@@ -1,5 +1,10 @@
 = History
 
+== 0.2.4 2014-01-06
+
+* install syck gem only when the Ruby version is 2.0.0 or above.
+* add require 'syck' to support 2.0.0.
+
 == 0.2.3 2012-07-16
 
 * use syck YAML engine for Ruby 1.9.2 and above.
