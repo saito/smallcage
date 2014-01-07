@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+  <head>
+    <title>User&#39;s Guide | SmallCage</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/common/styles/clarity/css/1.css" type="text/css" media="screen,projection" />
+    <script src="/common/styles/clarity/sifr/sifr.js" type="text/javascript"></script>
+    <script src="/common/styles/clarity/sifr/sifr-addons.js" type="text/javascript"></script>
+  </head>
+  <body>
+
+	<div id="header">
+      <div id="langSwitch">
+        <a href="/en/">English</a> | <a class="active">Japanese</a>
+      </div>
+	  <h1><a href="/ja/index.html">SmallCage</a></h1>
+	  <h3>a simple website generator</h3>
+	</div>
+	
+	<div id="container">
+	  
+	  <div id="content">
+		
+		
+
+
+<h2>SmallCage User&#8217;s Guide</h2>
+<h3>.smc file</h3>
+<p>SmallCageは、(filename).smc という名前のファイルから、(filename)を生成するアプリケーションです。例えば、</p>
+<blockquote><pre><br />
+<br />
+index.html.smc → index.html<br />
+<br />
+</pre></blockquote>
+<p>という生成を行います。</p>
+<p>smcファイルは、出力に必要なデータをYAML形式で記述したファイルです。smcファイルは次のような見た目をしています。</p>
+<blockquote><pre><br />
+<br />
+ <del>-</del> |<br />
+ <p>simple sample</p>
+<p></pre></blockquote></p>
+<p>また、次のように構造化されている場合もあります。</p>
+<blockquote><pre><br />
+<br />
+ template: gallery<br />
+ image: photo1.jpg<br />
+ date: 2020-01-02<br />
+ title: my picture<br />
+ site:<br />
+   &#8211; http://www.example.com/abc<br />
+   &#8211; http://www.example.com/def<br />
+   &#8211; http://www.example.com/ghi<br />
+ map: http://maps.example.com/xxx<br />
+ <del>-</del> |<br />
+ <p>description</p>
+<p></pre></blockquote></p>
+<p>YAMLのMappingのキーは自由に設定できます。キーは、テンプレートからその名前で参照されます。</p>
+<p>ただし、以下の名前はSmallCageによって特別扱いされます。</p>
+<ul>
+	<li>template …… テンプレート名</li>
+	<li>dirs …… ディレクトリ情報</li>
+	<li>uri / uri.smc …… 出力するファイル/smcファイルのURI</li>
+	<li>file / file.smc …… 出力するファイル/smcファイルのパス</li>
+	<li>strings …… smcファイルに書かれた文字列の配列</li>
+	<li>arrays …… smcファイルに書かれた配列の配列</li>
+	<li>body …… <code>strings[0]</code>のエイリアス</li>
+</ul>
+<h4>template</h4>
+<p>/_smc/templates/以下に置かれたテンプレートの名前を指定します。例。</p>
+<blockquote><pre><br />
+<br />
+template: free<br />
+→ /_smc/templates/free.rhtml<br />
+<br />
+</pre></blockquote>
+<p>template指定を省略すると /_smc/templates/default.rhtml を使用します。</p>
+<h4>dirs</h4>
+<p>ディレクトリについての情報を格納した配列が設定されます。配列の要素は出力するファイルの親ディレクトリに対応します。<code>dirs[0]</code>には、ドキュメントルートの情報が格納されています。<code>dirs.last</code>には、smcファイルが置かれたディレクトリの情報が格納されます。</p>
+<p>_dir.smc という名前のファイルで、dirsの要素に独自のディレクトリ情報を加えることができます。</p>
+<h4>uri</h4>
+<p>出力するファイルのURIが設定されます。また、uri.smcという名前でsmcファイルのURIを取得できます。例。</p>
+<blockquote><pre><br />
+<br />
+smcファイル /abc/def/index.html.smc<br />
+uri /abc/def/index.html<br />
+uri.smc /abc/def/index.html.smc<br />
+<br />
+</pre></blockquote>
+<h4>file</h4>
+<p>出力するファイルのパスが、Pathnameオブジェクトで設定されます。uriと同様にfile.smc で smcファイルを指すPathnameオブジェクトを取得できます。例。</p>
+<blockquote><pre><br />
+<br />
+ドキュメントルート: /home/smc/project <br />
+smcファイル: /abc/def/index.html.smc<br />
+file: /home/smc/project/abc/def/index.html (Pathname)<br />
+file.smc: /home/smc/project/abc/def/index.html.smc (Pathname)<br />
+<br />
+</pre></blockquote>
+<h4>strings</h4>
+<p>文字列の配列。YAML文書の1つがスカラー値だった場合に、stringsに追加されます。</p>
+<h4>arrays</h4>
+<p>配列の配列。YAML文書の1つが配列だった場合に、arraysに追加されます。</p>
+<h4>body</h4>
+<p><code>strings[0]</code>のエイリアスです。最初の文字列は、bodyでアクセスできます。</p>
+<h3>smc object</h3>
+<p>SmallCageは、smcファイルを読み込んでsmcオブジェクトを作成します。smcオブジェクトはRubyのHashインスタンスです。</p>
+<p>&#8216;<code>---</code>&#8217;で区切られたYAML文書のうち、Mapping型のものは全てHashに格納されます。キーが重複した場合は、後から定義されたもので上書きされます。</p>
+<p>Scalar型の文書は、smcオブジェクトのstringsというキーに格納されます。これは文字列の配列です。</p>
+<p>Sequence型の文書は、arraysというキーに格納されます。これは配列の配列です。</p>
+<p>例。以下のsmcファイルがあった場合、</p>
+<blockquote><pre><br />
+ template: default<br />
+ title: This is the page!<br />
+ <del>-</del> |<br />
+ <p>abc</p>
+<del>-</del>
+- a
+- b
+- c
+<del>-</del> |
+ <p>something difference</p>
+<del>-</del>
+- x
+- y
+- z
+<del>-</del>
+site: http://example.com
+<p></pre></blockquote></p>
+<p>以下のsmcオブジェクトに変換されます。</p>
+<blockquote><pre><br />
+ @obj = {<br />
+  &#8220;template&#8221; =&gt; &#8220;default&#8221;,<br />
+  &#8220;title&#8221; =&gt; &#8220;This is the page!&#8221;,<br />
+  &#8220;site&#8221; =&gt; &#8220;http://example.com&#8221;,<br />
+  &#8220;strings&#8221; =&gt; [<br />
+    &quot;<p>abc</p><p>&#8220;,<br />
+    &#8220;<p>something difference</p>&#8221;<br />
+  ],<br />
+  &#8220;arrays&#8221; =&gt; [<br />
+    [&#8220;a&#8221;, &#8220;b&#8221;, &#8220;c&#8221;],<br />
+    [&#8220;x&#8221;, &#8220;y&#8221;, &#8220;z&#8221;]<br />
+  ],<br />
+  &#8220;body&#8221; =&gt; &#8220;<p>abc</p>&#8221; # bodyはstrings<sup class="footnote" id="fnr0"><a href="#fn0">0</a></sup>のエイリアスです。<br />
+ }<br />
+</pre></blockquote></p>
+<p>テンプレートから単純な名前でアクセスできるようにすることが、この変換の目的です。</p>
+<h3>_dir.smc file</h3>
+<p><em>dir.smcファイルは、そのファイルが置かれたディレクトリの情報を定義するファイルです。_dir.smcから</em>dirファイルは生成されません。</p>
+<p>テンプレートからは、dirsという名前でディレクトリ情報の配列を取得できます。<code>dirs[0]</code>はドキュメントルートのディレクトリ情報です。</p>
+<h3>_smc directory</h3>
+<p>_smcディレクトリが置かれた場所がドキュメントルートになります。</p>
+<h3>Templates</h3>
+<p>テンプレートは、/_smc/templates/に置かれたERB形式のファイルです。拡張子は.rhtmlとします。smcファイルから、templateという名前でテンプレートを指定できます。</p>
+<blockquote><pre><br />
+template: free<br />
+</pre></blockquote>
+<p>は/_smc/templates/free.rhtml を使います。templateを省略するとdefault.rhtmlが使用されます。</p>
+<p>smcオブジェクトは、テンプレートから@objという名前でアクセスできます。</p>
+<blockquote><pre><br />
+&lt;%= @obj[&#8220;image&#8221;] %&gt;<br />
+</pre></blockquote>
+<p>また、通常@objは省略できます。例えば、上の例は、</p>
+<blockquote><pre><br />
+&lt;%= image %&gt;<br />
+</pre></blockquote>
+<p>と書くことができます。出力中のファイルのURIを表示したいなら、</p>
+<blockquote><pre><br />
+&lt;%= uri %&gt;<br />
+</pre></blockquote>
+<p>です(uriは上で説明した特別扱いされる名前の1つです)。ドキュメントルートのURIを出力したい場合は、</p>
+<blockquote><pre><br />
+&lt;%= dirs<sup class="footnote" id="fnr0"><a href="#fn0">0</a></sup>[&#8220;uri&#8221;] %&gt;<br />
+</pre></blockquote>
+<p>とします。現在のディレクトリは</p>
+<blockquote><pre><br />
+&lt;%= dirs.last[&#8220;uri&#8221;] %&gt;<br />
+</pre></blockquote>
+<p>と書けます。</p>
+<p>テンプレートも単純な名前でインクルードすることができます。例えば、</p>
+<blockquote><pre><br />
+&lt;%= header <span>&gt;<br />
+&lt;</span>= body <span>&gt;<br />
+&lt;</span>= footer %&gt;<br />
+</pre></blockquote>
+<p>と書くことで、bodyの前後にheader.rhtmlとfooter.rhtmlをインクルードできます。</p>
+<h3>Helper methods</h3>
+<p>ヘルパーメソッドは、/<em>smc/helpers/*.rbで定義されたメソッドです。テンプレートからは、メソッド名でアクセスすることができます。例えば /_smc/helpers/site</em>helper.rb に</p>
+<blockquote><pre><br />
+module SmallCage<br />
+  module SiteHelper<br />
+  	def current_date<br />
+  	  Time.new.strftime(&#8220;%Y-%m-%d&#8221;)<br />
+  	end<br />
+  end<br />
+end<br />
+</pre></blockquote>
+<p>とあった場合、テンプレートで</p>
+<blockquote><pre><br />
+&lt;%= current_date %&gt;<br />
+</pre></blockquote>
+<p>のように呼び出すことができます。</p>
+<p>上の例にあるとおり、ヘルパーメソッドは、SmallCageモジュール内のファイル名をキャメルケースにしたモジュールに記述します。</p>
+<h3>Namespace</h3>
+<p>テンプレートで使用する名前には、以下のような優先順位があります。</p>
+<p>1. テンプレート内で定義されたローカル変数、メソッド等</p>
+<p>名前がテンプレート内で定義されていればその名前を参照します。</p>
+<p>2. ヘルパメソッド</p>
+<p>その名前が未定義だった場合、ヘルパメソッドを探します。</p>
+<p>3. smcオブジェクト</p>
+<p>ヘルパメソッドが無ければ、smcオブジェクトのキーを探します。</p>
+<p>4. テンプレート名</p>
+<p>smcオブジェクトのキーが見つからなければ、最後にその名前のテンプレートを探します。</p>
+<p>この優先順位により、テンプレートをsmcファイルから上書きできます。例えば、</p>
+<blockquote><pre><br />
+&lt;%= copyright %&gt;<br />
+</pre></blockquote>
+<p>が通常はcopyright.rhtmlをインクルードしている場合に、特定のsmcファイルだけ</p>
+<blockquote><pre><br />
+copyright: &#169; 2001-2020 Special Page Inc.<br />
+</pre></blockquote>
+<p>のようにして別の内容を書き出すことができます。また、ヘルパメソッドでsmcオブジェクトの値を上書きできます。上の例でcopyrightという名前のヘルパーメソッドがあった場合は、テンプレートの有無やsmcファイルの内容に関わらず、ヘルパーメソッドが呼ばれます。</p>
+<p>ヘルパメソッドの呼び出し部分を別のテンプレートに書くことで、ヘルパの優先順位をsmcオブジェクトよりも下げることができます。</p>
+
+</div>
+
+</div>
+
+<div id="footer">
+&copy; <a href="http://www.bluemark.co.jp/">Bluemark Inc.</a>
+</div>
+
+
+<script type="text/javascript">
+  //<![CDATA[
+/* Replacement calls. Please see documentation for more information. */
+
+if(typeof sIFR == "function"){
+
+
+// This is the older, ordered syntax
+
+	sIFR.replaceElement("h1",          "/common/styles/clarity/sifr/cronos_pro.swf", "#000000", null, null, null, 0, 0, 0, 0);
+	sIFR.replaceElement("h2",          "/common/styles/clarity/sifr/cronos_pro.swf", "#000000", null, null, null, 0, 0, 0, 0);
+	sIFR.replaceElement("#content h3", "/common/styles/clarity/sifr/cronos_pro.swf", "#6BCB25", null, null, null, 0, 0, 0, 0);
+	sIFR.replaceElement("#sidebar h3", "/common/styles/clarity/sifr/cronos_pro.swf", "#000000", null, null, null, 0, 0, 0, 0);
+
+
+};
+
+//]]>
+</script>
+</body>
+</html>
+
