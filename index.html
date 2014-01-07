@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function redirect(url){
+  if (window.location.replace) {
+    window.location.replace(url);
+  } else {
+    window.location = url;
+  }
+}
+
+var lang = navigator.language || navigator.userLanguage;
+if (lang == 'ja') {
+//  redirect('/smallcage/ja/');
+} else {
+//  redirect('/smallcage/en/');
+}
+</script>
+</head>
+<body>
+<div>
+<a href="/smallcage/en/">English</a> | <a href="/smallcage/ja/">Japanese</a>
+</div>
+</body>
+</html>
