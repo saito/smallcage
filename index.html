@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>SmallCage</title>
 <script>
 function redirect(url){
   if (window.location.replace) {
@@ -12,9 +13,9 @@ function redirect(url){
 
 var lang = navigator.language || navigator.userLanguage;
 if (lang == 'ja') {
-//  redirect('/smallcage/ja/');
+  redirect('/smallcage/ja/');
 } else {
-//  redirect('/smallcage/en/');
+  redirect('/smallcage/en/');
 }
 </script>
 </head>
