@@ -1,0 +1,8 @@
+ClassLength:
+  Max: 300
+
+MethodLength:
+  Max: 50
+
+HashSyntax:
+  Enabled: false
