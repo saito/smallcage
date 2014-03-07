@@ -184,7 +184,7 @@ module SmallCage
 
     def real_target(target)
       return target.realpath if target.directory?
-      return target.realpath if target.file? and target.to_s =~ /\.smc$/ 
+      return target.realpath if target.file? and target.to_s =~ /\.smc$/
 
       tmp = Pathname.new(target.to_s + ".smc")
       return tmp.realpath if tmp.file?
@@ -204,41 +204,13 @@ module SmallCage
           end
         end
       end
-      
-      helpers = load_anonymous(@helpers_dir, %r{([^/]+_helper)\.rb$})
+
+      helpers = SmallCage::AnonymousLoader.load(@helpers_dir, %r{([^/]+_helper)\.rb\z})
       result.include_helpers(helpers[:module], helpers[:names])
 
       return result
     end
     private :load_erb_base
-    
-    def load_anonymous(dir, rex)
-      module_names = []
-      mod = Module.new
-      result = { :module => mod, :names => module_names }
-      
-      return result unless File.exist?(dir)
-
-      Dir.entries(dir).sort.each do |h|
-        next unless h =~ rex
-        
-        # create anonymous module.
-        module_name = $1.camelize
-        
-        src = File.read("#{dir}/#{h}")
-        begin
-          mod.module_eval(src, "#{dir}/#{h}")
-        rescue => ex
-          STDERR << ex.to_s # TODO show error
-          load("#{dir}/#{h}", true) # try to know error line number.
-          raise "Can't load #{dir}/#{h} / line# unknown"
-        end
-        module_names << module_name
-      end
-      
-      return result
-    end
-    private :load_anonymous
 
     def filters(name)
       if @filters[name].nil?
@@ -250,8 +222,8 @@ module SmallCage
     def load_filters
       result = {}
       return {} unless @filters_dir.directory?
-      
-      filter_modules = load_anonymous(@filters_dir, %r{([^/]+_filter)\.rb$})
+
+      filter_modules = SmallCage::AnonymousLoader.load(@filters_dir, %r{([^/]+_filter)\.rb\z})
       smc_module = filter_modules[:module].const_get("SmallCage")
 
       load_filters_config.each do |filter_type,filter_list|
