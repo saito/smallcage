@@ -1,4 +1,5 @@
 module SmallCage
+  # load files into anonymous module
   class AnonymousLoader
     attr_reader :module, :module_names
 
@@ -13,7 +14,7 @@ module SmallCage
       Dir.entries(dir).sort.each do |h|
         next unless h =~ rex
 
-        module_name = $1.camelize
+        module_name = Regexp.last_match(1).camelize
         path = File.join(dir, h)
         src = File.read(path)
 
