@@ -1,11 +1,11 @@
 
 namespace :svn do
 
-  # _dir.smc 
+  # _dir.smc
   #   svnignore: *.html # set recursively.
-  #   svnignore_current: .project # add only current dir. 
+  #   svnignore_current: .project # add only current dir.
   #   svnignore_reset: true # ignore parent directory settings.
-  #   
+  #
   # You can use list.
   #   svnignore:
   #     - *.html
@@ -36,7 +36,7 @@ def load_svnignores(loader, path)
   unless data.to_s.empty?
     ignores << data
   end
-  
+
   ignores.flatten!
   ignores.uniq!
   ignores.sort!
@@ -45,7 +45,7 @@ end
 
 def set_svnignore(dryrun = false)
   loader = SmallCage::Loader.new(".")
-  
+
   exec_svn(loader, ".", dryrun)
   Dir.glob("**/") do |f|
     exec_svn(loader, f, dryrun)
@@ -61,4 +61,3 @@ def exec_svn(loader, f, dryrun)
   return if dryrun
   puts "FAILED: #{cmd}" unless system cmd
 end
-

@@ -2,7 +2,7 @@ require 'webrick'
 
 module SmallCage
   class HTTPServer
-  
+
     def initialize(document_root, port)
       # logger = WEBrick::Log.new(nil, 1)
       @server = WEBrick::HTTPServer.new({
@@ -17,19 +17,19 @@ module SmallCage
       @server.mount("/_smc/update_uri", UpdateUriServlet)
       @server.mount("/_smc/auto", AutoServlet)
     end
-    
+
     def start
       @server.start
     end
-    
+
     def shutdown
       @server.shutdown
     end
-    
+
     def updated_uri=(uri)
       UpdateUriServlet.uri = uri
     end
-    
+
     def reload
       UpdateUriServlet.uri = ":reload"
     end
@@ -39,21 +39,20 @@ module SmallCage
   class UpdateUriServlet < WEBrick::HTTPServlet::AbstractServlet
     @@uri = "/index.html"
     @@update_time = ""
-  
+
     def do_GET(req, res)
       res['content-type'] = "text/plain"
       res.body = @@uri + "\n" + @@update_time
     end
-    
+
     def self.uri=(uri)
       @@uri = uri
       update_time
     end
-    
+
     def self.update_time
       @@update_time = Time.now.to_s
     end
-    
   end
 
   class AutoServlet < WEBrick::HTTPServlet::AbstractServlet

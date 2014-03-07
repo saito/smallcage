@@ -1,5 +1,5 @@
 
-# From active-support/inflector.rb  
+# From active-support/inflector.rb
 class String
   def camelize(first_letter_in_uppercase = true)
     s = self

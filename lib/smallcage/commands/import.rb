@@ -3,7 +3,7 @@ module SmallCage::Commands
     def self.execute(opts)
       self.new(opts).execute
     end
-    
+
     def initialize(opts)
       @opts = opts
       if @opts[:from] == "default"
@@ -11,21 +11,21 @@ module SmallCage::Commands
       end
       @project_dir = Pathname.new(__FILE__) + "../../../../project"
     end
-    
+
     def qp(str = "")
       print str unless @opts[:quiet]
     end
-    
+
     def qps(str = "")
       puts str unless @opts[:quiet]
     end
-    
+
     def execute
       @dest = Pathname.new(@opts[:to])
-      
+
       Dir.mkdir(@dest) unless @dest.exist?
       return unless @dest.directory?
-      
+
       from = @opts[:from].split(/,/)
       from.each do |f|
         qps
@@ -38,7 +38,7 @@ module SmallCage::Commands
         end
       end
     end
-    
+
     def import(from)
       d = @project_dir + from
       return unless d.directory?
@@ -48,7 +48,7 @@ module SmallCage::Commands
       end
       import_entries
     end
-    
+
     def import_external
       @entries = external_entries
       unless @opts[:quiet]
@@ -69,7 +69,7 @@ module SmallCage::Commands
         else
           qps "? /" + e.path
         end
-        
+
         begin
           e.import
         rescue
@@ -77,7 +77,7 @@ module SmallCage::Commands
           qps "F /" + e.path
         end
       end
-      
+
       unless failed.empty?
         qps "FAILED:"
         failed.each do |e|
@@ -101,16 +101,16 @@ module SmallCage::Commands
       return result
     end
     private :local_entries
-    
+
     def external_entries(uri)
       if uri !~ %r{/$}
         uri += "/"
       end
       mfuri = uri + "Manifest.html"
-      
+
       source = open(mfuri) {|io| io.read }
       result = []
-      
+
       files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>}) #"
       files.each do |f|
         raise "illegal path:#{f[0]},#{f[1]}" if f[0] != f[1]
@@ -122,14 +122,14 @@ module SmallCage::Commands
         e.to = @dest + path
         result << e
       end
-      
+
       return result
     end
     private :external_entries
-    
+
     def confirm_entries
       overwrite = []
-      
+
       qps "Create:"
       @entries.each do |e|
         if e.overwrite?
@@ -139,7 +139,7 @@ module SmallCage::Commands
         end
       end
       qps
-      
+
       unless overwrite.empty?
         qps "Overwrite:"
         overwrite.each do |e|
@@ -147,11 +147,11 @@ module SmallCage::Commands
         end
         qps
       end
-      
+
       return y_or_n("Import these files?[Yn]: ", true)
     end
     private :confirm_entries
-    
+
     def y_or_n(prompt, default)
       loop do
         print prompt
@@ -166,8 +166,7 @@ module SmallCage::Commands
       end
     end
     private :y_or_n
-    
-    
+
     class ImportEntry
       attr_accessor :path, :from, :to
 
@@ -178,19 +177,19 @@ module SmallCage::Commands
           copy_local
         end
       end
-      
+
       def external?
         from.to_s =~ %r{^https?://}
       end
-      
+
       def exist?
         to.exist?
       end
-      
+
       def overwrite?
         to.file?
       end
-      
+
       def copy_local
         if from.directory?
           FileUtils.makedirs(to)
@@ -200,7 +199,7 @@ module SmallCage::Commands
         end
       end
       private :copy_local
-      
+
       def copy_external
         if from =~ %r{/$}
           FileUtils.makedirs(to)
@@ -211,7 +210,6 @@ module SmallCage::Commands
         end
       end
       private :copy_external
-      
     end
   end
 end

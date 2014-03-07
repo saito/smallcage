@@ -9,15 +9,15 @@ describe "misc" do
 
     s = "abc_def_ghi"
     s.camelize.should == "AbcDefGhi"
-    
+
     s = ""
     s.camelize.should == ""
   end
-  
+
   it "should camelize with first character in lower case" do
     s = "smallcage"
     s.camelize(false).should == "smallcage"
-    
+
     s = "abc_def_ghi"
     s.camelize(false).should == "abcDefGhi"
   end

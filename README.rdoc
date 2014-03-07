@@ -35,14 +35,14 @@ If successfully installed, smc command will be available.
       export [path] [outputpath]       Export project.
       uri    [path]                    Print URIs.
       manifest [path]                  Generate Manifest.html file.
-  
+
   Options are:
-  
+
       -h, --help                       Show this help message.
       -v, --version                    Show version info.
 
 Create document root.
-  
+
   $ mkdir htdocs
   $ cd htdocs
 

@@ -4,17 +4,17 @@ module SmallCage::Commands
     def self.execute(opts)
       self.new(opts).execute
     end
-    
+
     def initialize(opts)
       @opts = opts
     end
-    
+
     def execute
       target = Pathname.new(@opts[:path])
       unless target.exist?
         raise "target directory or file does not exist.: " + target.to_s
       end
-      
+
       @loader   = SmallCage::Loader.new(target)
       @renderer = SmallCage::Renderer.new(@loader)
       print_uris
@@ -38,7 +38,6 @@ module SmallCage::Commands
     private :print_default_or_template_uris
 
     def print_uri_templates(obj, uris)
-      
       uris = uris.map {|uri| uri.strip }
       base = obj['path'].parent
       uris.each_with_index do |uri, index|
@@ -51,6 +50,5 @@ module SmallCage::Commands
       end
     end
     private :print_uri_templates
-
   end
 end

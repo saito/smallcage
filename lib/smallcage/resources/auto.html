@@ -24,7 +24,7 @@ function getTransport() {
 function getSource(uri, loaded, failed) {
 	var transport = getTransport();
 	transport.open("GET", uri, true);
-	
+
 	transport.onreadystatechange=function() {
 		if (transport.readyState == 4) {
 			if (transport.status == 200) {
@@ -51,12 +51,12 @@ function checkUpdate() {
 	if (loading) {
 		return false;
 	}
-	
+
 	if (scrollWait) {
 		targetWindow.scrollBy(scrollWait.x, scrollWait.y);
 		scrollWait = null;
 	}
-	
+
 	var success = function(src) {
 		loading = false;
 		if (currentSrc == src) {
@@ -67,13 +67,13 @@ function checkUpdate() {
 		lines = src.split("\n")
 		var uri = lines[0];
 		showPage(uri);
-		document.getElementById("main").innerHTML = 
+		document.getElementById("main").innerHTML =
 			"<p>Latest Updated Page: <a href=\"" + uri + "\" target=\"smcauto\">" + uri + "</a></p><p>" + lines[1] + "</p>";
 	};
 	var failed = function(src) {
 		document.getElementById("main").innerHTML = "<p>Load error</p>";
 	};
-	
+
 	getSource("/_smc/update_uri", success, failed);
 	loading = true;
 }
@@ -95,7 +95,7 @@ function showPage(uri) {
 
 		var x = targetWindow.scrollX;
 		var y = targetWindow.scrollY;
-		
+
 		targetWindow.location = realuri;
 		if (currentUri == realuri) {
 			scrollWait = {"x": x, "y":y};
@@ -112,7 +112,7 @@ function showPage(uri) {
 <body onLoad="initTimer(1000)">
 
 <div id="main">
-Latest Updated Page: 
+Latest Updated Page:
 </div>
 
 </body>

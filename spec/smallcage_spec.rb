@@ -6,5 +6,5 @@ describe "smallcage" do
   it "show version" do
     # puts "------- version:" + SmallCage::VERSION
   end
-  
+
 end

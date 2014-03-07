@@ -14,7 +14,7 @@ module SmallCage
       end
 
       entries = Dir.glob("#{base_dir}/**/*")
-      
+
       result = []
       entries.each do |entry|
         result << entry if entry.to_s =~ rex
@@ -29,14 +29,14 @@ module SmallCage
     #         name: <%= name %><br />
     #         address: <%= address %>
     #   <%- end -%>
-    # 
+    #
     def _with(new_obj)
       @obj, old_obj = new_obj, @obj
       yield
     ensure
       @obj = old_obj
     end
-    
+
     # Load smc file.
     #
     #   docroot = dirs.first["path"]
@@ -46,17 +46,17 @@ module SmallCage
       path = Pathname.new(path)
       @loader.load(path)
     end
-    
+
     # Evaluate ERB source.
     def _erb(source)
       @renderer.render_string(source, @obj)
     end
-    
+
     # Capture ERB output.
     #
     #   def cdata(&block)
     #     src = _capture(&block)
-    #     @erbout << "<![CDATA[" + src.gsub(/\]\]>/,"]]]]><![CDATA[>") + "]]>"  
+    #     @erbout << "<![CDATA[" + src.gsub(/\]\]>/,"]]]]><![CDATA[>") + "]]>"
     #   end
     #
     #   <%- cdata do -%>
@@ -70,7 +70,7 @@ module SmallCage
     ensure
       @erbout = old_erbout
     end
-    
+
     # Get value of
     #  - smc object
     #  - or directory config (_dir.smc)
@@ -80,13 +80,12 @@ module SmallCage
       return _dir(name, obj)
     end
 
-    # Return nearest parent directory config(_dir.smc) value. 
+    # Return nearest parent directory config(_dir.smc) value.
     def _dir(name, obj = @obj)
       obj["dirs"].reverse.each do |dir|
         return dir[name] if dir[name]
       end
       return nil
     end
-    
   end
 end

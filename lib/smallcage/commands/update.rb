@@ -5,18 +5,18 @@ module SmallCage::Commands
     def self.execute(opts)
       self.new(opts).execute
     end
-    
+
     def initialize(opts)
       @opts = opts
     end
-    
+
     def execute
       start = Time.now
       target = Pathname.new(@opts[:path])
       unless target.exist?
         raise "target directory or file does not exist.: " + target.to_s
       end
-      
+
       @loader   = Loader.new(target)
       @renderer = Renderer.new(@loader)
       @list     = UpdateList.create(@loader.root, target)
@@ -91,7 +91,7 @@ module SmallCage::Commands
       end
     end
     private :render_multi
-    
+
     def after_rendering_filters(obj, result)
       filters = @loader.filters("after_rendering_filters")
       filters.each do |f|
@@ -107,6 +107,5 @@ module SmallCage::Commands
       end
     end
     private :output_result
-
   end
 end

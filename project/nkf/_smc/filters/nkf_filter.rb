@@ -3,9 +3,9 @@ require "nkf"
 module SmallCage
 
   # In _dir.smc or other *.smc, set charset like this:
-  # 
+  #
   #   charset: Shift_JIS
-  #   
+  #
   class NkfFilter
 
     def initialize(opts)
@@ -32,10 +32,10 @@ module SmallCage
       elsif charset =~ /^shift_jis$/i
         opt = "-Wsm0"
       else
-        STDERR.puts "Unknown charset: #{charset}" unless charset.empty? 
+        STDERR.puts "Unknown charset: #{charset}" unless charset.empty?
         return str
-      end      
-      
+      end
+
       return NKF.nkf(opt, str)
     end
 

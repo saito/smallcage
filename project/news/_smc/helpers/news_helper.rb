@@ -12,7 +12,7 @@ module SmallCage
         break if amount <= i
       end
     end
-    
+
     def each_archived_news(&block)
       date = @obj["uri"].match(%r{/(\d{4})(\d{2})?(\d{2})?\.html$}).to_a
       date.shift
@@ -27,10 +27,9 @@ module SmallCage
       date.shift
       return Time.local(*date)
     end
-    
+
     def news_ftime(format = "%Y-%m-%d")
       news_time().strftime(format)
     end
-    
   end
 end

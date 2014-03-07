@@ -42,7 +42,7 @@ class GDataExporter
 Configulation sample (add these lines to _dir.smc):
 ----------------------------------------------------------------
 gdata_auth: default
-gdata_files: 
+gdata_files:
 - key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   file: _smc/data/sample1.csv
 - key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -99,7 +99,7 @@ EOT
       puts "ERROR: auth file doesn't exist. execute gdata:login task.: #{afile}"
     end
   end
-  
+
   def login
     umask_close { _login }
   end
@@ -125,7 +125,7 @@ EOT
     auth["doclist"]      = c.clientlogin(email, pass)
     c = GData::Client::Spreadsheets.new
     auth["spreadsheets"] = c.clientlogin(email, pass)
-    
+
     open(auth_file, "w") do |io|
       io << auth.to_yaml
     end
@@ -227,6 +227,4 @@ namespace :gdata do
     exporter = GDataExporter.new
     exporter.export
   end
-
-
 end

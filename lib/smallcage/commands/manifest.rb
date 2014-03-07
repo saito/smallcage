@@ -3,11 +3,11 @@ module SmallCage::Commands
     def self.execute(opts)
       self.new(opts).execute
     end
-    
+
     def initialize(opts)
       @opts = opts
     end
-    
+
     def execute
       entries = []
       root = Pathname.new(@opts[:path])
@@ -16,7 +16,7 @@ module SmallCage::Commands
           entries << f
         end
       end
-      
+
       tmp = []
       entries.each do |f|
         path = root + f
@@ -28,7 +28,7 @@ module SmallCage::Commands
         tmp << f
       end
       entries = tmp
-      
+
       template = File.dirname(__FILE__) + "/../resources/Manifest.erb"
       source = ERB.new(File.read(template), nil, "-").result(binding)
       open(root + "Manifest.html", "w") do |io|

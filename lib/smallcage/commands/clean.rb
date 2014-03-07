@@ -3,11 +3,11 @@ module SmallCage::Commands
     def self.execute(opts)
       self.new(opts).execute
     end
-    
+
     def initialize(opts)
       @opts = opts
     end
-    
+
     def execute
       start = Time.now
       count = 0
@@ -16,7 +16,7 @@ module SmallCage::Commands
       unless target.exist?
         raise "target directory or file does not exist.: " + target.to_s
       end
-      
+
       loader = SmallCage::Loader.new(target)
       root = loader.root
       list = SmallCage::UpdateList.create(root, target)
@@ -29,7 +29,7 @@ module SmallCage::Commands
           count += 1
         end
       end
-      
+
       tmpdir = root + "_smc/tmp"
       if tmpdir.exist?
         FileUtils.rm_r(tmpdir)

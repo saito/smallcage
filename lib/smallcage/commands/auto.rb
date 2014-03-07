@@ -1,6 +1,6 @@
 module SmallCage::Commands
   class Auto < SmallCage::Commands::Base
-    
+
     def initialize(opts)
       super(opts)
       @target = Pathname.new(opts[:path])
@@ -29,10 +29,10 @@ module SmallCage::Commands
         sleep @sleep
       end
     end
-    
+
     def modified_special_files
       root = @loader.root
-      
+
       result = []
       Dir.chdir(root) do
         Dir.glob("_smc/{templates,filters,helpers}/*") do |f|
@@ -44,7 +44,7 @@ module SmallCage::Commands
           end
         end
       end
-      
+
       return result
     end
     private :modified_special_files
@@ -61,11 +61,11 @@ module SmallCage::Commands
       return result
     end
     private :modified_files
-    
+
     def update_target
       # load @mtimes
       modified_special_files
-      target_files = modified_files 
+      target_files = modified_files
 
       runner = SmallCage::Runner.new({ :path => @target, :quiet => @opts[:quiet] })
       begin
@@ -75,7 +75,7 @@ module SmallCage::Commands
         STDERR.puts $@[0..4].join("\n")
         STDERR.puts ":"
       end
-      
+
       update_http_server(target_files)
       puts_line
       notify
@@ -91,7 +91,7 @@ module SmallCage::Commands
         target_files = [@loader.root + "./_dir.smc"]
         reload = true
       end
-      
+
       return if target_files.empty?
       target_files.each do |tf|
         if tf.basename.to_s == "_dir.smc"
@@ -101,7 +101,7 @@ module SmallCage::Commands
         end
         runner.update
       end
-      
+
       if reload
         @http_server.reload
       else
@@ -118,7 +118,7 @@ module SmallCage::Commands
       notify
     end
     private :update_modified_files
-    
+
     def puts_banner
       return if quiet?
       puts "SmallCage Auto Update"
@@ -126,13 +126,13 @@ module SmallCage::Commands
       puts
     end
     private :puts_banner
-    
+
     def puts_line
       return if quiet?
       puts "-" * 60
     end
     private :puts_line
-    
+
     def notify
       return unless @opts[:bell]
       print "\a" # Bell
@@ -162,17 +162,16 @@ module SmallCage::Commands
     end
     private :init_sig_handler
 
-    def start_http_server 
+    def start_http_server
       document_root = @opts[:path]
       port = @opts[:port]
-        
+
       @http_server = SmallCage::HTTPServer.new(document_root, port)
-       
+
       Thread.new do
-        @http_server.start    
+        @http_server.start
       end
     end
     private :start_http_server
-    
   end
 end

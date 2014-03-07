@@ -6,12 +6,12 @@ module SmallCage
     DIR_PROP_FILE    = "_dir.smc"
     LOCAL_PROP_FILE  = "_local.smc"
     MAX_DEPTH = 100
-  
+
     attr_reader :root, :target, :erb_base
-  
+
     def initialize(target)
       target = Pathname.new(target.to_s.strip.chomp('/'))
-      target = real_target(target) 
+      target = real_target(target)
 
       @target = target # absolute
       @root = self.class.find_root(target) # absolute
@@ -34,7 +34,7 @@ module SmallCage
       end
       raise "Root not found: #{path}"
     end
-  
+
     def load(path)
       raise "Not found: #{path}" unless path.exist?
 
@@ -42,7 +42,7 @@ module SmallCage
 
       if path.file?
         return load_smc_file(docpath)
-      else 
+      else
         return load_dir_prop(docpath)
       end
     end
@@ -52,7 +52,7 @@ module SmallCage
 
       result = create_base_smc_object(docpath.outfile.path, docpath.path,
                                       docpath.outuri,       docpath.uri)
-      
+
       result["template"] = DEFAULT_TEMPLATE
       result["dirs"]     = load_dirs(docpath.path)
 
@@ -82,7 +82,7 @@ module SmallCage
       return result
     end
     private :load_dir_prop
-    
+
     def create_base_smc_object(path_out, path_smc, uri_out, uri_smc)
       result = {}
       result["arrays"]   = []
@@ -139,7 +139,7 @@ module SmallCage
       return nil unless result.file?
       return result
     end
-    
+
     def each_smc_obj
       each_smc_file do |path|
         next if path.directory?
@@ -149,7 +149,7 @@ module SmallCage
         yield obj
       end
     end
-    
+
     def each_smc_file
       if @target.directory?
         path = Pathname.new(@target)
@@ -162,7 +162,7 @@ module SmallCage
         yield @target
       end
     end
-    
+
     def each_not_smc_file
       if @target.directory?
         path = Pathname.new(@target)
@@ -181,7 +181,7 @@ module SmallCage
         yield DocumentPath.new(@root, @target)
       end
     end
-    
+
     def real_target(target)
       return target.realpath if target.directory?
       return target.realpath if target.file? and target.to_s =~ /\.smc$/ 
@@ -192,8 +192,7 @@ module SmallCage
       raise "Target not found: " + target.to_s
     end
     private :real_target
-    
-    
+
     def load_erb_base
       result = Class.new(ErbBase)
       class << result
@@ -247,14 +246,14 @@ module SmallCage
       end
       return @filters[name]
     end
-    
+
     def load_filters
       result = {}
       return {} unless @filters_dir.directory?
       
       filter_modules = load_anonymous(@filters_dir, %r{([^/]+_filter)\.rb$})
       smc_module = filter_modules[:module].const_get("SmallCage")
-      
+
       load_filters_config.each do |filter_type,filter_list|
         result[filter_type] = []
         filter_list.to_a.each do |fc|
@@ -273,6 +272,5 @@ module SmallCage
       return YAML.load(path.read()) || {}
     end
     private :load_filters_config
-    
   end
 end

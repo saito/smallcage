@@ -1,8 +1,7 @@
 module SmallCage
   class DocumentPath
-    
     attr_reader :root, :uri, :path
-    
+
     def initialize(root, path)
       @root = Pathname.new(root).realpath
 
@@ -12,27 +11,27 @@ module SmallCage
       else
         @path = @path.cleanpath
       end
-      
+
       if @path.to_s[0...@root.to_s.length] != @root.to_s
         raise "Illegal path: #{path.to_s}"
       end
-      
+
       if @path == @root
         @uri = "/"
       else
         @uri = @path.to_s[@root.to_s.length .. -1]
       end
     end
-    
+
     def smc?
       return @path.extname == ".smc"
     end
-    
+
     def outfile
       return nil unless smc?
       return self.class.new(@root, @path.to_s[0 .. -5])
     end
-    
+
     def outuri
       return nil unless smc?
       return uri[0 .. -5]
@@ -64,7 +63,5 @@ module SmallCage
 
       return obj
     end
-
-
   end
 end

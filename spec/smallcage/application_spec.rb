@@ -19,7 +19,7 @@ describe SmallCage::Application do
       $stderr = original_err
     end
 
-    return { 
+    return {
       :exit => status,
       :result => result,
       :stdout => tmpout.string,
@@ -81,7 +81,7 @@ describe SmallCage::Application do
     options = @target.parse_options(["import"])
     options.should == {  :command => :import, :from => "default", :to => ".", :quiet => false }
   end
-  
+
   it "should parse export command" do
     options = @target.parse_options(["export", ".", "path"])
     options.should == { :command => :export, :path => ".",  :out => "path", :quiet => false }

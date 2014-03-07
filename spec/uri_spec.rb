@@ -49,10 +49,8 @@ EOT
 
 /items/items-after-emptyline.html
 EOT
-      
     ensure
       $stdout = old_stdout
     end
   end
 end
-

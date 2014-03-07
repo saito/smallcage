@@ -1,4 +1,4 @@
-require "rexml/document" 
+require "rexml/document"
 
 module SmallCage
   class CacheFilter
@@ -22,7 +22,7 @@ module SmallCage
     def find_latest(dir, path)
       relpath = path[0] == ?/ ? path[1..-1] : path
       return path unless (dir + relpath).exist?
-      
+
       rex = /^(.+)--latest(\.[^.]+)$/
       pattern    = relpath.to_s.sub(rex, '\1-*\2')
       pre = $1
@@ -42,18 +42,18 @@ module SmallCage
         entry = files.sort{|a,b| a[1] <=> b[1] }.last.to_a[0]
       end
       return path unless entry
-      
-      entry = "/" + entry if path[0] == ?/ 
+
+      entry = "/" + entry if path[0] == ?/
       return entry
     end
     private :find_latest
 
-    
+
     # Get svn revision of file path + ".smc" or path
     def self.get_revision(path)
       smcpath = Pathname.new(path.to_s + ".smc")
       path = smcpath if smcpath.file?
-      
+
       src = %x{svn info --xml #{path}}
       begin
         doc = REXML::Document.new(src)
@@ -62,9 +62,9 @@ module SmallCage
       rescue
         puts "Can't get revision number: #{path}"
         return "0"
-      end    
+      end
     end
-    
+
     def self.outfiles(srcfile, outfiles)
       r = srcfile.rindex("--latest")
       prefix = srcfile[0..r]
@@ -80,12 +80,12 @@ module SmallCage
       end
       return result.sort {|a,b| a[1] <=> b[1]}
     end
-    
+
     def self.create_cache(list, dryrun, quiet = false)
       list.each do |path|
         revision = SmallCage::CacheFilter.get_revision(path)
         to = path.pathmap("%{--latest$,-#{revision}}X%x")
-        puts File.exist?(to) ? "(cache)U #{to}" : "(cache)A #{to}" unless quiet 
+        puts File.exist?(to) ? "(cache)U #{to}" : "(cache)A #{to}" unless quiet
         begin
           FileUtils.copy(path,to) unless dryrun
         rescue => e
@@ -93,7 +93,5 @@ module SmallCage
         end
       end
     end
-
   end
-  
 end

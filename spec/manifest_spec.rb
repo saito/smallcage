@@ -32,7 +32,7 @@ EOT
       contents.should include(line)
     end
   end
-  
+
   after do
     SmallCage::Runner.run(@opts.merge(:command => "clean", :quiet => true))
     @manifest_file.delete

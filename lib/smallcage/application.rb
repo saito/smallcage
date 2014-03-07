@@ -1,7 +1,7 @@
 class SmallCage::Application
   require 'optparse'
   VERSION_NOTE = "SmallCage #{SmallCage::VERSION} - a simple website generator"
-  
+
   @@signal_handlers = nil
 
   def self.init_signal_handlers
@@ -18,7 +18,7 @@ class SmallCage::Application
       end
     end
   end
-  
+
   def self.add_signal_handler(signal, handler)
     init_signal_handlers if @@signal_handlers.nil?
     signal.to_a.each do |s|
@@ -76,7 +76,7 @@ BANNER
       puts VERSION_NOTE
       exit(true)
     end
-    
+
     @options[:quiet] = false
     parser.on("-q", "--quiet", "Do not print message.") do |boolean|
       @options[:quiet] = boolean
@@ -254,7 +254,7 @@ EOT
 
   def get_port_number(default)
     return default if @argv.empty?
-      
+
     port = @argv.shift
     if port.to_i == 0
       $stderr.puts "illegal port number: #{port}"
@@ -263,5 +263,4 @@ EOT
     return port.to_i
   end
   private :get_port_number
-
 end

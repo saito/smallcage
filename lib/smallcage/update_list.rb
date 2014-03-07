@@ -1,6 +1,6 @@
 module SmallCage
 
-  # Updated files list model. 
+  # Updated files list model.
   # Do not access File system except list.yml.
   class UpdateList
     attr_reader :update_count
@@ -96,7 +96,7 @@ module SmallCage
       @data["list"] << item
     end
     private :add_list_item
-      
+
     def stop_expiration(srcuri, dsturi)
       @expired_src.delete(srcuri)
       @expired_dst[dsturi] = [false, srcuri]
@@ -138,6 +138,5 @@ module SmallCage
       return result
     end
     private :expire_dst
-    
   end
 end
