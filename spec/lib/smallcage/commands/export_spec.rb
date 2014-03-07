@@ -2,8 +2,8 @@ require 'spec_helper.rb'
 require 'smallcage'
 
 describe "SmallCage::Commands::Export" do
-  docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs2")
-  outdir = Pathname.new(File.dirname(__FILE__) + "/data/out")
+  docroot = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs2'))
+  outdir = Pathname.new(File.join(SPEC_DATA_DIR, 'out'))
 
   it "should export not smc files" do
     begin

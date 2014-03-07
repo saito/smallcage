@@ -1,9 +1,10 @@
 require 'spec_helper.rb'
+require 'smallcage'
 require 'smallcage/commands/uri'
 
 describe SmallCage::Commands::Uri do
   it "should prints all uris" do
-    path = Pathname.new(File.dirname(__FILE__) + "/data/multifiles")
+    path = Pathname.new(File.join(SPEC_DATA_DIR, 'multifiles'))
 
     old_stdout = $stdout
     begin
@@ -26,7 +27,7 @@ EOT
   end
 
   it "should prints partial uris" do
-    path = Pathname.new(File.dirname(__FILE__) + "/data/multifiles")
+    path = Pathname.new(File.join(SPEC_DATA_DIR, 'multifiles'))
 
     old_stdout = $stdout
     begin

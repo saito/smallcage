@@ -2,7 +2,7 @@ require 'spec_helper.rb'
 require 'smallcage'
 
 describe "SmallCage::Commands::Import" do
-  root = Pathname.new(File.dirname(__FILE__) + "/data")
+  root = Pathname.new(SPEC_DATA_DIR)
 
   it "should import default project" do
     tmpdir = root + "tmp"

@@ -3,8 +3,8 @@ require 'smallcage'
 
 describe SmallCage::Loader do
   before do
-    @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
-    @docroot3 = Pathname.new(File.dirname(__FILE__) + "/data/htdocs3")
+    @docroot = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs1'))
+    @docroot3 = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs3'))
   end
 
   it "should load path value which is instance of Pathname" do

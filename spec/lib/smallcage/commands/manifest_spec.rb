@@ -1,10 +1,11 @@
 require 'spec_helper.rb'
 require 'smallcage'
+require 'smallcage/commands/manifest'
 
-describe "SmallCage::Commands::Manifest" do
+describe SmallCage::Commands::Manifest do
 
   before do
-    @docroot = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    @docroot = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs1'))
     @opts = { :path => @docroot.to_s }
     @manifest_file = @docroot + "Manifest.html"
   end

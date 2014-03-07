@@ -1,10 +1,11 @@
 require 'spec_helper.rb'
 require 'smallcage'
+require 'smallcage/commands/update'
 
-describe 'update' do
+describe SmallCage::Commands::Update do
 
   it "should not update docroot directory" do
-    docroot  = Pathname.new(File.dirname(__FILE__) + "/data/htdocs1")
+    docroot  = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs1'))
     path = docroot + "a/b/"
 
     opts = { :command => "update", :path => path.to_s, :quiet => true }
@@ -29,7 +30,7 @@ describe 'update' do
   end
 
   it "should not publish _dir.smc and _local.smc" do
-    root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs3")
+    root = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs3'))
 
     opts = { :command => "update", :path => root.to_s, :quiet => true }
 
@@ -48,7 +49,7 @@ describe 'update' do
 
   # http://github.com/bluemark/smallcage/issues/#issue/2
   it "should not delete files under the common prefix directory" do
-    root = Pathname.new(File.dirname(__FILE__) + "/data/htdocs3")
+    root = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs3'))
     begin
       SmallCage::Runner.run({ :command => "update", :path => root.to_s, :quiet => true })
 

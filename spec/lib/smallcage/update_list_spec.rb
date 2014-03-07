@@ -2,7 +2,7 @@ require 'spec_helper.rb'
 require 'smallcage'
 
 describe SmallCage::UpdateList do
-  root = Pathname.new(File.dirname(__FILE__) + "/data/updatelists")
+  root = Pathname.new(File.join(SPEC_DATA_DIR, 'updatelists'))
 
   it "should create empty data" do
     list = SmallCage::UpdateList.new(root + "dummy.yml", "/")
@@ -47,7 +47,7 @@ EOT
       list = SmallCage::UpdateList.new(file, "/")
       list.update("/index.html.smc", 1234567890, "/index.html")
       list.save
-      
+
       list = SmallCage::UpdateList.new(file, "/")
       list.mtime("/index.html.smc").should == 1234567890
 
