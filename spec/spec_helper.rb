@@ -1,4 +1,4 @@
-if RUBY_VERSION >= '1.9.0'
+if RUBY_VERSION >= '1.9.3'
   require 'simplecov'
   SimpleCov.start do
     add_filter 'spec'

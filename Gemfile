@@ -1,13 +1,21 @@
 source "https://rubygems.org"
 
-gem 'syck', :platforms => [:ruby_20]
+gem 'syck', :platforms => :ruby_20
 
-group :test do
-  gem 'rake'
+group :development, :test do
   gem 'rspec'
-  gem 'rcov',        :platforms => :ruby_18, :require => false
-  gem 'simplecov',   :platforms => [:ruby_19, :ruby_20], :require => false
-  gem 'rubocop',     :platforms => [:ruby_19, :ruby_20], :require => false
-  gem 'guard',       :platforms => [:ruby_19, :ruby_20], :require => false
-  gem 'guard-rspec', :platforms => [:ruby_19, :ruby_20], :require => false
+end
+
+group :development do
+  gem 'rake'
+
+  platforms :ruby_19, :ruby_20 do
+    gem 'simplecov', :require => false
+    gem 'rubocop', :require => false
+
+    if RUBY_VERSION >= '1.9.3'
+      gem 'guard', :require => false
+      gem 'guard-rspec', :require => false
+    end
+  end
 end
