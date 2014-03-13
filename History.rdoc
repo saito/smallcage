@@ -1,5 +1,10 @@
 = History
 
+== 0.2.6 2014-03-14
+
+* show message to ask install Syck for Ruby 2.0.
+* remove mkrf_conf.rb. It cause a problem when installed by Bundler.
+
 == 0.2.5 2014-03-08
 
 * fix ignoring LoadError bug. When LoadError occurred in the helper modules, smc finished without any message.
