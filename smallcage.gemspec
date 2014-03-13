@@ -14,5 +14,5 @@ Gem::Specification.new do |gem|
   gem.name          = "smallcage"
   gem.require_paths = ["lib"]
   gem.version       = SmallCage::VERSION
-  gem.extensions    = 'ext/mkrf_conf.rb'
+  gem.post_install_message = "\nSmallCage: Please install syck if you are using Ruby 2.0 or above.\n\n  $ gem install syck\n\n"
 end
