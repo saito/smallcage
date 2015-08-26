@@ -1,3 +1,4 @@
+# Parse command-line arguments and run application.
 class SmallCage::Application
   require 'optparse'
   VERSION_NOTE = "SmallCage #{SmallCage::VERSION} - a simple website generator"
@@ -6,8 +7,8 @@ class SmallCage::Application
 
   def self.init_signal_handlers
     @@signal_handlers = {
-      "INT" => [],
-      "TERM" => []
+      'INT' => [],
+      'TERM' => []
     }
 
     @@signal_handlers.keys.each do |signal|
@@ -28,7 +29,7 @@ class SmallCage::Application
 
   def self.execute
     STDOUT.sync = true
-    self.new.execute
+    new.execute
   end
 
   def execute(argv = ARGV)
@@ -52,7 +53,7 @@ class SmallCage::Application
 
   def create_main_parser
     parser = OptionParser.new
-    parser.banner =<<BANNER
+    parser.banner = <<BANNER
 Usage: #{File.basename($0)} [options] <subcommand> [subcommand-options]
 #{VERSION_NOTE}
 Subcommands are:
@@ -67,22 +68,22 @@ Subcommands are:
 
 BANNER
 
-    parser.separator "Options are:"
-    parser.on("-h", "--help", "Show this help message.") do
+    parser.separator 'Options are:'
+    parser.on('-h', '--help', 'Show this help message.') do
       puts parser
       exit(true)
     end
-    parser.on("-v", "--version", "Show version info.") do
+    parser.on('-v', '--version', 'Show version info.') do
       puts VERSION_NOTE
       exit(true)
     end
 
     @options[:quiet] = false
-    parser.on("-q", "--quiet", "Do not print message.") do |boolean|
+    parser.on('-q', '--quiet', 'Do not print message.') do |boolean|
       @options[:quiet] = boolean
     end
 
-    return parser
+    parser
   end
   private :create_main_parser
 
@@ -145,33 +146,33 @@ EOT
       parsers[command] = create_default_command_parser(banner)
     end
 
-    parsers[:auto].on("--bell", "Ring bell after publishing files.") do |boolean|
+    parsers[:auto].on('--bell', 'Ring bell after publishing files.') do |boolean|
       @options[:bell] = boolean
     end
 
-    return parsers
+    parsers
   end
   private :create_command_parsers
 
   def create_default_command_parser(banner)
     parser = OptionParser.new
-    parser.banner = "Usage: " + banner
-    parser.separator "Options are:"
+    parser.banner = 'Usage: ' + banner
+    parser.separator 'Options are:'
 
     # these options can place both before and after the subcommand.
-    parser.on("-h", "--help", "Show this help message.") do
+    parser.on('-h', '--help', 'Show this help message.') do
       puts parser
       exit(true)
     end
-    parser.on("-v", "--version", "Show version info.") do
+    parser.on('-v', '--version', 'Show version info.') do
       puts VERSION_NOTE
       exit(true)
     end
-    parser.on("-q", "--quiet", "Do not print message.") do |boolean|
+    parser.on('-q', '--quiet', 'Do not print message.') do |boolean|
       @options[:quiet] = boolean
     end
 
-    return parser
+    parser
   end
   private :create_default_command_parser
 
@@ -194,18 +195,17 @@ EOT
   end
   private :parse_command
 
-
   def get_command
-    commands = Hash.new {|h,k| k}
+    commands = Hash.new { |h, k| k }
     commands.merge!({
       :up => :update,
       :sv => :server,
-      :au => :auto,
+      :au => :auto
     })
 
     command_name = @argv.shift.to_s.strip
     return nil if command_name.empty?
-    return commands[command_name.to_sym]
+    commands[command_name.to_sym]
   end
   private :get_command
 
@@ -220,34 +220,34 @@ EOT
       exit(true)
     elsif @options[:command] == :update
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
     elsif @options[:command] == :server
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
       @options[:port] = get_port_number(8080)
     elsif @options[:command] == :auto
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
       @options[:port] = get_port_number(nil)
       @options[:bell] ||= false
     elsif @options[:command] == :import
       @options[:from] = @argv.shift
-      @options[:from] ||= "default"
+      @options[:from] ||= 'default'
       @options[:to] = @argv.shift
-      @options[:to] ||= "."
+      @options[:to] ||= '.'
     elsif @options[:command] == :export
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
       @options[:out] = @argv.shift
     elsif @options[:command] == :uri
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
     elsif @options[:command] == :manifest
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
     elsif @options[:command] == :clean
       @options[:path] = @argv.shift
-      @options[:path] ||= "."
+      @options[:path] ||= '.'
     end
   end
   private :parse_command_options
@@ -260,7 +260,7 @@ EOT
       $stderr.puts "illegal port number: #{port}"
       exit(false)
     end
-    return port.to_i
+    port.to_i
   end
   private :get_port_number
 end
