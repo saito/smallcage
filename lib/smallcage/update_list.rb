@@ -23,7 +23,12 @@ module SmallCage
 
     def load
       if @list_file.exist?
-        @data = YAML.load_file(@list_file)
+        begin
+          @data = YAML.load_file(@list_file)
+        rescue StandardError
+          puts 'WARN: can\'t load list.yml'
+          @data = {}
+        end
       else
         @data = {}
       end
