@@ -22,6 +22,8 @@ module SmallCage::Commands
       @loader   = Loader.new(target)
       @renderer = Renderer.new(@loader)
       @list     = UpdateList.create(@loader.root, target)
+      STDERR.puts 'WARN: Can\'t load tmp/list.yml file.' if @list.load_error
+
       render_smc_files
       expire_old_files @list.expire
       @list.save

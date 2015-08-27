@@ -2,7 +2,7 @@ module SmallCage
   # Updated files list model.
   # Do not access File system except list.yml.
   class UpdateList
-    attr_reader :update_count
+    attr_reader :update_count, :load_error
 
     def self.create(root_path, target_path)
       docpath = DocumentPath.new(root_path, target_path)
@@ -22,11 +22,12 @@ module SmallCage
     end
 
     def load
+      @load_error = nil
       if @list_file.exist?
         begin
           @data = YAML.load_file(@list_file)
-        rescue StandardError
-          puts 'WARN: can\'t load list.yml'
+        rescue StandardError => e
+          @load_error = e
           @data = {}
         end
       else
