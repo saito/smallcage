@@ -28,6 +28,7 @@ require 'smallcage/runner'
 require 'smallcage/document_path'
 require 'smallcage/http_server'
 require 'smallcage/application'
+require 'smallcage/options_parser'
 require 'smallcage/update_list'
 
 SmallCage::Application.execute if __FILE__ == $0
