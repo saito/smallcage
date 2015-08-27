@@ -1,9 +1,12 @@
 module SmallCage::Commands
+  #
+  # 'smc update' command
+  #
   class Update
     include SmallCage
 
     def self.execute(opts)
-      self.new(opts).execute
+      new(opts).execute
     end
 
     def initialize(opts)
@@ -13,9 +16,8 @@ module SmallCage::Commands
     def execute
       start = Time.now
       target = Pathname.new(@opts[:path])
-      unless target.exist?
-        raise "target directory or file does not exist.: " + target.to_s
-      end
+
+      fail 'target directory or file does not exist.: ' + target.to_s unless target.exist?
 
       @loader   = Loader.new(target)
       @renderer = Renderer.new(@loader)
@@ -26,8 +28,8 @@ module SmallCage::Commands
 
       count = @list.update_count
       elapsed  = Time.now - start
-      puts "-- #{count} files.  #{"%.3f" % elapsed} sec." +
-        "  #{"%.3f" % (count == 0 ? 0 : elapsed/count)} sec/file." unless @opts[:quiet]
+      puts "-- #{count} files.  #{ sprintf('%.3f', elapsed) } sec." +
+        "  #{ sprintf('%.3f', count == 0 ? 0 : elapsed / count) } sec/file." unless @opts[:quiet]
     end
 
     def expire_old_files(uris)
@@ -50,7 +52,7 @@ module SmallCage::Commands
     private :render_smc_files
 
     def render_smc_obj(obj)
-      uris = @renderer.render(obj["template"] + ".uri", obj)
+      uris = @renderer.render(obj['template'] + '.uri', obj)
       if uris
         render_multi(obj, uris.split(/\r\n|\r|\n/))
       else
@@ -60,21 +62,21 @@ module SmallCage::Commands
     private :render_smc_obj
 
     def render_single(obj, mtime = nil)
-      mark   = obj["path"].exist? ? "U " : "A "
-      mtime  ||= obj["path"].smc.stat.mtime.to_i
-      result = @renderer.render(obj["template"], obj)
+      mark   = obj['path'].exist? ? 'U ' : 'A '
+      mtime  ||= obj['path'].smc.stat.mtime.to_i
+      result = @renderer.render(obj['template'], obj)
       result = after_rendering_filters(obj, result)
       output_result(obj, result)
-      puts mark + obj["uri"] unless @opts[:quiet]
+      puts mark + obj['uri'] unless @opts[:quiet]
 
       # create new uri String to remove smc instance-specific method.
-      @list.update(obj["uri"].smc, mtime, String.new(obj["uri"]))
+      @list.update(obj['uri'].smc, mtime, String.new(obj['uri']))
     end
     private :render_single
 
     def render_multi(obj, uris)
       obj['uris'] ||= uris
-      uris    = uris.map {|uri| uri.strip }
+      uris    = uris.map { |uri| uri.strip }
       smcuri  = obj['uri'].smc
       smcpath = obj['path'].smc
       base    = obj['path'].parent
@@ -93,16 +95,16 @@ module SmallCage::Commands
     private :render_multi
 
     def after_rendering_filters(obj, result)
-      filters = @loader.filters("after_rendering_filters")
+      filters = @loader.filters('after_rendering_filters')
       filters.each do |f|
         result = f.after_rendering_filter(obj, result)
       end
-      return result
+      result
     end
     private :after_rendering_filters
 
     def output_result(obj, str)
-      open(obj["path"], "w") do |io|
+      open(obj['path'], 'w') do |io|
         io << str
       end
     end

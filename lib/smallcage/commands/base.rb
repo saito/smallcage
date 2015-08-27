@@ -1,7 +1,10 @@
 module SmallCage::Commands
+  #
+  # smc commands base class
+  #
   class Base
     def self.execute(opts)
-      self.new(opts).execute
+      new(opts).execute
     end
 
     def initialize(opts)
@@ -12,7 +15,7 @@ module SmallCage::Commands
     end
 
     def quiet?
-      return @opts[:quiet]
+      @opts[:quiet]
     end
   end
 end

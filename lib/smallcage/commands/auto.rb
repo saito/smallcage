@@ -1,6 +1,8 @@
 module SmallCage::Commands
+  #
+  # 'smc auto' command
+  #
   class Auto < SmallCage::Commands::Base
-
     def initialize(opts)
       super(opts)
       @target = Pathname.new(opts[:path])
@@ -35,7 +37,7 @@ module SmallCage::Commands
 
       result = []
       Dir.chdir(root) do
-        Dir.glob("_smc/{templates,filters,helpers}/*") do |f|
+        Dir.glob('_smc/{templates,filters,helpers}/*') do |f|
           f = root + f
           mtime = File.stat(f).mtime
           if @mtimes[f] != mtime
@@ -45,7 +47,7 @@ module SmallCage::Commands
         end
       end
 
-      return result
+      result
     end
     private :modified_special_files
 
@@ -58,7 +60,7 @@ module SmallCage::Commands
           result << f
         end
       end
-      return result
+      result
     end
     private :modified_files
 
@@ -67,13 +69,13 @@ module SmallCage::Commands
       modified_special_files
       target_files = modified_files
 
-      runner = SmallCage::Runner.new({ :path => @target, :quiet => @opts[:quiet] })
+      runner = SmallCage::Runner.new(:path => @target, :quiet => @opts[:quiet])
       begin
         runner.update
       rescue Exception => e
         STDERR.puts e.to_s
         STDERR.puts $@[0..4].join("\n")
-        STDERR.puts ":"
+        STDERR.puts ':'
       end
 
       update_http_server(target_files)
@@ -88,16 +90,16 @@ module SmallCage::Commands
         target_files = modified_files
       else
         # update root directory.
-        target_files = [@loader.root + "./_dir.smc"]
+        target_files = [@loader.root + './_dir.smc']
         reload = true
       end
 
       return if target_files.empty?
       target_files.each do |tf|
-        if tf.basename.to_s == "_dir.smc"
-          runner = SmallCage::Runner.new({ :path => tf.parent, :quiet => @opts[:quiet] })
+        if tf.basename.to_s == '_dir.smc'
+          runner = SmallCage::Runner.new(:path => tf.parent, :quiet => @opts[:quiet])
         else
-          runner = SmallCage::Runner.new({ :path => tf, :quiet => @opts[:quiet] })
+          runner = SmallCage::Runner.new(:path => tf, :quiet => @opts[:quiet])
         end
         runner.update
       end
@@ -112,7 +114,7 @@ module SmallCage::Commands
     rescue Exception => e
       STDERR.puts e.to_s
       STDERR.puts $@[0..4].join("\n")
-      STDERR.puts ":"
+      STDERR.puts ':'
       puts_line
       notify
       notify
@@ -121,7 +123,7 @@ module SmallCage::Commands
 
     def puts_banner
       return if quiet?
-      puts "SmallCage Auto Update"
+      puts 'SmallCage Auto Update'
       puts "http://localhost:#{@port}/_smc/auto" unless @port.nil?
       puts
     end
@@ -129,7 +131,7 @@ module SmallCage::Commands
 
     def puts_line
       return if quiet?
-      puts "-" * 60
+      puts '-' * 60
     end
     private :puts_line
 
@@ -141,7 +143,7 @@ module SmallCage::Commands
 
     def update_http_server(target_files)
       return unless @http_server
-      path = target_files.find {|p| p.basename.to_s != "_dir.smc" }
+      path = target_files.find { |p| p.basename.to_s != '_dir.smc' }
       if path.nil?
         dir = target_files.shift
         dpath = SmallCage::DocumentPath.new(@loader.root, dir.parent)
@@ -158,7 +160,7 @@ module SmallCage::Commands
         @http_server.shutdown unless @http_server.nil?
         @update_loop = false
       end
-      SmallCage::Application.add_signal_handler(["INT", "TERM"], shutdown_handler)
+      SmallCage::Application.add_signal_handler(%w{INT TERM}, shutdown_handler)
     end
     private :init_sig_handler
 

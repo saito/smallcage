@@ -1,7 +1,10 @@
 module SmallCage::Commands
+  #
+  # 'smc clean' command
+  #
   class Clean
     def self.execute(opts)
-      self.new(opts).execute
+      new(opts).execute
     end
 
     def initialize(opts)
@@ -13,9 +16,7 @@ module SmallCage::Commands
       count = 0
 
       target = Pathname.new(@opts[:path])
-      unless target.exist?
-        raise "target directory or file does not exist.: " + target.to_s
-      end
+      fail 'target directory or file does not exist.: ' + target.to_s unless target.exist?
 
       loader = SmallCage::Loader.new(target)
       root = loader.root
@@ -30,16 +31,16 @@ module SmallCage::Commands
         end
       end
 
-      tmpdir = root + "_smc/tmp"
+      tmpdir = root + '_smc/tmp'
       if tmpdir.exist?
         FileUtils.rm_r(tmpdir)
-        puts "D /_smc/tmp" unless @opts[:quiet]
+        puts 'D /_smc/tmp' unless @opts[:quiet]
         count += 1
       end
 
       elapsed  = Time.now - start
-      puts "-- #{count} files.  #{"%.3f" % elapsed} sec." +
-        "  #{"%.3f" % (count == 0 ? 0 : elapsed/count)} sec/file." unless @opts[:quiet]
+      puts "-- #{ count } files.  #{ sprintf('%.3f', elapsed) } sec." +
+        "  #{ sprintf('%.3f', count == 0 ? 0 : elapsed / count) } sec/file." unless @opts[:quiet]
     end
   end
 end
