@@ -12,43 +12,41 @@ module SmallCage
         @path = @path.cleanpath
       end
 
-      if @path.to_s[0...@root.to_s.length] != @root.to_s
-        raise "Illegal path: #{path.to_s}"
-      end
+      fail "Illegal path: #{ path.to_s }" if @path.to_s[0...@root.to_s.length] != @root.to_s
 
       if @path == @root
-        @uri = "/"
+        @uri = '/'
       else
         @uri = @path.to_s[@root.to_s.length .. -1]
       end
     end
 
     def smc?
-      return @path.extname == ".smc"
+      @path.extname == '.smc'
     end
 
     def outfile
       return nil unless smc?
-      return self.class.new(@root, @path.to_s[0 .. -5])
+      self.class.new(@root, @path.to_s[0 .. -5])
     end
 
     def outuri
       return nil unless smc?
-      return uri[0 .. -5]
+      uri[0 .. -5]
     end
 
     def self.to_uri(root, path)
-      return self.new(root,path).uri
+      new(root, path).uri
     end
 
     def self.create_with_uri(root, uri, base = nil)
       base ||= root
-      if uri[0] == ?/
+      if uri[0, 1] == '/'
         path = root + uri[1..-1] # absolute URI
       else
         path = base + uri # relative URI
       end
-      return self.new(root, path)
+      new(root, path)
     end
 
     def self.add_smc_method(obj, value)
@@ -58,10 +56,10 @@ module SmallCage
       end
 
       def obj.smc
-        return @__smallcage.nil? ? nil : @__smallcage[:smc]
+        @__smallcage.nil? ? nil : @__smallcage[:smc]
       end
 
-      return obj
+      obj
     end
   end
 end

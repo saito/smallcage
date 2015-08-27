@@ -1,22 +1,22 @@
 module SmallCage::Commands
   class Import
     def self.execute(opts)
-      self.new(opts).execute
+      new(opts).execute
     end
 
     def initialize(opts)
       @opts = opts
-      if @opts[:from] == "default"
-        @opts[:from] = "base,standard"
+      if @opts[:from] == 'default'
+        @opts[:from] = 'base,standard'
       end
-      @project_dir = Pathname.new(__FILE__) + "../../../../project"
+      @project_dir = Pathname.new(__FILE__) + '../../../../project'
     end
 
-    def qp(str = "")
+    def qp(str = '')
       print str unless @opts[:quiet]
     end
 
-    def qps(str = "")
+    def qps(str = '')
       puts str unless @opts[:quiet]
     end
 
@@ -61,27 +61,27 @@ module SmallCage::Commands
       failed = []
       @entries.each do |e|
         if e.overwrite?
-          qps "M /" + e.path
-        elsif ! e.exist?
-          qps "A /" + e.path
+          qps 'M /' + e.path
+        elsif !e.exist?
+          qps 'A /' + e.path
         elsif e.to.directory?
           # nothing
         else
-          qps "? /" + e.path
+          qps '? /' + e.path
         end
 
         begin
           e.import
         rescue
           failed << e
-          qps "F /" + e.path
+          qps 'F /' + e.path
         end
       end
 
       unless failed.empty?
-        qps "FAILED:"
+        qps 'FAILED:'
         failed.each do |e|
-          qps "  " + e.path
+          qps '  ' + e.path
         end
       end
     end
@@ -90,7 +90,7 @@ module SmallCage::Commands
     def local_entries(d)
       result = []
       Dir.chdir(d) do
-        Dir.glob("**/*") do |f|
+        Dir.glob('**/*') do |f|
           e = ImportEntry.new
           e.path = f
           e.from = d + f
@@ -98,20 +98,20 @@ module SmallCage::Commands
           result << e
         end
       end
-      return result
+      result
     end
     private :local_entries
 
     def external_entries(uri)
       if uri !~ %r{/$}
-        uri += "/"
+        uri += '/'
       end
-      mfuri = uri + "Manifest.html"
+      mfuri = uri + 'Manifest.html'
 
-      source = open(mfuri) {|io| io.read }
+      source = open(mfuri) { |io| io.read }
       result = []
 
-      files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>}) #"
+      files = source.scan(%r{<li><a href="(./[^"]+)">(./[^<]+)</a></li>}) # "
       files.each do |f|
         raise "illegal path:#{f[0]},#{f[1]}" if f[0] != f[1]
         raise "illegal path:#{f[0]}" if f[0] =~ %r{/\.\.}
@@ -123,32 +123,32 @@ module SmallCage::Commands
         result << e
       end
 
-      return result
+      result
     end
     private :external_entries
 
     def confirm_entries
       overwrite = []
 
-      qps "Create:"
+      qps 'Create:'
       @entries.each do |e|
         if e.overwrite?
           overwrite << e
-        elsif ! e.exist?
-          qps "  /" + e.path
+        elsif !e.exist?
+          qps '  /' + e.path
         end
       end
       qps
 
       unless overwrite.empty?
-        qps "Overwrite:"
+        qps 'Overwrite:'
         overwrite.each do |e|
-          qps "  /" + e.path
+          qps '  /' + e.path
         end
         qps
       end
 
-      return y_or_n("Import these files?[Yn]: ", true)
+      y_or_n('Import these files?[Yn]: ', true)
     end
     private :confirm_entries
 
@@ -160,7 +160,7 @@ module SmallCage::Commands
           return true
         elsif yn =~ /^(n|no)$/i
           return false
-        elsif yn == ""
+        elsif yn == ''
           return default
         end
       end
@@ -205,8 +205,8 @@ module SmallCage::Commands
           FileUtils.makedirs(to)
         else
           FileUtils.makedirs(to.parent)
-          s = open(from) {|io| io.read }
-          open(to, "w") {|io| io << s }
+          s = open(from) { |io| io.read }
+          open(to, 'w') { |io| io << s }
         end
       end
       private :copy_external

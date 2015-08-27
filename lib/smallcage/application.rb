@@ -1,19 +1,21 @@
 # Parse command-line arguments and run application.
 class SmallCage::Application
   require 'optparse'
+  require 'English'
+
   VERSION_NOTE = "SmallCage #{SmallCage::VERSION} - a simple website generator"
 
-  @@signal_handlers = nil
+  @signal_handlers = nil
 
   def self.init_signal_handlers
-    @@signal_handlers = {
+    @signal_handlers = {
       'INT' => [],
       'TERM' => []
     }
 
-    @@signal_handlers.keys.each do |signal|
+    @signal_handlers.keys.each do |signal|
       Signal.trap(signal) do
-        @@signal_handlers[signal].each do |proc|
+        @signal_handlers[signal].each do |proc|
           proc.call(signal)
         end
       end
@@ -21,9 +23,9 @@ class SmallCage::Application
   end
 
   def self.add_signal_handler(signal, handler)
-    init_signal_handlers if @@signal_handlers.nil?
+    init_signal_handlers if @signal_handlers.nil?
     signal.to_a.each do |s|
-      @@signal_handlers[s] << handler
+      @signal_handlers[s] << handler
     end
   end
 
@@ -54,13 +56,13 @@ class SmallCage::Application
   def create_main_parser
     parser = OptionParser.new
     parser.banner = <<BANNER
-Usage: #{File.basename($0)} [options] <subcommand> [subcommand-options]
+Usage: #{File.basename($PROGRAM_NAME)} [options] <subcommand> [subcommand-options]
 #{VERSION_NOTE}
 Subcommands are:
     update [path]                    Build smc contents.
     clean  [path]                    Remove files generated from *.smc source.
     server [path] [port]             Start HTTP server.
-    auto   [path] [port] [--bell]    Start auto update server.
+    auto   [path] [port]             Start auto update server.
     import [name|uri]                Import project.
     export [path] [outputpath]       Export project.
     uri    [path]                    Print URIs.
@@ -177,7 +179,7 @@ EOT
   private :create_default_command_parser
 
   def parse_command
-    @options[:command] = get_command
+    @options[:command] = command_sym
 
     if @options[:command].nil?
       puts @parser
@@ -195,19 +197,20 @@ EOT
   end
   private :parse_command
 
-  def get_command
+  # Resolve abbrev and return command name symbol.
+  def command_sym
     commands = Hash.new { |h, k| k }
-    commands.merge!({
+    commands.merge!(
       :up => :update,
       :sv => :server,
       :au => :auto
-    })
+    )
 
-    command_name = @argv.shift.to_s.strip
-    return nil if command_name.empty?
-    commands[command_name.to_sym]
+    name = @argv.shift.to_s.strip
+    return nil if name.empty?
+    commands[name.to_sym]
   end
-  private :get_command
+  private :command_sym
 
   def parse_command_options
     if @options[:command] == :help

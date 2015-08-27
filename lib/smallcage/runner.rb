@@ -6,46 +6,46 @@ module SmallCage
 
     def initialize(opts)
       @opts = opts
-      require_command "base"
+      require_command 'base'
     end
 
     def update
-      require_command "update"
+      require_command 'update'
       SmallCage::Commands::Update.execute(@opts)
     end
 
     def clean
-      require_command "clean"
+      require_command 'clean'
       SmallCage::Commands::Clean.execute(@opts)
     end
 
     def server
-      require_command "server"
+      require_command 'server'
       SmallCage::Commands::Server.execute(@opts)
     end
 
     def auto
-      require_command "auto"
+      require_command 'auto'
       SmallCage::Commands::Auto.execute(@opts)
     end
 
     def import
-      require_command "import"
+      require_command 'import'
       SmallCage::Commands::Import.execute(@opts)
     end
 
     def manifest
-      require_command "manifest"
+      require_command 'manifest'
       SmallCage::Commands::Manifest.execute(@opts)
     end
 
     def export
-      require_command "export"
+      require_command 'export'
       SmallCage::Commands::Export.execute(@opts)
     end
 
     def uri
-      require_command "uri"
+      require_command 'uri'
       SmallCage::Commands::Uri.execute(@opts)
     end
 

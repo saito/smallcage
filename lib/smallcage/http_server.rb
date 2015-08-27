@@ -11,11 +11,11 @@ module SmallCage
         :AccessLog => []
       })
 
-      WEBrick::HTTPServlet::FileHandler.remove_handler("cgi")
-      WEBrick::HTTPServlet::FileHandler.remove_handler("rhtml")
+      WEBrick::HTTPServlet::FileHandler.remove_handler('cgi')
+      WEBrick::HTTPServlet::FileHandler.remove_handler('rhtml')
 
-      @server.mount("/_smc/update_uri", UpdateUriServlet)
-      @server.mount("/_smc/auto", AutoServlet)
+      @server.mount('/_smc/update_uri', UpdateUriServlet)
+      @server.mount('/_smc/auto', AutoServlet)
     end
 
     def start
@@ -31,17 +31,17 @@ module SmallCage
     end
 
     def reload
-      UpdateUriServlet.uri = ":reload"
+      UpdateUriServlet.uri = ':reload'
     end
   end
 
 
   class UpdateUriServlet < WEBrick::HTTPServlet::AbstractServlet
-    @@uri = "/index.html"
-    @@update_time = ""
+    @@uri = '/index.html'
+    @@update_time = ''
 
     def do_GET(req, res)
-      res['content-type'] = "text/plain"
+      res['content-type'] = 'text/plain'
       res.body = @@uri + "\n" + @@update_time
     end
 
@@ -57,8 +57,8 @@ module SmallCage
 
   class AutoServlet < WEBrick::HTTPServlet::AbstractServlet
     def do_GET(req, res)
-      res['content-type'] = "text/html"
-      html = File.dirname(__FILE__) + "/resources/auto.html"
+      res['content-type'] = 'text/html'
+      html = File.dirname(__FILE__) + '/resources/auto.html'
       res.body = File.read(html)
     end
   end
