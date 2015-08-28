@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem 'syck', :platforms => :ruby_20
 
 group :development, :test do
-  gem 'rspec'
+  gem 'rspec', '~> 3.3.0'
 end
 
 group :development do

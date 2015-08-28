@@ -11,8 +11,8 @@ describe "SmallCage::Commands::Import" do
     opts = { :command => "import", :from => "default", :to => tmpdir.to_s, :quiet => true }
     SmallCage::Runner.run(opts)
 
-    (tmpdir + "_smc").directory?.should be_true
-    (tmpdir + "_smc/helpers/base_helper.rb").file?.should be_true
+    (tmpdir + "_smc").directory?.should be true
+    (tmpdir + "_smc/helpers/base_helper.rb").file?.should be true
 
     FileUtils.rm_r(tmpdir)
   end

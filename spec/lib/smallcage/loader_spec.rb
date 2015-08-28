@@ -38,7 +38,7 @@ describe SmallCage::Loader do
     root.to_s.should =~ %r{^.+/data/htdocs1$}
 
     depth = 3
-    lambda { SmallCage::Loader.find_root(path, depth) }.should raise_error
+    lambda { SmallCage::Loader.find_root(path, depth) }.should raise_error(RuntimeError)
   end
 
   it "should load strings" do
@@ -79,7 +79,7 @@ describe SmallCage::Loader do
     dirs[1]["uri"].should == "/a/"
     dirs[2]["uri"].should == "/a/b/"
     dirs[3]["uri"].should == "/a/b/c/"
-    (dirs[3]["path"] + "index.html.smc").file?.should be_true
+    (dirs[3]["path"] + "index.html.smc").file?.should be true
 
     dirs[0]["var"].should == "xxx"
     dirs[0]["strings"][0].should == "BODYBODYBODY"
@@ -101,7 +101,7 @@ describe SmallCage::Loader do
     dirs[2]["z"].should == 999
     dirs[2]["body"].should == "dirsmc"
 
-    dirs[3]["only_local_smc"].should be_true
+    dirs[3]["only_local_smc"].should be true
     dirs[3]["arrays"][0][2].should == "smc"
     dirs[3]["body"].should == "strings"
 

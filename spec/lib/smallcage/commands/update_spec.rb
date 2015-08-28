@@ -14,7 +14,7 @@ describe SmallCage::Commands::Update do
       SmallCage::Runner.run(opts)
 
       out = docroot + "a/b/c/index.html"
-      out.file?.should be_true
+      out.file?.should be true
       out.delete
 
       Dir.chdir(path) do
@@ -22,7 +22,7 @@ describe SmallCage::Commands::Update do
         SmallCage::Runner.run(opts)
       end
 
-      out.file?.should be_true
+      out.file?.should be true
       out.delete
     ensure
       SmallCage::Runner.run({:command => "clean", :path => path.to_s, :quiet => true })
@@ -38,10 +38,10 @@ describe SmallCage::Commands::Update do
       SmallCage::Runner.run(opts)
 
       out = root + "_dir"
-      out.file?.should be_false
+      out.file?.should be false
 
       out = root + "_local"
-      out.file?.should be_false
+      out.file?.should be false
     ensure
       SmallCage::Runner.run({:command => "clean", :path => root.to_s, :quiet => true })
     end
@@ -53,21 +53,21 @@ describe SmallCage::Commands::Update do
     begin
       SmallCage::Runner.run({ :command => "update", :path => root.to_s, :quiet => true })
 
-      (root + "a/index.html").file?.should be_true
-      (root + "ab/index.html").file?.should be_true
-      (root + "abc/index.html").file?.should be_true
+      (root + "a/index.html").file?.should be true
+      (root + "ab/index.html").file?.should be true
+      (root + "abc/index.html").file?.should be true
 
       SmallCage::Runner.run({ :command => "update", :path => (root + "a").to_s, :quiet => true })
 
-      (root + "a/index.html").file?.should be_true
-      (root + "ab/index.html").file?.should be_true
-      (root + "abc/index.html").file?.should be_true
+      (root + "a/index.html").file?.should be true
+      (root + "ab/index.html").file?.should be true
+      (root + "abc/index.html").file?.should be true
 
       SmallCage::Runner.run({ :command => "update", :path => (root + "ab").to_s, :quiet => true })
 
-      (root + "a/index.html").file?.should be_true
-      (root + "ab/index.html").file?.should be_true
-      (root + "abc/index.html").file?.should be_true
+      (root + "a/index.html").file?.should be true
+      (root + "ab/index.html").file?.should be true
+      (root + "abc/index.html").file?.should be true
     ensure
       SmallCage::Runner.run({:command => "clean", :path => root.to_s, :quiet => true })
     end

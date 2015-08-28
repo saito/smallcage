@@ -13,10 +13,10 @@ describe "SmallCage::Commands::Export" do
                :quiet => true }
       SmallCage::Runner.run(opts)
 
-      (outdir + "./a/test.html.smc").exist?.should_not be_true
-      (outdir + "./a/test.html").exist?.should_not be_true
-      (outdir + "./a/b/test.html").exist?.should be_true
-      (outdir + "./a/b/c/test.html").exist?.should be_true
+      (outdir + "./a/test.html.smc").exist?.should be false
+      (outdir + "./a/test.html").exist?.should be false
+      (outdir + "./a/b/test.html").exist?.should be true
+      (outdir + "./a/b/c/test.html").exist?.should be true
     ensure
       FileUtils.rm_r(outdir)
     end
@@ -31,11 +31,11 @@ describe "SmallCage::Commands::Export" do
                :quiet => true }
       SmallCage::Runner.run(opts)
 
-      (outdir + "./a/test.html.smc").exist?.should_not be_true
-      (outdir + "./a/test.html").exist?.should_not be_true
-      (outdir + "./a/b/test.html").exist?.should_not be_true
+      (outdir + "./a/test.html.smc").exist?.should be false
+      (outdir + "./a/test.html").exist?.should be false
+      (outdir + "./a/b/test.html").exist?.should be false
 
-      (outdir + "./a/b/c/test.html").exist?.should be_true
+      (outdir + "./a/b/c/test.html").exist?.should be true
     ensure
       FileUtils.rm_r(outdir)
     end

@@ -13,7 +13,7 @@ describe SmallCage::Commands::Manifest do
   it "should create Manifest.html" do
 
     SmallCage::Runner.run(@opts.merge(:command => "manifest"))
-    @manifest_file.file?.should be_true
+    @manifest_file.file?.should be true
 
     source = @manifest_file.read
     source = source.match(%r{<ul class="files">\n(.+?)\n</ul>}m)[1].split(/\n/)

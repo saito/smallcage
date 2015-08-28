@@ -10,7 +10,7 @@ describe SmallCage::DocumentPath do
   end
 
   it "should return smc file or not" do
-    docpath.smc?.should be_true
+    docpath.smc?.should be true
   end
 
   it "should return output file" do
@@ -45,7 +45,7 @@ describe SmallCage::DocumentPath do
       e.message.should =~ /\AIllegal path: /
       ok = true
     end
-    ok.should be_true
+    ok.should be true
 
     path    = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs'))
     ok = false
@@ -55,7 +55,7 @@ describe SmallCage::DocumentPath do
       e.message.should =~ /\AIllegal path: /
       ok = true
     end
-    ok.should be_true
+    ok.should be true
 
     path    = Pathname.new(File.join(SPEC_DATA_DIR, 'htdocs2'))
     ok = false
@@ -65,6 +65,6 @@ describe SmallCage::DocumentPath do
       e.message.should =~ /\AIllegal path: /
       ok = true
     end
-    ok.should be_true
+    ok.should be true
   end
 end
