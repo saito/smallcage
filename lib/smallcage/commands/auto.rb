@@ -105,7 +105,7 @@ module SmallCage::Commands
       end
 
       if reload
-        @http_server.reload
+        @http_server.reload if @http_server
       else
         update_http_server(target_files)
       end
