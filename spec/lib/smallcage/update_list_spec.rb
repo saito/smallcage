@@ -2,7 +2,7 @@ require 'spec_helper.rb'
 require 'smallcage'
 
 describe SmallCage::UpdateList do
-  root = Pathname.new(File.join(SPEC_DATA_DIR, 'updatelists'))
+  let(:root) { Pathname.new(File.join(SPEC_DATA_DIR, 'updatelists')) }
 
   it 'should create empty data' do
     list = SmallCage::UpdateList.new(root + 'dummy.yml', '/')
@@ -71,6 +71,27 @@ EOT
       list.mtime('/abc/index.html.smc').should eq 1
     ensure
       file.delete
+    end
+  end
+
+  describe '#mtimes' do
+    let(:file) { root + 'list-mtime.yml' }
+
+    it 'should return src uri to mtime map' do
+      begin
+        list = SmallCage::UpdateList.new(file, '/')
+        list.update('/abc/index.html.smc', 123, '/abc/index.html')
+        list.update('/xyz/index.html.smc', 987, '/xyz/index.html')
+        list.save
+
+        list = SmallCage::UpdateList.new(file, '/')
+        list.mtimes.should eq(
+          '/abc/index.html.smc' => 123,
+          '/xyz/index.html.smc' => 987
+        )
+      ensure
+        file.delete
+      end
     end
   end
 

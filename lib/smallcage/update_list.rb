@@ -1,6 +1,9 @@
 module SmallCage
+  #
   # Updated files list model.
-  # Do not access File system except list.yml.
+  #
+  # UpdateList doesn't access file system except list.yml.
+  #
   class UpdateList
     attr_reader :update_count, :load_error
 
@@ -25,21 +28,21 @@ module SmallCage
       @load_error = nil
       if @list_file.exist?
         begin
-          @data = YAML.load_file(@list_file)
+          @yaml = YAML.load_file(@list_file)
         rescue StandardError => e
           @load_error = e
-          @data = {}
+          @yaml = {}
         end
       else
-        @data = {}
+        @yaml = {}
       end
-      @data['version'] ||= VERSION
-      @data['list'] ||= []
+      @yaml['version'] ||= VERSION
+      @yaml['list'] ||= []
 
-      @map = {}
-      @data['list'].each do |item|
+      @src_item_map = {}
+      @yaml['list'].each do |item|
         src = item['src']
-        @map[src] = item
+        @src_item_map[src] = item
         if target?(src)
           @expired_src[src] = true
           item['dst'].each do |d|
@@ -57,18 +60,23 @@ module SmallCage
 
     def save
       FileUtils.mkpath(@list_file.parent)
-      @data['version'] = VERSION
+      @yaml['version'] = VERSION
       open(@list_file, 'w') do |io|
         io << to_yaml
       end
     end
 
     def to_yaml
-      @data.to_yaml
+      @yaml.to_yaml
+    end
+
+    # return src_uri => mtime hash.
+    def mtimes
+      Hash[@src_item_map.map { |k,v| [k, v['mtime'].to_i] }]
     end
 
     def mtime(srcuri)
-      item = @map[srcuri]
+      item = @src_item_map[srcuri]
       return -1 unless item
       item['mtime'].to_i
     end
@@ -85,8 +93,8 @@ module SmallCage
     private :update_list
 
     def update_list_item(srcuri, mtime, dsturi)
-      return false unless @map[srcuri]
-      item = @map[srcuri]
+      return false unless @src_item_map[srcuri]
+      item = @src_item_map[srcuri]
       item['mtime'] = mtime.to_i
       item['dst'] << dsturi unless item['dst'].include?(dsturi)
       true
@@ -95,8 +103,8 @@ module SmallCage
 
     def add_list_item(srcuri, mtime, dsturi)
       item = { 'src' => srcuri, 'dst' => [dsturi], 'mtime' => mtime.to_i }
-      @map[srcuri] = item
-      @data['list'] << item
+      @src_item_map[srcuri] = item
+      @yaml['list'] << item
     end
     private :add_list_item
 
@@ -115,13 +123,13 @@ module SmallCage
       @expired_src.each do |srcuri, v|
         mark_expired_src(srcuri)
       end
-      @data['list'] = @data['list'].select { |item| !item['expired'] }
+      @yaml['list'] = @yaml['list'].select { |item| !item['expired'] }
     end
     private :expire_src
 
     def mark_expired_src(srcuri)
-      @map[srcuri]['expired'] = true
-      @map[srcuri]['dst'].each do |dsturi|
+      @src_item_map[srcuri]['expired'] = true
+      @src_item_map[srcuri]['dst'].each do |dsturi|
         next if @expired_dst[dsturi] && ! @expired_dst[dsturi][0]
         @expired_dst[dsturi] = [true, srcuri]
       end
@@ -133,7 +141,7 @@ module SmallCage
       @expired_dst.each do |dsturi, stat|
         next unless stat[0]
         srcuri = stat[1]
-        item = @map[srcuri]
+        item = @src_item_map[srcuri]
         item['dst'].delete(dsturi)
         result << dsturi
       end

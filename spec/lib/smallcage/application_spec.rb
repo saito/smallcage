@@ -27,87 +27,101 @@ describe SmallCage::Application do
     }
   end
 
-  before(:each) do
-    @target = SmallCage::Application.new
-  end
+  subject { SmallCage::Application.new }
 
   it 'should parse update command' do
-    options = @target.parse_options(['update', '.'])
-    options.should eq(:path => '.', :command => :update, :quiet => false)
+    options = subject.parse_options(['update', '.'])
+    options.should eq(:path => '.', :command => :update, :quiet => false, :fast => false)
+  end
 
-    options = @target.parse_options(['up', '.'])
-    options.should eq(:path => '.', :command => :update, :quiet => false)
+  it 'should parse up command' do
+    options = subject.parse_options(['up', '.'])
+    options.should eq(:path => '.', :command => :update, :quiet => false, :fast => false)
   end
 
   it 'should parse clean command' do
-    options = @target.parse_options(['clean', '.'])
+    options = subject.parse_options(['clean', '.'])
     options.should eq(:path => '.', :command => :clean, :quiet => false)
   end
 
   it 'should parse server command' do
-    options = @target.parse_options(['server', '.'])
+    options = subject.parse_options(['server', '.'])
     options.should eq(:path => '.', :command => :server, :quiet => false, :port => 8080) # num
 
-    options = @target.parse_options(['sv', '.', '8080'])
+    options = subject.parse_options(['sv', '.', '8080'])
     options.should eq(:path => '.', :command => :server, :quiet => false, :port => 8080) # string
   end
 
   it 'should accept only number port' do
-    result = capture_result { @target.parse_options(['server', '.', 'pot']) }
+    result = capture_result { subject.parse_options(['server', '.', 'pot']) }
     result[:exit].should eq 1
     result[:stdout].should be_empty
     result[:stderr].should eq "illegal port number: pot\n"
   end
 
   it 'should not accept port 0' do
-    result = capture_result { @target.parse_options(['server', '.', '0']) }
+    result = capture_result { subject.parse_options(['server', '.', '0']) }
     result[:exit].should eq 1
     result[:stdout].should be_empty
     result[:stderr].should eq "illegal port number: 0\n"
   end
 
   it 'should parse auto command' do
-    options = @target.parse_options(['auto', '.'])
-    options.should eq(:path => '.', :command => :auto, :port => nil, :bell => false, :quiet => false)
+    options = subject.parse_options(['auto', '.'])
+    options.should eq(
+                      :path => '.',
+                      :command => :auto,
+                      :port => nil,
+                      :bell => false,
+                      :fast => false,
+                      :quiet => false
+                      )
 
-    options = @target.parse_options(['au', '.', '8080'])
-    options.should eq(:path => '.', :command => :auto, :port => 8080, :bell => false, :quiet => false)
+    options = subject.parse_options(['au', '.', '8080'])
+    options.should eq(
+                      :path => '.',
+                      :command => :auto,
+                      :port => 8080,
+                      :bell => false,
+                      :fast => false,
+                      :quiet => false
+                      )
   end
 
   it 'should parse import command' do
-    options = @target.parse_options(['import', 'base', '.'])
+    options = subject.parse_options(['import', 'base', '.'])
     options.should eq(:command => :import, :from => 'base', :to => '.', :quiet => false)
 
-    options = @target.parse_options(['import'])
+    options = subject.parse_options(['import'])
     options.should eq(:command => :import, :from => 'default', :to => '.', :quiet => false)
   end
 
   it 'should parse export command' do
-    options = @target.parse_options(['export', '.', 'path'])
+    options = subject.parse_options(['export', '.', 'path'])
     options.should eq(:command => :export, :path => '.',  :out => 'path', :quiet => false)
 
-    options = @target.parse_options(['export'])
+    options = subject.parse_options(['export'])
     options.should eq(:command => :export, :path => '.',  :out => nil, :quiet => false)
   end
 
   it 'should parse uri command' do
-    options = @target.parse_options(['uri', './path/to/target'])
+    options = subject.parse_options(['uri', './path/to/target'])
     options.should eq(:command => :uri, :path => './path/to/target', :quiet => false)
 
-    options = @target.parse_options(['uri'])
+    options = subject.parse_options(['uri'])
     options.should eq(:command => :uri, :path => '.', :quiet => false)
   end
 
   it 'should parse manifest command' do
-    options = @target.parse_options(['manifest', './path/to/target'])
+    options = subject.parse_options(['manifest', './path/to/target'])
     options.should eq(:command => :manifest, :path => './path/to/target', :quiet => false)
 
-    options = @target.parse_options(['manifest'])
+    options = subject.parse_options(['manifest'])
     options.should eq( :command => :manifest, :path => '.', :quiet => false )
   end
 
   it 'should exit 1 if command is empty' do
-    result = capture_result { @target.parse_options([]) }
+    result = capture_result { subject.parse_options([]) }
     result[:exit].should eq 1
     result[:stdout].should =~ /\AUsage:/
     result[:stdout].should =~ /^Subcommands are:/
@@ -115,7 +129,7 @@ describe SmallCage::Application do
   end
 
   it 'should show help' do
-    result = capture_result { @target.parse_options(['help']) }
+    result = capture_result { subject.parse_options(['help']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\AUsage:/
     result[:stdout].should =~ /^Subcommands are:/
@@ -123,7 +137,7 @@ describe SmallCage::Application do
   end
 
   it 'should show help if the arguments include --help' do
-    result = capture_result { @target.parse_options(['--help', 'update']) }
+    result = capture_result { subject.parse_options(['--help', 'update']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\AUsage:/
     result[:stdout].should =~ /^Subcommands are:/
@@ -131,28 +145,28 @@ describe SmallCage::Application do
   end
 
   it 'should show subcommand help' do
-    result = capture_result { @target.parse_options(['help', 'update']) }
+    result = capture_result { subject.parse_options(['help', 'update']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\AUsage: smc update \[path\]/
     result[:stderr].should be_empty
   end
 
   it 'should exit if the command is unknown' do
-    result = capture_result { @target.parse_options(['xxxx']) }
+    result = capture_result { subject.parse_options(['xxxx']) }
     result[:exit].should eq 1
     result[:stdout].should be_empty
     result[:stderr].should eq "no such subcommand: xxxx\n"
   end
 
   it 'should show version' do
-    result = capture_result { @target.parse_options(['--version', 'update']) }
+    result = capture_result { subject.parse_options(['--version', 'update']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
     result[:stderr].should be_empty
   end
 
   it 'should exit when subcommand is empty' do
-    result = capture_result { @target.parse_options(['', '--version']) }
+    result = capture_result { subject.parse_options(['', '--version']) }
     result[:exit].should eq 1
     result[:stdout].should =~ /\AUsage:/
     result[:stdout].should =~ /^Subcommands are:/
@@ -160,49 +174,49 @@ describe SmallCage::Application do
   end
 
   it 'should ignore subcommand with --version option' do
-    result = capture_result { @target.parse_options(['help', '--version']) }
+    result = capture_result { subject.parse_options(['help', '--version']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
     result[:stderr].should be_empty
   end
 
   it 'should ignore subcommand with -v option' do
-    result = capture_result { @target.parse_options(['help', '-v']) }
+    result = capture_result { subject.parse_options(['help', '-v']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\ASmallCage \d+\.\d+\.\d+ - /
     result[:stderr].should be_empty
   end
 
   it 'should ignore subcommand with --help option' do
-    result = capture_result { @target.parse_options(['update', '--help']) }
+    result = capture_result { subject.parse_options(['update', '--help']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\AUsage: smc update \[path\] \[options\]/
     result[:stderr].should be_empty
   end
 
   it 'should ignore subcommand with -h option' do
-    result = capture_result { @target.parse_options(['update', '-h']) }
+    result = capture_result { subject.parse_options(['update', '-h']) }
     result[:exit].should eq 0
     result[:stdout].should =~ /\AUsage: smc update \[path\] \[options\]/
     result[:stderr].should be_empty
   end
 
   it 'should exit with unknown main option --QQQ' do
-    result = capture_result { @target.parse_options(['--QQQ']) }
+    result = capture_result { subject.parse_options(['--QQQ']) }
     result[:exit].should eq 1
     result[:stdout].should be_empty
     result[:stderr].should eq "invalid option: --QQQ\n"
   end
 
   it 'should exit with unknown sub option --QQQ' do
-    result = capture_result { @target.parse_options(['update', '--QQQ']) }
+    result = capture_result { subject.parse_options(['update', '--QQQ']) }
     result[:exit].should eq 1
     result[:stdout].should be_empty
     result[:stderr].should eq "invalid option: --QQQ\n"
   end
 
   it 'should accept auto command --bell option' do
-    result = capture_result { @target.parse_options(['auto', '--bell']) }
+    result = capture_result { subject.parse_options(['auto', '--bell']) }
     result[:exit].should be_nil
     result[:stdout].should be_empty
     result[:stderr].should be_empty
@@ -211,12 +225,13 @@ describe SmallCage::Application do
       :port => nil,
       :path => '.',
       :bell => true,
+      :fast => false,
       :quiet => false
     )
   end
 
   it 'should set bell option false as default' do
-    result = capture_result { @target.parse_options(['auto']) }
+    result = capture_result { subject.parse_options(['auto']) }
     result[:exit].should be_nil
     result[:stdout].should be_empty
     result[:stderr].should be_empty
@@ -225,37 +240,40 @@ describe SmallCage::Application do
       :port => nil,
       :path => '.',
       :bell => false,
+      :fast => false,
       :quiet => false
     )
   end
 
   it 'should accept --quiet option' do
-    result = capture_result { @target.parse_options(['--quiet', 'update']) }
+    result = capture_result { subject.parse_options(['--quiet', 'update']) }
     result[:exit].should be_nil
     result[:stdout].should be_empty
     result[:stderr].should be_empty
     result[:result].should eq(
       :command => :update,
       :path => '.',
+      :fast => false,
       :quiet => true
     )
   end
 
   it 'should accept --quiet option after subcommand' do
-    result = capture_result { @target.parse_options(['update', '--quiet']) }
+    result = capture_result { subject.parse_options(['update', '--quiet']) }
     result[:exit].should be_nil
     result[:stdout].should be_empty
     result[:stderr].should be_empty
     result[:result].should eq(
       :command => :update,
       :path => '.',
+      :fast => false,
       :quiet => true
     )
   end
 
   it 'should accept --quiet option before and after subcommand' do
     opts = %w{--quiet auto --quiet path --bell 80}
-    result = capture_result { @target.parse_options(opts) }
+    result = capture_result { subject.parse_options(opts) }
     result[:exit].should be_nil
     result[:stdout].should be_empty
     result[:stderr].should be_empty
@@ -264,6 +282,7 @@ describe SmallCage::Application do
       :path => 'path',
       :port => 80,
       :bell => true,
+      :fast => false,
       :quiet => true
     )
   end

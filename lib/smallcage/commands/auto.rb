@@ -8,8 +8,24 @@ module SmallCage::Commands
       @target = Pathname.new(opts[:path])
       @port = opts[:port]
       @sleep = 1
-      @mtimes = {}
+      @timestamps = {}
     end
+
+    def load_initial_timestamps
+      # load timestamps
+      modified_special_files
+      modified_files
+
+      # overwrite @timestamps using list.yml to recover last update state.
+      list = SmallCage::UpdateList.create(@loader.root, @target)
+
+      list.mtimes.each do |uri, mtime|
+        path = @loader.root + ".#{uri}"
+        mtime = Time.at(mtime)
+        @timestamps[path] = mtime
+      end
+    end
+    private :load_initial_timestamps
 
     def execute
       puts_banner
@@ -24,7 +40,12 @@ module SmallCage::Commands
       while @update_loop
         if first_loop
           first_loop = false
-          update_target
+          if @opts[:fast]
+            load_initial_timestamps
+            update_modified_files
+          else
+            update_target
+          end
         else
           update_modified_files
         end
@@ -40,8 +61,8 @@ module SmallCage::Commands
         Dir.glob('_smc/{templates,filters,helpers}/*') do |f|
           f = root + f
           mtime = File.stat(f).mtime
-          if @mtimes[f] != mtime
-            @mtimes[f] = mtime
+          if @timestamps[f] != mtime
+            @timestamps[f] = mtime
             result << f
           end
         end
@@ -55,8 +76,8 @@ module SmallCage::Commands
       result = []
       @loader.each_smc_file do |f|
         mtime = File.stat(f).mtime
-        if @mtimes[f] != mtime
-          @mtimes[f] = mtime
+        if @timestamps[f] != mtime
+          @timestamps[f] = mtime
           result << f
         end
       end
@@ -65,7 +86,7 @@ module SmallCage::Commands
     private :modified_files
 
     def update_target
-      # load @mtimes
+      # load timestamps
       modified_special_files
       target_files = modified_files
 

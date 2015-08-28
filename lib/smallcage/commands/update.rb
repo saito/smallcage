@@ -30,8 +30,8 @@ module SmallCage::Commands
 
       count = @list.update_count
       elapsed  = Time.now - start
-      puts "-- #{count} files.  #{ sprintf('%.3f', elapsed) } sec." +
-        "  #{ sprintf('%.3f', count == 0 ? 0 : elapsed / count) } sec/file." unless @opts[:quiet]
+      puts "-- #{count} files.  #{sprintf('%.3f', elapsed)} sec." +
+        "  #{sprintf('%.3f', count == 0 ? 0 : elapsed / count)} sec/file." unless @opts[:quiet]
     end
 
     def expire_old_files(uris)
@@ -64,8 +64,8 @@ module SmallCage::Commands
     private :render_smc_obj
 
     def render_single(obj, mtime = nil)
-      mark   = obj['path'].exist? ? 'U ' : 'A '
-      mtime  ||= obj['path'].smc.stat.mtime.to_i
+      mark = obj['path'].exist? ? 'U ' : 'A '
+      mtime ||= obj['path'].smc.stat.mtime.to_i
       result = @renderer.render(obj['template'], obj)
       result = after_rendering_filters(obj, result)
       output_result(obj, result)
@@ -85,7 +85,7 @@ module SmallCage::Commands
       mtime   = smcpath.stat.mtime.to_i
       uris.each_with_index do |uri, index|
         next if uri.empty?
-        docpath       = DocumentPath.create_with_uri(@loader.root, uri, base)
+        docpath = DocumentPath.create_with_uri(@loader.root, uri, base)
         next if docpath.path.directory?
         FileUtils.mkpath(docpath.path.parent)
         obj['uri']    = DocumentPath.add_smc_method(docpath.uri, smcuri)

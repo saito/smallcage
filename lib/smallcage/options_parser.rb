@@ -115,6 +115,14 @@ EOT
       parsers[command] = create_default_command_parser(banner)
     end
 
+    parsers[:update].on('--fast', 'Update only modified files.') do |boolean|
+      @options[:fast] = boolean
+    end
+
+    parsers[:auto].on('--fast', 'Update only modified files at first run.') do |boolean|
+      @options[:fast] = boolean
+    end
+
     parsers[:auto].on('--bell', 'Ring bell after publishing files.') do |boolean|
       @options[:bell] = boolean
     end
@@ -185,6 +193,7 @@ EOT
     if @options[:command] == :update
       @options[:path] = @argv.shift
       @options[:path] ||= '.'
+      @options[:fast] ||= false
     elsif @options[:command] == :server
       @options[:path] = @argv.shift
       @options[:path] ||= '.'
@@ -194,6 +203,7 @@ EOT
       @options[:path] ||= '.'
       @options[:port] = get_port_number(nil)
       @options[:bell] ||= false
+      @options[:fast] ||= false
     elsif @options[:command] == :import
       @options[:from] = @argv.shift
       @options[:from] ||= 'default'
