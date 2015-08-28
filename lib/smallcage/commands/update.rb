@@ -66,6 +66,15 @@ module SmallCage::Commands
     def render_single(obj, mtime = nil)
       mark = obj['path'].exist? ? 'U ' : 'A '
       mtime ||= obj['path'].smc.stat.mtime.to_i
+
+      if @opts[:fast]
+        last_mtime = @list.mtime(obj['uri'].smc)
+        if mtime == last_mtime
+          @list.update(obj['uri'].smc, mtime, String.new(obj['uri']))
+          return
+        end
+      end
+
       result = @renderer.render(obj['template'], obj)
       result = after_rendering_filters(obj, result)
       output_result(obj, result)
