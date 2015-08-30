@@ -47,8 +47,14 @@ module SmallCage::Commands
     private :expire_old_files
 
     def render_smc_files
-      @loader.each_smc_obj do |obj|
-        render_smc_obj(obj)
+      if @opts[:fast]
+        @loader.each_smc_obj_using_target_template(@list) do |obj|
+          render_smc_obj(obj)
+        end
+      else
+        @loader.each_smc_obj do |obj|
+          render_smc_obj(obj)
+        end
       end
     end
     private :render_smc_files
@@ -67,10 +73,10 @@ module SmallCage::Commands
       mark = obj['path'].exist? ? 'U ' : 'A '
       mtime ||= obj['path'].smc.stat.mtime.to_i
 
-      if @opts[:fast]
+      if @opts[:fast] && !@loader.target_template
         last_mtime = @list.mtime(obj['uri'].smc)
         if mtime == last_mtime
-          @list.update(obj['uri'].smc, mtime, String.new(obj['uri']))
+          @list.update(obj['uri'].smc, mtime, String.new(obj['uri']), obj['template'])
           return
         end
       end
@@ -81,7 +87,7 @@ module SmallCage::Commands
       puts mark + obj['uri'] unless @opts[:quiet]
 
       # create new uri String to remove smc instance-specific method.
-      @list.update(obj['uri'].smc, mtime, String.new(obj['uri']))
+      @list.update(obj['uri'].smc, mtime, String.new(obj['uri']), obj['template'])
     end
     private :render_single
 

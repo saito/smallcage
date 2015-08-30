@@ -81,28 +81,37 @@ module SmallCage
       item['mtime'].to_i
     end
 
-    def update(srcuri, mtime, dsturi)
-      update_list(srcuri, mtime, dsturi)
+    def filter_by_template(template)
+      result = []
+      @src_item_map.each do |src, item|
+        result << src if item['template'] == template
+      end
+      result
+    end
+
+    def update(srcuri, mtime, dsturi, template = nil)
+      update_list(srcuri, mtime, dsturi, template)
       stop_expiration(srcuri, dsturi)
       @update_count += 1
     end
 
-    def update_list(srcuri, mtime, dsturi)
-      add_list_item(srcuri, mtime, dsturi) unless update_list_item(srcuri, mtime, dsturi)
+    def update_list(srcuri, mtime, dsturi, template)
+      add_list_item(srcuri, mtime, dsturi, template) unless update_list_item(srcuri, mtime, dsturi, template)
     end
     private :update_list
 
-    def update_list_item(srcuri, mtime, dsturi)
+    def update_list_item(srcuri, mtime, dsturi, template)
       return false unless @src_item_map[srcuri]
       item = @src_item_map[srcuri]
       item['mtime'] = mtime.to_i
+      item['template'] = template if template
       item['dst'] << dsturi unless item['dst'].include?(dsturi)
       true
     end
     private :update_list_item
 
-    def add_list_item(srcuri, mtime, dsturi)
-      item = { 'src' => srcuri, 'dst' => [dsturi], 'mtime' => mtime.to_i }
+    def add_list_item(srcuri, mtime, dsturi, template)
+      item = { 'src' => srcuri, 'dst' => [dsturi], 'mtime' => mtime.to_i, 'template' => template }
       @src_item_map[srcuri] = item
       @yaml['list'] << item
     end

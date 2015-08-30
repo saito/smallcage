@@ -10,14 +10,17 @@ module SmallCage
     LOCAL_PROP_FILE  = '_local.smc'
     MAX_DEPTH = 100
 
-    attr_reader :root, :target, :erb_base
+    attr_reader :root, :target, :erb_base, :target_template
 
     def initialize(target)
-      target = Pathname.new(target.to_s.strip.chomp('/'))
-      target = real_target(target)
-
-      @target = target # absolute
-      @root = self.class.find_root(target) # absolute
+      target = target.to_s.strip.chomp('/')
+      if target.to_s =~ %r{(.*/|\A)_smc/templates/((?:.+/)?(?:[^/]+))\.rhtml\z}
+        target = Regexp.last_match[1]
+        target = '.' if target == ''
+        @target_template = Regexp.last_match[2]
+      end
+      @target = real_target(Pathname.new(target))
+      @root = self.class.find_root(@target) # absolute
       @templates_dir = @root + '_smc/templates'
       @helpers_dir = @root + '_smc/helpers'
       @filters_dir = @root + '_smc/filters'
@@ -27,7 +30,7 @@ module SmallCage
 
     # return root dir Pathname object.
     def self.find_root(path, depth = MAX_DEPTH)
-      fail "Not found: #{ path }" unless path.exist?
+      fail "Not found: #{path}" unless path.exist?
       d = path.realpath
       d = d.parent if d.file?
       loop do
@@ -35,11 +38,11 @@ module SmallCage
         break if d.root? || (depth -= 1) <= 0
         d = d.parent
       end
-      fail "Root not found: #{ path }"
+      fail "Root not found: #{path}"
     end
 
     def load(path)
-      fail "Not found: #{ path }" unless path.exist?
+      fail "Not found: #{path}" unless path.exist?
 
       docpath = DocumentPath.new(@root, path)
 
@@ -51,7 +54,7 @@ module SmallCage
     end
 
     def load_smc_file(docpath)
-      fail "Path is not smc file: #{ docpath }" unless docpath.smc?
+      fail "Path is not smc file: #{docpath}" unless docpath.smc?
 
       result = create_base_smc_object(docpath.outfile.path, docpath.path,
                                       docpath.outuri,       docpath.uri)
@@ -106,7 +109,7 @@ module SmallCage
         obj = YAML.load_stream(source)
         return result if obj.nil?
       rescue => e
-        raise "Can't load file: #{ path } / #{ e }"
+        raise "Can't load file: #{path} / #{e}"
       end
       obj.documents.each do |o|
         case o
@@ -114,7 +117,7 @@ module SmallCage
           result.merge!(o)
         when Array
           result['arrays'] ||= []
-          result['arrays']  << o
+          result['arrays'] << o
         else
           result['strings'] ||= []
           result['strings'] << o.to_s
@@ -138,7 +141,7 @@ module SmallCage
     end
 
     def template_path(name)
-      result = @templates_dir + "#{ name }.rhtml"
+      result = @templates_dir + "#{name}.rhtml"
       return nil unless result.file?
       result
     end
@@ -149,6 +152,8 @@ module SmallCage
         next if path.basename.to_s == DIR_PROP_FILE
         next if path.basename.to_s == LOCAL_PROP_FILE
         obj = load(path)
+        next if @target_template && obj['template'] != @target_template
+
         yield obj
       end
     end
@@ -185,6 +190,18 @@ module SmallCage
       end
     end
 
+    # When the target is template, try to find source using the template.
+    def each_smc_obj_using_target_template(list, &block)
+      return each_smc_obj(&block) unless @target_template
+
+      list.filter_by_template(@target_template).each do |path|
+        path = @root + path[1..-1]
+        next unless path.file?
+        obj = load(path)
+        yield obj
+      end
+    end
+
     def real_target(target)
       return target.realpath if target.directory?
       return target.realpath if target.file? && target.to_s =~ /\.smc$/
@@ -208,7 +225,7 @@ module SmallCage
         end
       end
 
-      helpers = SmallCage::AnonymousLoader.load(@helpers_dir, /([^\/]+_helper)\.rb\z/)
+      helpers = SmallCage::AnonymousLoader.load(@helpers_dir, %r{([^/]+_helper)\.rb\z})
       result.include_helpers(helpers[:module], helpers[:names])
 
       result
@@ -223,7 +240,7 @@ module SmallCage
       result = {}
       return {} unless @filters_dir.directory?
 
-      filter_modules = SmallCage::AnonymousLoader.load(@filters_dir, /([^\/]+_filter)\.rb\z/)
+      filter_modules = SmallCage::AnonymousLoader.load(@filters_dir, %r{([^/]+_filter)\.rb\z})
       smc_module = filter_modules[:module].const_get('SmallCage')
 
       load_filters_config.each do |filter_type, filter_list|
