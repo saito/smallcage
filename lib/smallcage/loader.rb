@@ -10,7 +10,7 @@ module SmallCage
     LOCAL_PROP_FILE  = '_local.smc'
     MAX_DEPTH = 100
 
-    attr_reader :root, :target, :erb_base, :target_template
+    attr_reader :root, :target, :erb_base, :target_template, :dir_target
 
     def initialize(target)
       target = target.to_s.strip.chomp('/')
@@ -20,6 +20,7 @@ module SmallCage
         @target_template = Regexp.last_match[2]
       end
       @target = real_target(Pathname.new(target))
+      @dir_target = @target.directory?
       @root = self.class.find_root(@target) # absolute
       @templates_dir = @root + '_smc/templates'
       @helpers_dir = @root + '_smc/helpers'

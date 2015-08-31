@@ -73,7 +73,8 @@ module SmallCage::Commands
       mark = obj['path'].exist? ? 'U ' : 'A '
       mtime ||= obj['path'].smc.stat.mtime.to_i
 
-      if @opts[:fast] && !@loader.target_template
+      # Do not skip if the target is file.
+      if @opts[:fast] && @loader.dir_target && !@loader.target_template
         last_mtime = @list.mtime(obj['uri'].smc)
         if mtime == last_mtime
           @list.update(obj['uri'].smc, mtime, String.new(obj['uri']), obj['template'])
