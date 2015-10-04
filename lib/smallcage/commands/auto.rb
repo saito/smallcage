@@ -21,8 +21,7 @@ module SmallCage::Commands
 
       list.mtimes.each do |uri, mtime|
         path = @loader.root + ".#{uri}"
-        mtime = Time.at(mtime)
-        @timestamps[path] = mtime
+        @timestamps[path] = mtime.to_i
       end
     end
     private :load_initial_timestamps
@@ -60,7 +59,7 @@ module SmallCage::Commands
       Dir.chdir(root) do
         Dir.glob('_smc/{templates,filters,helpers}/*') do |f|
           f = root + f
-          mtime = File.stat(f).mtime
+          mtime = File.stat(f).mtime.to_i
           if @timestamps[f] != mtime
             @timestamps[f] = mtime
             result << f
@@ -75,7 +74,7 @@ module SmallCage::Commands
     def modified_files
       result = []
       @loader.each_smc_file do |f|
-        mtime = File.stat(f).mtime
+        mtime = File.stat(f).mtime.to_i
         if @timestamps[f] != mtime
           @timestamps[f] = mtime
           result << f
