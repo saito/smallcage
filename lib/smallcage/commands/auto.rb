@@ -40,13 +40,39 @@ module SmallCage::Commands
         if first_loop
           first_loop = false
           if @opts[:fast]
+            puts 'Searching modified files since last update...'
             load_initial_timestamps
-            update_modified_files
+            count, total = update_modified_files
+
+            if total == 0
+              notify
+              puts 'All files are updated. Redy to edit!'
+            elsif total != count
+              notify
+              notify
+              puts "Error (#{count}/#{total}) Redy to edit!"
+            else
+              notify
+              puts "Updated (#{count}/#{total}) Redy to edit!"
+            end
+            puts_line
           else
             update_target
+            notify
+            puts_line
           end
         else
-          update_modified_files
+          count, total = update_modified_files
+          if total > 0
+            if total == count
+              notify
+            else
+              notify
+              notify
+              puts "Error (#{count} / #{total})"
+            end
+            puts_line
+          end
         end
         sleep @sleep
       end
@@ -99,12 +125,12 @@ module SmallCage::Commands
       end
 
       update_http_server(target_files)
-      puts_line
-      notify
     end
     private :update_target
 
     def update_modified_files
+      count = 0
+      total = 0
       reload = false
       if modified_special_files.empty?
         target_files = modified_files
@@ -114,7 +140,10 @@ module SmallCage::Commands
         reload = true
       end
 
-      return if target_files.empty?
+      return [count, total] if target_files.empty?
+
+      total = target_files.length
+
       target_files.each do |tf|
         if tf.basename.to_s == '_dir.smc'
           runner = SmallCage::Runner.new(:path => tf.parent, :quiet => @opts[:quiet])
@@ -122,6 +151,7 @@ module SmallCage::Commands
           runner = SmallCage::Runner.new(:path => tf, :quiet => @opts[:quiet])
         end
         runner.update
+        count += 1
       end
 
       if reload
@@ -129,15 +159,12 @@ module SmallCage::Commands
       else
         update_http_server(target_files)
       end
-      puts_line
-      notify
+      [count, total]
     rescue Exception => e
       STDERR.puts e.to_s
       STDERR.puts $@[0..4].join("\n")
       STDERR.puts ':'
-      puts_line
-      notify
-      notify
+      [count, total]
     end
     private :update_modified_files
 
