@@ -1,6 +1,8 @@
 module SmallCage::Commands
   class Server
     def self.execute(opts)
+      require 'smallcage/http_server'
+
       document_root = opts[:path]
       port = opts[:port]
 

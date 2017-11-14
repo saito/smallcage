@@ -27,6 +27,8 @@ module SmallCage::Commands
     private :load_initial_timestamps
 
     def execute
+      require 'smallcage/http_server'
+
       puts_banner
 
       start_http_server unless @port.nil?
