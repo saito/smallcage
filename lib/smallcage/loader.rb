@@ -1,3 +1,5 @@
+YAML::ENGINE.yamler = 'syck' if RUBY_VERSION >= '1.9.2' && RUBY_VERSION < '2.0.0'
+
 module SmallCage
   #
   # .smc file loader
