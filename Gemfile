@@ -7,7 +7,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'rake'
+  gem 'rake', '< 11.0'
 
   platforms :ruby_19, :ruby_20 do
     gem 'simplecov', :require => false
@@ -15,8 +15,8 @@ group :development do
 
     if RUBY_VERSION >= '1.9.3'
       gem 'rubocop', '~> 0.33.0', :require => false
-      gem 'guard', :require => false
-      gem 'guard-rspec', :require => false
+      # gem 'guard', :require => false
+      # gem 'guard-rspec', :require => false
     end
   end
 end
